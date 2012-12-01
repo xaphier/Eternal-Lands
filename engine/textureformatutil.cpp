@@ -307,7 +307,7 @@ namespace eternal_lands
 				pft_float_4, GL_RGB9_E5,
 				GL_UNSIGNED_INT_5_9_9_9_REV, GL_RGB, 3,
 				32),
-			TextureFormatTypeData(String(UTF8("r10f_g11f_b10f")),
+			TextureFormatTypeData(String(UTF8("r11f_g11f_b10f")),
 				pft_float_4, GL_R11F_G11F_B10F,
 				GL_UNSIGNED_INT_10F_11F_11F_REV, GL_RGB, 3,
 				32),

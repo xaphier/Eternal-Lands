@@ -49,7 +49,7 @@ namespace eternal_lands
 
 		it = XmlUtil::children(node, true);
 
-		clear();
+		m_material_data.clear();
 
 		do
 		{
@@ -58,27 +58,15 @@ namespace eternal_lands
 				set_name(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("use_extra_maps"))
-				== 0)
-			{
-				set_use_extra_maps(XmlUtil::get_bitset64_value(
-					it));
-			}
-
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("use_blend_size_samplers")) == 0)
+				BAD_CAST UTF8("terrain_material_data")) == 0)
 			{
-				set_use_blend_size_samplers(
-					XmlUtil::get_bitset64_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_data"))
-				== 0)
-			{
-				append_blend_data(BlendData(it));
+				m_material_data.load_xml(it);
 			}
 		}
 		while (XmlUtil::next(it, true));
+
+		assert(m_material_data.get_layer_count() > 0);
 	}
 
 	void ShaderSourceTerrain::do_save_xml(const XmlWriterSharedPtr &writer)
@@ -86,16 +74,8 @@ namespace eternal_lands
 	{
 		writer->start_element(get_xml_id());
 		writer->write_element(String(UTF8("name")), get_name());
-		writer->write_bitset64_element(String(UTF8("use_extra_maps")),
-			get_use_extra_maps());
-		writer->write_bitset64_element(
-			String(UTF8("use_blend_size_samplers")),
-			get_use_blend_size_samplers());
 
-		BOOST_FOREACH(const BlendData &blend_data, get_blend_datas())
-		{
-			blend_data.save_xml(writer);
-		}
+		m_material_data.save_xml(writer);
 
 		writer->end_element();
 	}
@@ -109,6 +89,8 @@ namespace eternal_lands
 		String source;
 		Uint32 i, count;
 		bool use_glsl_130;
+
+		assert(m_material_data.get_layer_count() > 0);
 
 		source = get_name();
 
@@ -132,21 +114,39 @@ namespace eternal_lands
 
 		if (use_glsl_130)
 		{
-			if (get_use_any_extra_map())
+			if (m_material_data.get_use_any_height_map() &&
+				m_material_data.get_write_height())
 			{
 				ShaderSourceParameterBuilder::add_parameter(
-					source, get_extra_sampler(),
+					source, get_height_sampler(),
 					sampler, result);
 			}
 
-			if (get_use_any_none_blend_size_sampler())
+			if (m_material_data.get_use_any_specular_map() &&
+				m_material_data.get_write_specular_gloss())
+			{
+				ShaderSourceParameterBuilder::add_parameter(
+					source, get_specular_sampler(),
+					sampler, result);
+			}
+
+			if (m_material_data.get_use_any_gloss_map() &&
+				m_material_data.get_write_specular_gloss())
+			{
+				ShaderSourceParameterBuilder::add_parameter(
+					source, get_gloss_sampler(),
+					sampler, result);
+			}
+
+			if (m_material_data.get_use_any_none_blend_size_texture(
+				))
 			{
 				ShaderSourceParameterBuilder::add_parameter(
 					source, get_albedo_sampler(0), sampler,
 					result);
 			}
 
-			if (get_use_any_blend_size_sampler())
+			if (m_material_data.get_use_any_blend_size_texture())
 			{
 				ShaderSourceParameterBuilder::add_parameter(
 					source, get_albedo_sampler(1), sampler,
@@ -159,7 +159,8 @@ namespace eternal_lands
 			return result;
 		}
 
-		count = std::min((get_blend_datas_size() + 3) / 4,
+		count = std::min(
+			(m_material_data.get_layer_count() + 2) / 4,
 			get_non_array_blend_sampler_count());
 
 		for (i = 0; i < count; ++i)
@@ -168,7 +169,7 @@ namespace eternal_lands
 				get_blend_sampler(i), sampler, result);
 		}
 
-		count = std::min(get_blend_datas_size() + 1,
+		count = std::min(m_material_data.get_layer_count(),
 			get_non_array_albedo_sampler_count());
 
 		for (i = 0; i < count; ++i)
@@ -194,46 +195,30 @@ namespace eternal_lands
 			return;
 		}
 
-#ifdef	USE_COMPRESSED_BLEND
-		str << indent << UTF8("blends[") << index << UTF8("].rg = ");
-		str << UTF8("texture(") << get_blend_sampler(0) << UTF8(", ");
-		str << UTF8("vec3(") << cpt_world_uv << UTF8(", ");
-		str << (index * 2) << UTF8(")).rg;\n");
-
-		str << indent << UTF8("blends[") << index << UTF8("].ba = ");
-		str << UTF8("texture(") << get_blend_sampler(0) << UTF8(", ");
-		str << UTF8("vec3(") << cpt_world_uv << UTF8(", ");
-		str << (index * 2 + 1) << UTF8(")).rg;\n");
-#else	/* USE_COMPRESSED_BLEND */
 		str << indent << UTF8("blends[") << index;
 		str << UTF8("] = texture(") << get_blend_sampler(0);
 		str << UTF8(", vec3(") << cpt_world_uv << UTF8(", ");
 		str << index << UTF8("));\n");
-#endif	/* USE_COMPRESSED_BLEND */
 	}
 
 	void ShaderSourceTerrain::write_albedo_fetch(const String &indent,
-		const Uint16 index, const bool use_glsl_130, OutStream &str) const
+		const Uint16 index, const bool use_glsl_130, OutStream &str)
+		const
 	{
-		Uint16 i, sampler, layer;
-		bool use_blend_size_sampler;
+		Uint16 i, layer;
+		bool use_blend_size_texture;
 
 		str << indent << UTF8("albedo = texture");
 
 		layer = 0;
-		sampler = 0;
 
-		use_blend_size_sampler = get_use_blend_size_sampler(index);
-
-		if (use_blend_size_sampler)
-		{
-			sampler = 1;
-		}
+		use_blend_size_texture =
+			m_material_data.get_use_blend_size_texture(index);
 
 		for (i = 0; i < index; ++i)
 		{
-			if (get_use_blend_size_sampler(i) ==
-				use_blend_size_sampler)
+			if (m_material_data.get_use_blend_size_texture(i) ==
+				use_blend_size_texture)
 			{
 				layer++;
 			}
@@ -241,7 +226,8 @@ namespace eternal_lands
 
 		if (use_glsl_130)
 		{
-			str << UTF8("(") << get_albedo_sampler(sampler);
+			str << UTF8("(");
+			str << get_albedo_array_sampler(use_blend_size_texture);
 			str << UTF8(", vec3(") << cpt_world_extra_uv;
 			str << UTF8(", ") << layer << UTF8("));\n");
 		}
@@ -253,13 +239,89 @@ namespace eternal_lands
 		}
 	}
 
-	void ShaderSourceTerrain::write_extra_fetch(const String &indent,
+	void ShaderSourceTerrain::write_height_fetch(const String &indent,
 		const Uint16 index, OutStream &str) const
 	{
-		str << indent << UTF8("extra = texture(");
-		str << get_extra_sampler() << UTF8(", vec3(");
+		str << indent << UTF8("height = texture(");
+		str << get_height_sampler() << UTF8(", vec3(");
 		str << cpt_world_extra_uv << UTF8(", ") << index;
-		str << UTF8(")).rg;\n");
+		str << UTF8(")).r;\n");
+	}
+
+	void ShaderSourceTerrain::write_specular_fetch(const String &indent,
+		const Uint16 index, OutStream &str) const
+	{
+		str << indent << UTF8("specular = texture(");
+		str << get_specular_sampler() << UTF8(", vec3(");
+		str << cpt_world_extra_uv << UTF8(", ") << index;
+		str << UTF8(")).rgb;\n");
+	}
+
+	void ShaderSourceTerrain::write_gloss_fetch(const String &indent,
+		const Uint16 index, OutStream &str) const
+	{
+		str << indent << UTF8("gloss = texture(");
+		str << get_gloss_sampler() << UTF8(", vec3(");
+		str << cpt_world_extra_uv << UTF8(", ") << index;
+		str << UTF8(")).r;\n");
+	}
+
+	void ShaderSourceTerrain::write_height_value(const String &indent,
+		const Uint16 index, OutStream &str, Uint16 &texture_index)
+		const
+	{
+		if (m_material_data.get_use_height_map(index))
+		{
+			write_height_fetch(indent, texture_index, str);
+
+			texture_index++;
+		}
+		else
+		{
+			str << indent << UTF8("height = ");
+			str << m_material_data.get_default_height(index);
+			str << UTF8(";\n");
+		}
+	}
+
+	void ShaderSourceTerrain::write_specular_value(const String &indent,
+		const Uint16 index, OutStream &str, Uint16 &texture_index)
+		const
+	{
+		if (m_material_data.get_use_specular_map(index))
+		{
+			write_specular_fetch(indent, texture_index, str);
+
+			texture_index++;
+		}
+		else
+		{
+			str << indent << UTF8("specular = vec3(");
+			str << m_material_data.get_default_specular(index).r;
+			str << UTF8(", ");
+			str << m_material_data.get_default_specular(index).g;
+			str << UTF8(", ");
+			str << m_material_data.get_default_specular(index).b;
+			str << UTF8(");\n");
+		}
+	}
+
+	void ShaderSourceTerrain::write_gloss_value(const String &indent,
+		const Uint16 index, OutStream &str, Uint16 &texture_index)
+		const
+	{
+		if (m_material_data.get_use_gloss_map(index))
+		{
+			write_gloss_fetch(indent, texture_index, str);
+
+			texture_index++;
+		}
+		else
+		{
+			str << indent << UTF8("gloss = ");
+			str << m_material_data.get_default_gloss(index);
+			str << UTF8(";\n");
+		}
 	}
 
 	void ShaderSourceTerrain::write_blend(const String &indent,
@@ -272,12 +334,12 @@ namespace eternal_lands
 
 		str << indent << UTF8("blend = ");
 
-		if (get_blend_data(index).get_use_blend_size())
+		if (m_material_data.get_use_blend_size_texture(index + 1))
 		{
 			str << UTF8("smoothstep(clamp(albedo.a - ");
-			str << get_blend_data(index).get_blend_size();
+			str << m_material_data.get_blend_size(index + 1);
 			str << UTF8(", 0.0, 1.0), clamp(albedo.a + ");
-			str << get_blend_data(index).get_blend_size();
+			str << m_material_data.get_blend_size(index + 1);
 			str << UTF8(", 0.0, 1.0), ") << stream.str();
 			str << UTF8(");\n");
 		}
@@ -288,16 +350,25 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceTerrain::write_mix_result(const String &indent,
-		const bool use_extra_map, OutStream &str) const
+		const bool write_height, const bool write_specular_gloss,
+		OutStream &str) const
 	{
-		str << indent << UTF8("output_data_float[0].rgb = mix(");
-		str << UTF8("output_data_float[0].rgb, albedo.rgb, blend);\n");
+		str << indent << UTF8("data_0.rgb = mix(data_0.rgb, albedo");
+		str << UTF8(".rgb, blend);\n");
 
-		if (use_extra_map)
+		if (write_height)
 		{
-			str << indent << UTF8("output_data_float[0].a = mix(");
-			str << UTF8("output_data_float[0].a, extra.r, ");
-			str << UTF8("blend);\n");
+			str << indent << UTF8("data_0.a = mix(data_0.a, ");
+			str << UTF8("height, blend);\n");
+		}
+
+		if (write_specular_gloss)
+		{
+			str << indent << UTF8("data_1.rgb = mix(data_1.rgb, ");
+			str << UTF8("specular, blend);\n");
+
+			str << indent << UTF8("data_1.a = mix(data_1.a, ");
+			str << UTF8("gloss, blend);\n");
 		}
 	}
 
@@ -306,14 +377,17 @@ namespace eternal_lands
 	{
 		StringStream str;
 		String indent;
-		Uint32 i, index, count;
-		bool use_glsl_130;
+		Uint32 i, count;
+		Uint16 height_index, specular_index, gloss_index;
+		bool use_glsl_130, write_height, write_specular_gloss;
 
 		use_glsl_130 = version >= svt_130;
 
-		count = get_blend_datas_size();
+		assert(m_material_data.get_layer_count() > 0);
 
-		count = (count + 3) / 4;
+		count = m_material_data.get_layer_count();
+
+		count = (count + 2) / 4;
 
 		if (!use_glsl_130)
 		{
@@ -327,55 +401,61 @@ namespace eternal_lands
 		}
 
 		str << UTF8("vec4 albedo;\n");
+		str << UTF8("vec4 data_0;\n");
 
-		if (get_use_extra_maps().any())
+		if (m_material_data.get_write_height())
 		{
-			str << UTF8("vec2 extra;\n");
+			str << UTF8("float height;\n");
+		}
+
+		if (m_material_data.get_write_specular_gloss())
+		{
+			str << UTF8("vec4 data_1;\n");
+			str << UTF8("vec3 specular;\n");
+			str << UTF8("float gloss;\n");
 		}
 
 		str << UTF8("float blend;\n");
-
-		count = get_blend_datas_size();
-
-		count = (count + 3) / 4;
-
-		if (!use_glsl_130)
-		{
-			count = std::min(count,
-				get_non_array_blend_sampler_count());
-		}
 
 		for (i = 0; i < count; ++i)
 		{
 			write_blend_fetch(indent, i, use_glsl_130, str);
 		}
 
-		str << indent << UTF8("output_data_float[0] = vec4(1.0);\n");
-
 		write_albedo_fetch(indent, 0, use_glsl_130, str);
-		str << indent << UTF8("output_data_float[0].rgb = ");
+		str << indent << UTF8("data_0.rgb = ");
 		str << UTF8("albedo.rgb;\n");
 
-		index = 0;
+		height_index = 0;
+		specular_index = 0;
+		gloss_index = 0;
 
-		if (use_glsl_130)
+		write_height = use_glsl_130 &&
+			m_material_data.get_write_height();
+		write_specular_gloss = use_glsl_130 &&
+			m_material_data.get_write_specular_gloss();
+
+		if (write_height)
 		{
-			if (get_use_extra_map(0))
-			{
-				write_extra_fetch(indent, index, str);
-				str << indent << UTF8("output_data_float[0].a");
-				str << UTF8(" = extra.r;\n");
+			write_height_value(indent, 0, str, height_index);
 
-				index++;
-			}
-			else
-			{
-				str << indent << UTF8("output_data_float[0].a");
-				str << UTF8(" = 0.0f;\n");
-			}
+			str << indent << UTF8("data_0.a = height;\n");
+		}
+		else
+		{
+			str << indent << UTF8("data_0.a = 1.0;\n");
 		}
 
-		count = get_blend_datas_size();
+		if (write_specular_gloss)
+		{
+			write_specular_value(indent, 0, str, specular_index);
+			write_gloss_value(indent, 0, str, gloss_index);
+
+			str << indent << UTF8("data_1.rgb = specular;\n");
+			str << indent << UTF8("data_1.a = gloss;\n");
+		}
+
+		count = m_material_data.get_layer_count() - 1;
 
 		if (!use_glsl_130)
 		{
@@ -387,23 +467,31 @@ namespace eternal_lands
 		{
 			write_albedo_fetch(indent, i + 1, use_glsl_130, str);
 
-			if (use_glsl_130 && get_use_extra_maps().any())
+			if (write_height)
 			{
-				if (get_use_extra_map(i + 1))
-				{
-					write_extra_fetch(indent, index, str);
+				write_height_value(indent, i + 1, str,
+					height_index);
+			}
 
-					index++;
-				}
-				else
-				{
-					str << indent << UTF8("extra = vec2(");
-					str << UTF8("0.0f);\n");
-				}
+			if (write_specular_gloss)
+			{
+				write_specular_value(indent, i + 1, str,
+					specular_index);
+				write_gloss_value(indent, i + 1, str,
+					gloss_index);
 			}
 
 			write_blend(indent, i, str);
-			write_mix_result(indent, use_glsl_130 && get_use_extra_maps().any(), str);
+			write_mix_result(indent, write_height,
+				write_specular_gloss, str);
+		}
+
+		str << indent << UTF8("output_data_float[0] = data_0;\n");
+
+		if (write_specular_gloss)
+		{
+			str << indent << UTF8("output_data_float[1] = data_1");
+			str << UTF8(";\n");
 		}
 
 		return String(str.str());
@@ -426,11 +514,13 @@ namespace eternal_lands
 	}
 
 	Uint32 ShaderSourceTerrain::get_non_array_albedo_sampler_count()
+		noexcept
 	{
 		return 13;
 	}
 
 	Uint32 ShaderSourceTerrain::get_non_array_blend_sampler_count()
+		noexcept
 	{
 		return 3;
 	}
@@ -438,21 +528,38 @@ namespace eternal_lands
 	SamplerParameterType ShaderSourceTerrain::get_albedo_sampler(
 		const Uint16 index)
 	{
-		RANGE_CECK_MAX(index, get_non_array_albedo_sampler_count(),
+		RANGE_CECK_MAX(index, get_non_array_albedo_sampler_count() - 1,
 			UTF8("albedo sampler index too big"));
 
 		return samplers[index];
 	}
 
-	SamplerParameterType ShaderSourceTerrain::get_extra_sampler()
+	SamplerParameterType ShaderSourceTerrain::get_albedo_array_sampler(
+		const bool use_blend_size_texture) noexcept
+	{
+		return samplers[use_blend_size_texture ? 1 : 0];
+	}
+
+	SamplerParameterType ShaderSourceTerrain::get_height_sampler() noexcept
 	{
 		return samplers[2];
+	}
+
+	SamplerParameterType ShaderSourceTerrain::get_specular_sampler()
+		noexcept
+	{
+		return samplers[3];
+	}
+
+	SamplerParameterType ShaderSourceTerrain::get_gloss_sampler() noexcept
+	{
+		return samplers[4];
 	}
 
 	SamplerParameterType ShaderSourceTerrain::get_blend_sampler(
 		const Uint16 index)
 	{
-		RANGE_CECK_MAX(index, get_non_array_blend_sampler_count(),
+		RANGE_CECK_MAX(index, get_non_array_blend_sampler_count() - 1,
 			UTF8("albedo sampler index too big"));
 
 		return samplers[index + get_non_array_albedo_sampler_count()];

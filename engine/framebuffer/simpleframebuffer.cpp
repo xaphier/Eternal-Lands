@@ -24,7 +24,7 @@ namespace eternal_lands
 		if (depth_buffer)
 		{
 			m_render_buffer.reset(new RenderBuffer(name,
-				get_width(), get_height(), 0,
+				get_width(0), get_height(0), 0,
 				tft_depth24_stencil8));
 
 			CHECK_GL_ERROR_NAME(get_name());
@@ -98,7 +98,7 @@ namespace eternal_lands
 	void SimpleFrameBuffer::attach_texture(
 		const TextureSharedPtr &texture,
 		const FrameBufferAttachmentType attachment,
-		const Uint16 layer)
+		const Uint16 layer, const Uint16 mipmap)
 	{
 		GLenum gl_attachment;
 
@@ -138,7 +138,7 @@ namespace eternal_lands
 				return;
 		}
 
-		texture->attach(gl_attachment, 0, layer);
+		texture->attach(gl_attachment, mipmap, layer);
 	}
 
 	void SimpleFrameBuffer::clear(const float depth,
@@ -218,7 +218,7 @@ namespace eternal_lands
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + layer);
 		glDrawBuffer(GL_BACK);
 
-		glBlitFramebuffer(0, 0, get_width(), get_height(), rect.x,
+		glBlitFramebuffer(0, 0, get_width(0), get_height(0), rect.x,
 			rect.y, rect.z, rect.w, mask, GL_NEAREST);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -239,17 +239,16 @@ namespace eternal_lands
 		stencil = true;
 	}
 
-	void SimpleFrameBuffer::set_draw_buffer(const Uint16 index,
-		const bool enabled)
+	void SimpleFrameBuffer::set_draw_buffers(const glm::bvec4 &enabled)
 	{
-		if (enabled)
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT0 + index);
-		}
-		else
-		{
-			glDrawBuffer(GL_NONE);
-		}
+		GLenum buffers[4];
+
+		buffers[0] = enabled[0] ? GL_COLOR_ATTACHMENT0 : GL_NONE;
+		buffers[1] = enabled[1] ? GL_COLOR_ATTACHMENT1 : GL_NONE;
+		buffers[2] = enabled[2] ? GL_COLOR_ATTACHMENT2 : GL_NONE;
+		buffers[3] = enabled[3] ? GL_COLOR_ATTACHMENT3 : GL_NONE;
+
+		glDrawBuffers(4, buffers);
 	}
 
 	void SimpleFrameBuffer::blit_buffers()

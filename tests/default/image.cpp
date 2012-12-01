@@ -96,7 +96,7 @@ namespace
 		m_16_bit.insert(el::tft_r5g6b5);
 		m_16_bit.insert(el::tft_rgb5_a1);
 		m_32_bit.insert(el::tft_rgb10_a2);
-		m_32_bit.insert(el::tft_r10f_b11f_g10f);
+		m_32_bit.insert(el::tft_r11f_b11f_g10f);
 		m_32_bit.insert(el::tft_rgb9_e5);
 
 		count = el::TextureFormatUtil::get_texture_format_count();
@@ -243,12 +243,12 @@ BOOST_AUTO_TEST_CASE(set_get_8_bit_values)
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_8_bit())
 	{
-		size.x = 64;
-		size.y = 64;
-		size.z = 64;
+		size.x = 257;
+		size.y = 257;
+		size.z = 257;
 		cube_map = (random_int() % 2) == 0;
 
-		mipmap_count = 6;
+		mipmap_count = 8;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
 			cube_map, texture_format, size, mipmap_count, false);
@@ -263,12 +263,12 @@ BOOST_AUTO_TEST_CASE(set_get_8_bit_values)
 		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-		for (i = 0; i < 128; ++i)
+		for (i = 0; i < 1024; ++i)
 		{
-			x = random_int() % 64;
-			y = random_int() % 64;
-			z = random_int() % 64;
-			m = random_int() % 6;
+			x = random_int() % 257;
+			y = random_int() % 257;
+			z = random_int() % 257;
+			m = random_int() % 9;
 
 			x = x >> m;
 			y = y >> m;
@@ -285,7 +285,12 @@ BOOST_AUTO_TEST_CASE(set_get_8_bit_values)
 
 			data = random_int();
 
-			image->set_pixel_packed_uint8(x, y, z, f, m, data);
+			BOOST_CHECK_LT(x, image->get_size(m).x);
+			BOOST_CHECK_LT(y, image->get_size(m).y);
+			BOOST_CHECK_LT(z, image->get_size(m).z);
+
+			BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint8(x,
+				y, z, f, m, data));
 
 			BOOST_CHECK_EQUAL(image->get_pixel_packed_uint8(x, y,
 				z, f, m), data);
@@ -306,12 +311,12 @@ BOOST_AUTO_TEST_CASE(set_get_16_bit_values)
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_16_bit())
 	{
-		size.x = 64;
-		size.y = 64;
-		size.z = 64;
+		size.x = 257;
+		size.y = 257;
+		size.z = 257;
 		cube_map = (random_int() % 2) == 0;
 
-		mipmap_count = 6;
+		mipmap_count = 8;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
 			cube_map, texture_format, size, mipmap_count, false);
@@ -326,16 +331,12 @@ BOOST_AUTO_TEST_CASE(set_get_16_bit_values)
 		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-		for (i = 0; i < 128; ++i)
+		for (i = 0; i < 1024; ++i)
 		{
-			x = random_int() % 64;
-			y = random_int() % 64;
-			z = random_int() % 64;
-			m = random_int() % 6;
-
-			x = x >> m;
-			y = y >> m;
-			z = z >> m;
+			m = random_int() % 9;
+			x = random_int() % (257 >> m);
+			y = random_int() % (257 >> m);
+			z = random_int() % (257 >> m);
 
 			if (cube_map)
 			{
@@ -348,7 +349,12 @@ BOOST_AUTO_TEST_CASE(set_get_16_bit_values)
 
 			data = random_int();
 
-			image->set_pixel_packed_uint16(x, y, z, f, m, data);
+			BOOST_CHECK_LT(x, image->get_size(m).x);
+			BOOST_CHECK_LT(y, image->get_size(m).y);
+			BOOST_CHECK_LT(z, image->get_size(m).z);
+
+			BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint16(x,
+				y, z, f, m, data));
 
 			BOOST_CHECK_EQUAL(image->get_pixel_packed_uint16(x, y,
 				z, f, m), data);
@@ -369,12 +375,12 @@ BOOST_AUTO_TEST_CASE(set_get_32_bit_values)
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_32_bit())
 	{
-		size.x = 64;
-		size.y = 64;
-		size.z = 64;
+		size.x = 257;
+		size.y = 257;
+		size.z = 257;
 		cube_map = (random_int() % 2) == 0;
 
-		mipmap_count = 6;
+		mipmap_count = 8;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
 			cube_map, texture_format, size, mipmap_count, false);
@@ -389,16 +395,12 @@ BOOST_AUTO_TEST_CASE(set_get_32_bit_values)
 		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-		for (i = 0; i < 128; ++i)
+		for (i = 0; i < 1024; ++i)
 		{
-			x = random_int() % 64;
-			y = random_int() % 64;
-			z = random_int() % 64;
-			m = random_int() % 6;
-
-			x = x >> m;
-			y = y >> m;
-			z = z >> m;
+			m = random_int() % 9;
+			x = random_int() % (257 >> m);
+			y = random_int() % (257 >> m);
+			z = random_int() % (257 >> m);
 
 			if (cube_map)
 			{
@@ -411,7 +413,12 @@ BOOST_AUTO_TEST_CASE(set_get_32_bit_values)
 
 			data = random_int();
 
-			image->set_pixel_packed_uint32(x, y, z, f, m, data);
+			BOOST_CHECK_LT(x, image->get_size(m).x);
+			BOOST_CHECK_LT(y, image->get_size(m).y);
+			BOOST_CHECK_LT(z, image->get_size(m).z);
+
+			BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint32(x,
+				y, z, f, m, data));
 
 			BOOST_CHECK_EQUAL(image->get_pixel_packed_uint32(x, y,
 				z, f, m), data);
@@ -433,12 +440,12 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	size.x = 64;
-	size.y = 64;
-	size.z = 64;
+	size.x = 257;
+	size.y = 257;
+	size.z = 257;
 	cube_map = (random_int() % 2) == 0;
 
-	mipmap_count = 6;
+	mipmap_count = 9;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
 		cube_map, el::tft_r3g3b2, size, mipmap_count, false);
@@ -453,16 +460,12 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -479,7 +482,12 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 
 		data = el::PackTool::pack_uint_3_3_2(false, glm::vec3(color));
 
-		image->set_pixel_uint(x, y, z, f, m, glm::uvec4(color, 0));
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_uint(x, y, z, f, m,
+			glm::uvec4(color, 0)));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -499,16 +507,12 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 			data);
 	}
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -525,7 +529,12 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 
 		data = el::PackTool::pack_uint_3_3_2(false, glm::vec3(color));
 
-		image->set_pixel_packed_uint8(x, y, z, f, m, data);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint8(x, y, z, f,
+			m, data));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -560,12 +569,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	size.x = 64;
-	size.y = 64;
-	size.z = 64;
+	size.x = 257;
+	size.y = 257;
+	size.z = 257;
 	cube_map = (random_int() % 2) == 0;
 
-	mipmap_count = 6;
+	mipmap_count = 9;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
 		cube_map, el::tft_rgba4, size, mipmap_count, false);
@@ -580,16 +589,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -607,7 +612,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 
 		data = el::PackTool::pack_uint_4_4_4_4(false, glm::vec4(color));
 
-		image->set_pixel_uint(x, y, z, f, m, color);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_uint(x, y, z, f, m,
+			color));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -631,16 +641,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 			data);
 	}
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -658,7 +664,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 
 		data = el::PackTool::pack_uint_4_4_4_4(false, glm::vec4(color));
 
-		image->set_pixel_packed_uint16(x, y, z, f, m, data);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint16(x, y, z, f,
+			m, data));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -697,12 +708,12 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	size.x = 64;
-	size.y = 64;
-	size.z = 64;
+	size.x = 257;
+	size.y = 257;
+	size.z = 257;
 	cube_map = (random_int() % 2) == 0;
 
-	mipmap_count = 6;
+	mipmap_count = 9;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
 		cube_map, el::tft_r5g6b5, size, mipmap_count, false);
@@ -717,16 +728,12 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -743,7 +750,12 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 
 		data = el::PackTool::pack_uint_5_6_5(false, glm::vec3(color));
 
-		image->set_pixel_uint(x, y, z, f, m, glm::uvec4(color, 0));
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_uint(x, y, z, f, m,
+			glm::uvec4(color, 0)));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -763,16 +775,12 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 			data);
 	}
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -789,7 +797,12 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 
 		data = el::PackTool::pack_uint_5_6_5(false, glm::vec3(color));
 
-		image->set_pixel_packed_uint16(x, y, z, f, m, data);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint16(x, y, z, f,
+			m, data));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -824,12 +837,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	size.x = 64;
-	size.y = 64;
-	size.z = 64;
+	size.x = 257;
+	size.y = 257;
+	size.z = 257;
 	cube_map = (random_int() % 2) == 0;
 
-	mipmap_count = 6;
+	mipmap_count = 9;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
 		cube_map, el::tft_rgb5_a1, size, mipmap_count, false);
@@ -844,16 +857,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -871,7 +880,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 
 		data = el::PackTool::pack_uint_5_5_5_1(false, glm::vec4(color));
 
-		image->set_pixel_uint(x, y, z, f, m, color);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_uint(x, y, z, f, m,
+			color));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);
@@ -895,16 +909,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 			data);
 	}
 
-	for (i = 0; i < 128; ++i)
+	for (i = 0; i < 1024; ++i)
 	{
-		x = random_int() % 64;
-		y = random_int() % 64;
-		z = random_int() % 64;
-		m = random_int() % 6;
-
-		x = x >> m;
-		y = y >> m;
-		z = z >> m;
+		m = random_int() % 9;
+		x = random_int() % (257 >> m);
+		y = random_int() % (257 >> m);
+		z = random_int() % (257 >> m);
 
 		if (cube_map)
 		{
@@ -922,7 +932,12 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 
 		data = el::PackTool::pack_uint_5_5_5_1(false, glm::vec4(color));
 
-		image->set_pixel_packed_uint16(x, y, z, f, m, data);
+		BOOST_CHECK_LT(x, image->get_size(m).x);
+		BOOST_CHECK_LT(y, image->get_size(m).y);
+		BOOST_CHECK_LT(z, image->get_size(m).z);
+
+		BOOST_CHECK_NO_THROW(image->set_pixel_packed_uint16(x, y, z, f,
+			m, data));
 
 		BOOST_CHECK_EQUAL(image->get_pixel_uint(x, y, z, f, m).r,
 			color.r);

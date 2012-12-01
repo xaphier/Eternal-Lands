@@ -53,6 +53,8 @@
 #include "shader/uniformdescription.hpp"
 #include "shader/uniformbufferdescription.hpp"
 
+//#define	USE_BLOOM
+
 namespace eternal_lands
 {
 
@@ -402,15 +404,17 @@ namespace eternal_lands
 		if (depth_buffer)
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_color_0, 0);
+				fbat_color_0, 0, 0);
 			m_shadow_frame_buffer->attach_depth_render_buffer();
-			m_shadow_frame_buffer->set_draw_buffer(0, true);
+			m_shadow_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, false, false, false));
 		}
 		else
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_depth, 0);
-			m_shadow_frame_buffer->set_draw_buffer(0, false);
+				fbat_depth, 0, 0);
+			m_shadow_frame_buffer->set_draw_buffers(
+				glm::bvec4(false));
 		}
 
 		m_shadow_frame_buffer->unbind();
@@ -419,7 +423,7 @@ namespace eternal_lands
 	void Scene::do_build_terrain_map()
 	{
 		Uint32 size;
-		Uint16 mipmaps;
+		Uint16 mipmaps, count;
 		TextureTargetType target;
 		TextureFormatType format;
 
@@ -436,27 +440,20 @@ namespace eternal_lands
 				mipmaps++;
 			}
 
-			if (get_global_vars()->get_use_linear_lighting())
+			if (get_global_vars()->get_terrain_quality() >=
+				qt_medium)
 			{
 				format = tft_srgb8_a8;
 			}
 			else
 			{
-				format = tft_rgba8;
+				format = tft_srgb8;
 			}
 		}
 		else
 		{
 			target = ttt_texture_3d;
-
-			if (get_global_vars()->get_use_linear_lighting())
-			{
-				format = tft_srgb8;
-			}
-			else
-			{
-				format = tft_rgb8;
-			}
+			format = tft_srgb8;
 		}
 
 		m_clipmap_terrain.rebuild(m_map->get_terrain_size(),
@@ -469,22 +466,20 @@ namespace eternal_lands
 			).get_framebuffer_builder()->build(
 				String(UTF8("terrain")), size, size, 0, false);
 
+		count = m_clipmap_terrain.get_albedo_slices();
 		m_clipmap_terrain_texture = boost::make_shared<Texture>(
-			String(UTF8("terrain map")), size, size,
-			m_clipmap_terrain.get_slices(), mipmaps, 0, format,
-			target);
+			String(UTF8("terrain map")), size, size, count,
+			mipmaps, 0, format, target);
 
 		m_clipmap_terrain_texture->set_wrap_s(twt_clamp);
 		m_clipmap_terrain_texture->set_wrap_t(twt_clamp);
 		m_clipmap_terrain_texture->set_wrap_r(twt_clamp);
-		m_clipmap_terrain_texture->init(size, size,
-			m_clipmap_terrain.get_slices(), mipmaps);
+		m_clipmap_terrain_texture->init(size, size, count, mipmaps);
 
-		if (get_global_vars()->get_terrain_quality() >= qt_high)
+		if ((get_global_vars()->get_terrain_quality() >= qt_medium) &&
+			get_global_vars()->get_opengl_3_0())
 		{
 			MaterialDescription material_description;
-
-			assert(get_global_vars()->get_opengl_3_0());
 
 			material_description.set_name(
 				String(UTF8("normal_map")));
@@ -495,33 +490,66 @@ namespace eternal_lands
 				).get_material_builder()->get_material(
 					material_description);
 
+			count = m_clipmap_terrain.get_normal_slices();
 			m_clipmap_terrain_normal_texture =
 				boost::make_shared<Texture>(
 					String(UTF8("terrain normal map")),
-					size, size,
-					m_clipmap_terrain.get_slices(),
-					mipmaps, 0, tft_rg8, target);
+					size, size, count, mipmaps, 0, tft_rg8,
+					target);
 
 			m_clipmap_terrain_normal_texture->set_wrap_s(twt_clamp);
 			m_clipmap_terrain_normal_texture->set_wrap_t(twt_clamp);
 			m_clipmap_terrain_normal_texture->set_wrap_r(twt_clamp);
 			m_clipmap_terrain_normal_texture->init(size, size,
-				m_clipmap_terrain.get_slices(), mipmaps);
+				count, mipmaps);
 
 			m_normal_map_material->set_texture(
 				m_clipmap_terrain_texture, spt_effect_0);
+
+			count = m_clipmap_terrain.get_specular_gloss_slices();
+			m_clipmap_terrain_specular_gloss_texture =
+				boost::make_shared<Texture>(String(
+					UTF8("terrain specular gloss map")),
+					size, size, count, mipmaps, 0, format,
+					target);
+
+			m_clipmap_terrain_specular_gloss_texture->set_wrap_s(
+				twt_clamp);
+			m_clipmap_terrain_specular_gloss_texture->set_wrap_t(
+				twt_clamp);
+			m_clipmap_terrain_specular_gloss_texture->set_wrap_r(
+				twt_clamp);
+			m_clipmap_terrain_specular_gloss_texture->init(size,
+				size, count, mipmaps);
 		}
 		else
 		{
 			m_normal_map_material.reset();
 
 			m_clipmap_terrain_normal_texture.reset();
+			m_clipmap_terrain_specular_gloss_texture.reset();
 		}
 
 		m_clipmap_terrain_frame_buffer->bind();
 		m_clipmap_terrain_frame_buffer->attach(
-			m_clipmap_terrain_texture, fbat_color_0, 0);
-		m_clipmap_terrain_frame_buffer->set_draw_buffer(0, true);
+			m_clipmap_terrain_texture, fbat_color_0, 0, 0);
+
+		if ((get_global_vars()->get_terrain_quality() >= qt_medium) &&
+			get_global_vars()->get_opengl_3_0())
+		{
+			m_clipmap_terrain_frame_buffer->attach(
+				m_clipmap_terrain_specular_gloss_texture,
+				fbat_color_1, 0, 0);
+
+			m_clipmap_terrain_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, true, false, false));
+		}
+		else
+		{
+			m_clipmap_terrain_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, false, false, false));
+		}
+
 		m_clipmap_terrain_frame_buffer->unbind();
 
 		if (m_map.get() != nullptr)
@@ -529,9 +557,15 @@ namespace eternal_lands
 			m_map->set_clipmap_terrain_texture(
 				m_clipmap_terrain_texture);
 
+			m_map->set_clipmap_terrain_specular_gloss_texture(
+				m_clipmap_terrain_specular_gloss_texture);
+
 			m_map->set_clipmap_terrain_normal_texture(
 				m_clipmap_terrain_normal_texture);
 		}
+
+		m_terrain_updates = m_clipmap_terrain.get_update_mask();
+		m_last_full_terrain_update = 0;
 	}
 
 	void Scene::build_terrain_map()
@@ -598,12 +632,7 @@ namespace eternal_lands
 					light.get_light()->get_inv_sqr_radius(
 						));
 
-			color = light.get_light()->get_color();
-
-			if (get_global_vars()->get_use_linear_lighting())
-			{
-				color = rgb_to_srgb(color);
-			}
+			color = rgb_to_srgb(light.get_light()->get_color());
 
 			m_light_colors_array[lights_count] = glm::vec4(color,
 				1.0f);
@@ -834,18 +863,15 @@ namespace eternal_lands
 			sky_hemisphere = m_sky_hemisphere;
 		}
 
-		if (get_global_vars()->get_use_linear_lighting())
-		{
-			m_light_colors_array[0].r = rgb_to_srgb(
-				m_light_colors_array[0].r);
-			m_light_colors_array[0].g = rgb_to_srgb(
-				m_light_colors_array[0].g);
-			m_light_colors_array[0].b = rgb_to_srgb(
-				m_light_colors_array[0].b);
+		m_light_colors_array[0].r = rgb_to_srgb(
+			m_light_colors_array[0].r);
+		m_light_colors_array[0].g = rgb_to_srgb(
+			m_light_colors_array[0].g);
+		m_light_colors_array[0].b = rgb_to_srgb(
+			m_light_colors_array[0].b);
 
-			sky_hemisphere = rgb_to_srgb(sky_hemisphere);
-			ground_hemisphere = rgb_to_srgb(ground_hemisphere);
-		}
+		sky_hemisphere = rgb_to_srgb(sky_hemisphere);
+		ground_hemisphere = rgb_to_srgb(ground_hemisphere);
 
 		m_sky_ground_hemispheres = glm::mat2x4(ground_hemisphere,
 			sky_hemisphere - ground_hemisphere);
@@ -1245,6 +1271,7 @@ namespace eternal_lands
 	void Scene::draw_terrain(const TerrainRenderingData &terrain_data,
 		const EffectProgramType type, const bool lights)
 	{
+		glm::vec3 translation;
 		float tmp;
 		Uint16 lights_count;
 
@@ -1263,7 +1290,7 @@ namespace eternal_lands
 			get_state_manager().switch_mesh(
 				terrain_data.get_mesh());
 
-			MaterialLock material(get_map()->get_terrain_material());
+			MaterialLock material(terrain_data.get_material());
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1286,6 +1313,8 @@ namespace eternal_lands
 					).get_transparent() &&
 				(type == ept_shadow));
 
+			translation = get_map()->get_terrain_translation();
+
 			get_state_manager().get_program()->set_parameter(
 				apt_dynamic_lights_count, lights_count);
 			get_state_manager().get_program()->set_parameter(
@@ -1295,6 +1324,9 @@ namespace eternal_lands
 			get_state_manager().get_program()->set_parameter(
 				apt_terrain_lod_offset,
 				terrain_data.get_terrain_lod_offset());
+			get_state_manager().get_program()->set_parameter(
+				apt_terrain_translation,
+				glm::vec4(translation, 1.0f));
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1570,12 +1602,12 @@ namespace eternal_lands
 		if (get_scene_view().get_exponential_shadow_maps())
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_color_0, slice);
+				fbat_color_0, slice, 0);
 		}
 		else
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_depth, slice);
+				fbat_depth, slice, 0);
 		}
 
 		m_shadow_frame_buffer->clear(glm::vec4(1e38f), 0);
@@ -1675,7 +1707,7 @@ namespace eternal_lands
 
 			m_shadow_frame_buffer->bind();
 
-			m_shadow_frame_buffer->set_view_port();
+			m_shadow_frame_buffer->set_view_port(0);
 
 			get_state_manager().switch_depth_clamp(true);
 
@@ -1853,10 +1885,7 @@ namespace eternal_lands
 
 		get_state_manager().switch_multisample(true);
 
-		if (get_global_vars()->get_use_linear_lighting())
-		{
-			get_state_manager().switch_framebuffer_sRGB(true);
-		}
+		get_state_manager().switch_framebuffer_sRGB(true);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1952,7 +1981,6 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 
 		update_program_vars_id();
-		m_frame_id++;
 	}
 
 	void Scene::draw_default()
@@ -1996,13 +2024,31 @@ namespace eternal_lands
 
 		m_clipmap_terrain_frame_buffer->bind();
 		m_clipmap_terrain_frame_buffer->attach(
-			m_clipmap_terrain_texture, fbat_color_0, index);
+			m_clipmap_terrain_texture, fbat_color_0, index, 0);
 		m_clipmap_terrain_frame_buffer->clear(glm::vec4(0.0f), 0);
 
-		if (get_global_vars()->get_use_linear_lighting())
+		if ((get_global_vars()->get_terrain_quality() >= qt_medium) &&
+			get_global_vars()->get_opengl_3_0() &&
+			(m_clipmap_terrain.get_specular_gloss_slices() > index))
 		{
-			get_state_manager().switch_framebuffer_sRGB(true);
+			m_clipmap_terrain_frame_buffer->attach(
+				m_clipmap_terrain_specular_gloss_texture,
+				fbat_color_1, index, 0);
+			m_clipmap_terrain_frame_buffer->clear(glm::vec4(0.0f),
+				1);
+
+			m_clipmap_terrain_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, true, false, false));
 		}
+		else
+		{
+			m_clipmap_terrain_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, false, false, false));
+		}
+
+		get_state_manager().switch_color_mask(glm::bvec4(true));
+
+		get_state_manager().switch_framebuffer_sRGB(true);
 
 		MaterialLock material_lock(material);
 
@@ -2032,6 +2078,7 @@ namespace eternal_lands
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
 		glm::vec2 tile_scale;
+		bool write_height, write_specular_gloss;
 
 		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map slice %1% "
 			"%2%"), slice % UTF8("started"));
@@ -2046,17 +2093,34 @@ namespace eternal_lands
 
 			m_clipmap_terrain.update_slice(slice);
 
-			texture_matrices[0] = glm::mat2x3(glm::inverse(glm::mat3(
-				m_clipmap_terrain.get_texture_matrices(
-					)[slice])));
+			texture_matrices[0] = glm::mat2x3(glm::inverse(
+				glm::mat3(
+					m_clipmap_terrain.get_texture_matrices(
+						)[slice])));
 
 			texture_matrices[1] = texture_matrices[0];
 
 			texture_matrices[1][0] *= tile_scale.x;
 			texture_matrices[1][1] *= tile_scale.y;
 
+			if (get_global_vars()->get_opengl_3_0() &&
+				(get_global_vars()->get_terrain_quality() >=
+					qt_medium))
+			{
+				write_height = m_clipmap_terrain.
+					get_normal_slices() > slice;
+				write_specular_gloss = m_clipmap_terrain.
+					get_specular_gloss_slices() > slice;
+			}
+			else
+			{
+				write_height = false;
+				write_specular_gloss = false;
+			}
+
 			update_terrain_map(
-				m_map->get_clipmap_terrain_material(),
+				m_map->get_clipmap_terrain_material(
+					write_height, write_specular_gloss),
 				texture_matrices, slice);
 		}
 		catch (boost::exception &exception)
@@ -2084,8 +2148,6 @@ namespace eternal_lands
 
 	void Scene::update_terrain_normal_map(const Uint16 slice)
 	{
-		StateSetUtil state_set(get_state_manager());
-
 		LOG_DEBUG(lt_rendering, UTF8("Updating terrain normal map "
 			"slice %1% %2%"), slice % UTF8("started"));
 
@@ -2097,10 +2159,15 @@ namespace eternal_lands
 			m_clipmap_terrain_frame_buffer->bind();
 			m_clipmap_terrain_frame_buffer->attach(
 				m_clipmap_terrain_normal_texture, fbat_color_0,
-				slice);
+				slice, 0);
 			m_clipmap_terrain_frame_buffer->clear(glm::vec4(0.0f),
 				0);
-
+			m_clipmap_terrain_frame_buffer->set_draw_buffers(
+				glm::bvec4(true, false, false, false));
+/*
+			get_state_manager().switch_color_mask(
+				glm::bvec4(true, true, false, false));
+*/
 			MaterialLock material_lock(m_normal_map_material);
 
 			DEBUG_CHECK_GL_ERROR();
@@ -2158,7 +2225,7 @@ namespace eternal_lands
 		{
 			DEBUG_CHECK_GL_ERROR();
 
-			m_clipmap_terrain_frame_buffer->set_view_port();
+			m_clipmap_terrain_frame_buffer->set_view_port(0);
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -2169,11 +2236,21 @@ namespace eternal_lands
 			get_state_manager().switch_multisample(false);
 			get_state_manager().switch_mesh(get_screen_quad());
 
-			count = m_clipmap_terrain.get_slices();
+			count = m_clipmap_terrain.get_all_slices();
 
 			for (i = 0; i < count; ++i)
 			{
-				update_terrain_map(i);
+				if (m_terrain_updates[i])
+				{
+					update_terrain_map(i);
+					m_terrain_updates[i] = false;
+
+					if ((m_last_full_terrain_update + 15) >
+						m_frame_id)
+					{
+						break;
+					}
+				}
 			}
 
 			update_program_vars_id();
@@ -2198,15 +2275,26 @@ namespace eternal_lands
 				DEBUG_CHECK_GL_ERROR();
 			}
 
+			if (get_global_vars()->get_opengl_3_0() &&
+				(get_global_vars()->get_terrain_quality() >=
+					qt_medium))
+			{
+				get_state_manager().switch_texture(spt_effect_0,
+					m_clipmap_terrain_specular_gloss_texture);
+
+				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+				DEBUG_CHECK_GL_ERROR();
+			}
+
 			/**
 			 * Build normal map.
 			 */
 
-			if (get_global_vars()->get_terrain_quality() >= qt_high)
+			if (get_global_vars()->get_opengl_3_0() &&
+				(get_global_vars()->get_terrain_quality() >=
+					qt_medium))
 			{
-				assert(get_global_vars()->get_opengl_3_0());
-
-				m_clipmap_terrain_frame_buffer->set_view_port();
+				m_clipmap_terrain_frame_buffer->set_view_port(0);
 
 				DEBUG_CHECK_GL_ERROR();
 
@@ -2218,7 +2306,7 @@ namespace eternal_lands
 				get_state_manager().switch_mesh(
 					get_screen_quad());
 
-				count = m_clipmap_terrain.get_slices();
+				count = m_clipmap_terrain.get_normal_slices();
 
 				for (i = 0; i < count; ++i)
 				{
@@ -2433,9 +2521,9 @@ namespace eternal_lands
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("lights"));
 
 		m_scene_frame_buffer->bind();
-		m_scene_frame_buffer->set_view_port();
+		m_scene_frame_buffer->set_view_port(0);
 		m_scene_frame_buffer->attach(m_light_index_texture,
-			fbat_color_0, 0);
+			fbat_color_0, 0, 0);
 		m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
 
 		glBlendFunc(GL_ONE, GL_CONSTANT_COLOR);
@@ -2553,10 +2641,10 @@ namespace eternal_lands
 		{
 			m_scene_frame_buffer->bind();
 			m_scene_frame_buffer->attach(m_scene_texture,
-				fbat_color_0, 0);
+				fbat_color_0, 0, 0);
 			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
 			m_scene_frame_buffer->clear(1.0f, 0);
-			m_scene_frame_buffer->set_view_port();
+			m_scene_frame_buffer->set_view_port(0);
 		}
 
 		draw_depth();
@@ -2573,12 +2661,23 @@ namespace eternal_lands
 
 		if (get_terrain())
 		{
-			if (m_clipmap_terrain.update(glm::vec3(
-				get_scene_view().get_camera()),
-				glm::vec3(get_scene_view().get_view_dir()),
+			if (m_clipmap_terrain.get_update_needed(
+				glm::vec2(get_scene_view().get_camera()),
+				glm::vec2(get_scene_view().get_view_dir()),
 				glm::vec2(get_scene_view().get_focus())))
 			{
+				m_terrain_updates =
+					m_clipmap_terrain.get_update_mask();
+			}
+
+			if (m_terrain_updates.any())
+			{
 				update_terrain_map();
+			}
+
+			if (m_terrain_updates.none())
+			{
+				m_last_full_terrain_update = m_frame_id;
 			}
 		}
 
@@ -2597,9 +2696,9 @@ namespace eternal_lands
 		else
 		{
 			m_scene_frame_buffer->bind();
-			m_scene_frame_buffer->set_view_port();
+			m_scene_frame_buffer->set_view_port(0);
 			m_scene_frame_buffer->attach(m_scene_texture,
-				fbat_color_0, 0);
+				fbat_color_0, 0, 0);
 
 			if (get_global_vars()->get_light_system() !=
 				lst_default)
@@ -2617,6 +2716,124 @@ namespace eternal_lands
 		}
 
 		draw_default();
+
+#ifdef	USE_BLOOM
+		if (m_scene_frame_buffer.get() != nullptr)
+		{
+			Uint32 width, height;
+			StateManagerUtil state(get_state_manager());
+
+
+		for (int k = 0; k < 8; ++k)
+		{
+			get_state_manager().switch_depth_mask(false);
+			get_state_manager().switch_depth_test(false);
+			get_state_manager().switch_blend(false);
+
+			width = m_scene_frame_buffer->get_width(3);
+			height = m_scene_frame_buffer->get_height(3);
+
+			m_scene_frame_buffer->set_view_port(3);
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->attach(m_scene_extra_0_texture,
+				fbat_color_0, 0, 0);
+			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
+
+			if (k == 0)
+			{
+				get_state_manager().switch_texture(spt_effect_0,
+					m_scene_texture);
+
+			glGenerateMipmap(GL_TEXTURE_2D);
+			}
+			else
+			{
+				get_state_manager().switch_texture(spt_effect_0,
+					m_scene_extra_1_texture);
+			}
+
+			get_scene_resources().get_filter()->bind(
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+				width, height, 3, ft_gauss_13_tap, false,
+				get_state_manager());
+
+			m_scene_frame_buffer->blit_buffers();
+			m_scene_frame_buffer->unbind();
+
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->attach(m_scene_extra_1_texture,
+				fbat_color_0, 0, 0);
+			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
+
+			get_state_manager().switch_texture(spt_effect_0,
+				m_scene_extra_0_texture);
+
+			get_scene_resources().get_filter()->bind(
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+				width, height, 3, ft_gauss_13_tap, true,
+				get_state_manager());
+
+
+			update_program_vars_id();
+			unbind_all();
+			m_scene_frame_buffer->blit_buffers();
+			m_scene_frame_buffer->unbind();
+		}
+
+
+
+
+
+			width = m_scene_frame_buffer->get_width(0);
+			height = m_scene_frame_buffer->get_height(0);
+
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->set_view_port(0);
+
+			get_state_manager().switch_depth_mask(false);
+			get_state_manager().switch_depth_test(false);
+			get_state_manager().switch_blend(false);
+
+
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->set_view_port(0);
+			m_scene_frame_buffer->attach(m_scene_extra_2_texture,
+				fbat_color_0, 0, 0);
+			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
+
+			get_state_manager().switch_texture(spt_effect_0,
+				m_scene_extra_1_texture);
+
+			get_state_manager().switch_texture(spt_effect_1,
+				m_scene_texture);
+
+			get_state_manager().switch_framebuffer_sRGB(true);
+
+			get_scene_resources().get_filter(
+				)->bind_bloom_tone_mapping(width, height, 3, 1,
+				get_state_manager());
+
+			update_program_vars_id();
+			unbind_all();
+			m_scene_frame_buffer->blit_buffers();
+			m_scene_frame_buffer->unbind();
+/*
+
+			get_state_manager().switch_depth_mask(false);
+			get_state_manager().switch_depth_test(false);
+			get_state_manager().switch_blend(false);
+*/
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->attach(m_scene_extra_2_texture,
+				fbat_color_0, 0, 0);
+			m_scene_frame_buffer->unbind();
+
+		}
+#endif	/* USE_BLOOM */
+
+		m_frame_id++;
 	}
 
 	void Scene::pick_object(const RenderObjectData &object,
@@ -2970,16 +3187,8 @@ namespace eternal_lands
 			position = glm::vec4(it->second->get_position(),
 				it->second->get_inv_sqr_radius());
 
-			if (get_global_vars()->get_use_linear_lighting())
-			{
-				color = glm::vec4(rgb_to_srgb(
-					it->second->get_color()), 1.0f);
-			}
-			else
-			{
-				color = glm::vec4(it->second->get_color(),
-					1.0f);
-			}
+			color = glm::vec4(rgb_to_srgb(it->second->get_color()),
+				1.0f);
 
 			light_position_image->set_pixel(index, 0, 0, 0, 0,
 				position);
@@ -3183,14 +3392,11 @@ namespace eternal_lands
 				String(UTF8("scene")), view_port.z,
 				view_port.w, 0, true);
 
-		if (get_global_vars()->get_use_linear_lighting())
-		{
-			texture_format = tft_srgb8_a8;
-		}
-		else
-		{
-			texture_format = tft_rgba8;
-		}
+		texture_format = tft_srgb8_a8;
+
+#ifdef	USE_BLOOM
+		texture_format = tft_r11f_b11f_g10f;
+#endif	/* USE_BLOOM */
 
 		m_scene_texture = boost::make_shared<Texture>(
 			String(UTF8("scene")), view_port.z, view_port.w, 1,
@@ -3202,10 +3408,45 @@ namespace eternal_lands
 		m_scene_texture->init(view_port.z, view_port.w, 0,
 			mipmaps);
 
+#ifdef	USE_BLOOM
+		{
+			m_scene_extra_0_texture = boost::make_shared<Texture>(
+				String(UTF8("scene extra 0")), view_port.z / 8, view_port.w / 8, 1,
+				mipmaps - 2, 0, texture_format, ttt_texture_2d);
+
+			m_scene_extra_0_texture->set_wrap_s(twt_clamp);
+			m_scene_extra_0_texture->set_wrap_t(twt_clamp);
+			m_scene_extra_0_texture->set_wrap_r(twt_clamp);
+			m_scene_extra_0_texture->init(view_port.z / 8, view_port.w / 8, 0,
+				mipmaps - 2);
+
+			m_scene_extra_1_texture = boost::make_shared<Texture>(
+				String(UTF8("scene extra 1")), view_port.z / 8, view_port.w / 8, 1,
+				mipmaps - 2, 0, texture_format, ttt_texture_2d);
+
+			m_scene_extra_1_texture->set_wrap_s(twt_clamp);
+			m_scene_extra_1_texture->set_wrap_t(twt_clamp);
+			m_scene_extra_1_texture->set_wrap_r(twt_clamp);
+			m_scene_extra_1_texture->init(view_port.z / 8, view_port.w / 8, 0,
+				mipmaps - 2);
+
+			m_scene_extra_2_texture = boost::make_shared<Texture>(
+				String(UTF8("scene extra 2")), view_port.z, view_port.w, 1,
+				mipmaps, 0, tft_srgb8_a8, ttt_texture_2d);
+
+			m_scene_extra_2_texture->set_wrap_s(twt_clamp);
+			m_scene_extra_2_texture->set_wrap_t(twt_clamp);
+			m_scene_extra_2_texture->set_wrap_r(twt_clamp);
+			m_scene_extra_2_texture->init(view_port.z, view_port.w, 0,
+				mipmaps);
+		}
+#endif	/* USE_BLOOM */
+
 		m_scene_frame_buffer->bind();
 		m_scene_frame_buffer->attach(m_scene_texture,
-			fbat_color_0, 0);
-		m_scene_frame_buffer->set_draw_buffer(0, true);
+			fbat_color_0, 0, 0);
+		m_scene_frame_buffer->set_draw_buffers(
+			glm::bvec4(true, false, false, false));
 		m_scene_frame_buffer->unbind();
 
 		build_light_index_map();

@@ -63,11 +63,18 @@ namespace eternal_lands
 			MaterialSharedPtr m_normal_map_material;
 			TextureSharedPtr m_shadow_texture;
 			TextureSharedPtr m_clipmap_terrain_texture;
+			TextureSharedPtr
+				m_clipmap_terrain_specular_gloss_texture;
 			TextureSharedPtr m_clipmap_terrain_normal_texture;
 			TextureSharedPtr m_light_index_texture;
 			TextureSharedPtr m_light_position_texture;
 			TextureSharedPtr m_light_color_texture;
 			TextureSharedPtr m_scene_texture;
+#ifdef	USE_BLOOM
+			TextureSharedPtr m_scene_extra_0_texture;
+			TextureSharedPtr m_scene_extra_1_texture;
+			TextureSharedPtr m_scene_extra_2_texture;
+#endif	/* USE_BLOOM */
 			Uint32Uint32Map m_light_index;
 			ObjectSharedPtr m_light_sphere;
 			Uint32ActorSharedPtrMap m_actors;
@@ -83,6 +90,8 @@ namespace eternal_lands
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
+			BitSet64 m_terrain_updates;
+			Uint64 m_last_full_terrain_update;
 			float m_time;
 			bool m_lights;
 			bool m_rebuild_terrain_map;
@@ -181,6 +190,18 @@ namespace eternal_lands
 				const bool flip_face_culling);
 			void set_view_port();
 			void draw_default();
+
+			inline bool get_center_at_focus() const noexcept
+			{
+				return m_clipmap_terrain.get_center_at_focus();
+			}
+
+			inline void set_center_at_focus(
+				const bool center_at_focus) noexcept
+			{
+				m_clipmap_terrain.set_center_at_focus(
+					center_at_focus);
+			}
 
 			inline void update_program_vars_id() noexcept
 			{

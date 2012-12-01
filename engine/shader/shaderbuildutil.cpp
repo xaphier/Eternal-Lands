@@ -30,6 +30,7 @@ namespace eternal_lands
 			String(UTF8("debug_tbn_matrix_2")),
 			String(UTF8("debug_shadow")),
 			String(UTF8("debug_specular")),
+			String(UTF8("debug_gloss")),
 			String(UTF8("debug_emissive")),
 			String(UTF8("debug_diffuse_light")),
 			String(UTF8("debug_specular_light")),

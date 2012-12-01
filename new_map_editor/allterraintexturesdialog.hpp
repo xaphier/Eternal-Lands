@@ -10,14 +10,6 @@ class AllTerrainTexturesDialog: public QDialog, public Ui::AllTerrainTextures
 	Q_OBJECT
 
 	private:
-		enum TextureRoles
-		{
-			tr_albedo_map = Qt::UserRole,
-			tr_extra_map = Qt::UserRole + 1,
-			tr_use_blend_size_sampler = Qt::UserRole + 2,
-			tr_use_extra_map = Qt::UserRole + 3
-		};
-
 		QStringTerrainTextureDataQMap m_terrain_texture_datas;
 		const QString &m_el_data_dir;
 		const QString &m_el_extra_data_dir;
@@ -30,8 +22,16 @@ class AllTerrainTexturesDialog: public QDialog, public Ui::AllTerrainTextures
 		void clear_textures();
 		void add_texture();
 		void remove_texture();
-		void remove_extra_texture();
-		void change_extra_texture();
+		void remove_height_texture();
+		void change_height_texture();
+		void change_height_value(const double value);
+		void remove_specular_texture();
+		void change_specular_texture();
+		void change_specular_value();
+		void remove_gloss_texture();
+		void change_gloss_texture();
+		void change_gloss_value(const double value);
+		void change_blend_size_value(const double value);
 		void update_buttons_enabled();
 
 	public:
@@ -59,8 +59,12 @@ class AllTerrainTexturesDialog: public QDialog, public Ui::AllTerrainTextures
 	signals:
 		void get_albedo_map_data(const QString &name,
 			const QSize &icon_size, const QSize &image_size,
-			QIcon &icon, bool &use_blend_size_sampler, bool &ok);
-		void get_extra_map_data(const QString &name,
+			QIcon &icon, bool &use_blend_size_texture, bool &ok);
+		void get_specular_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_gloss_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_height_map_data(const QString &name,
 			const QSize &image_size, bool &ok);
 
 };

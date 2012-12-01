@@ -164,10 +164,10 @@ namespace eternal_lands
 		 */
 		tft_rgb9_e5,
 		/**
-		 * Red 10 bit float, green 11 bit float,
+		 * Red 11 bit float, green 11 bit float,
 		 * blue 10 bit float
 		 */
-		tft_r10f_b11f_g10f,
+		tft_r11f_b11f_g10f,
 		/**
 		 * DXT1 compression without alpha
 		 */

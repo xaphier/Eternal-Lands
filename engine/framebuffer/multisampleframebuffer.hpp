@@ -40,7 +40,8 @@ namespace eternal_lands
 			boost::scoped_ptr<RenderBuffer> m_render_buffer;
 			FrameBufferAttachmentTypeRenderBufferMap
 				m_render_buffers;
-			Uint16 m_samples, m_draw_buffer;
+			glm::bvec4 m_draw_buffers;
+			Uint16 m_samples;
 
 			virtual void detach_texture(
 				const FrameBufferAttachmentType attachment)
@@ -48,26 +49,28 @@ namespace eternal_lands
 			virtual void attach_texture(
 				const TextureSharedPtr &texture,
 				const FrameBufferAttachmentType attachment,
-				const Uint16 layer) override;
+				const Uint16 layer, const Uint16 mipmap)
+				override;
 			virtual void do_attach_depth_render_buffer(
-				bool &depth, bool &stencil);
+				bool &depth, bool &stencil) override;
 
 		public:
 			MultiSampleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint16 samples, const bool depth_buffer);
 			~MultiSampleFrameBuffer() noexcept;
-			void bind();
-			void clear(const float depth, const GLint stencil);
-			void clear(const glm::vec4 &color,
-				const Uint16 index);
-			void unbind();
-			void blit_to_back_buffer(const glm::uvec4 &rect,
+			virtual void bind() override;
+			virtual void clear(const float depth,
+				const GLint stencil) override;
+			virtual void clear(const glm::vec4 &color,
+				const Uint16 index) override;
+			virtual void unbind() override;
+			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
 				const Uint16 layer, const bool color,
-				const bool depth, const bool stencil);
-			void set_draw_buffer(const Uint16 index,
-				const bool enabled);
-			virtual void blit_buffers();
+				const bool depth, const bool stencil) override;
+			virtual void set_draw_buffers(
+				const glm::bvec4 &enabled) override;
+			virtual void blit_buffers() override;
 
 			inline Uint16 get_samples() const noexcept
 			{

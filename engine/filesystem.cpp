@@ -685,6 +685,8 @@ namespace eternal_lands
 		Uint8Array20 sha1;
 		String name;
 
+		assert(!file_name.get().empty());
+
 		name = String(get_strip_relative_path(file_name));
 
 		end = m_archives.rend();

@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>tranlate_terrain.png</file>
+    <file>remove_terrain.png</file>
     <file>terrain_nm.png</file>
     <file>vector_field.png</file>
     <file>execute_clear_layers.png</file>

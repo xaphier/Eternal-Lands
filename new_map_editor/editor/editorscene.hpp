@@ -84,19 +84,23 @@ namespace eternal_lands
 			void set_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void set_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
 			void set_terrain_material(
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data);
 			void set_terrain_dudv_scale_offset(
 				const glm::vec4 &dudv_scale_offset);
 			void update_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void update_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
 			void draw_selection(const glm::uvec4 &selection_rect);
@@ -110,9 +114,12 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data,
-				const glm::vec4 &dudv_scale_offset);
+				const glm::vec4 &dudv_scale_offset,
+				const glm::vec3 &translation);
 			glm::vec3 get_map_min() const;
 			glm::vec3 get_map_max() const;
 			void set_map_size(const glm::uvec2 &size);

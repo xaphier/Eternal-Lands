@@ -25,17 +25,6 @@ namespace eternal_lands
 		update_bounding_box();
 	}
 
-	Object::Object(const ObjectData &object_data,
-		const AbstractMeshSharedPtr &mesh,
-		const MaterialSharedPtrVector &materials,
-		const LodData &lod_data): m_object_data(object_data),
-		m_mesh(mesh), m_materials(materials)
-	{
-		assert(materials.size() > 0);
-
-		update_bounding_box();
-	}
-
 	Object::Object(const InstanceData &instance_data,
 		const AbstractMeshSharedPtr &mesh,
 		const MaterialSharedPtrVector &materials,

@@ -22,6 +22,10 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
+     <common_parameter>gloss</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>specular</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
@@ -37,6 +41,7 @@
    <source>albedo = texture(effect_sampler_0, world_uv);
 emission = vec3(0.0);
 specular = vec3(0.0);
+gloss = 0.0;
 fragment_normal = normalize(world_normal);
 </source>
    <version>130</version>
@@ -61,6 +66,10 @@ fragment_normal = normalize(world_normal);
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
+     <common_parameter>gloss</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>specular</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
@@ -76,6 +85,7 @@ fragment_normal = normalize(world_normal);
    <source>albedo = texture2D(effect_sampler_0, world_uv);
 emission = vec3(0.0);
 specular = vec3(0.0);
+gloss = 0.0;
 fragment_normal = normalize(world_normal);
 </source>
    <version>120</version>

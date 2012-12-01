@@ -92,3 +92,51 @@ BOOST_AUTO_TEST_CASE(static_functions_extended)
 		samplers.insert(sampler);
 	}
 }
+
+BOOST_AUTO_TEST_CASE(static_functions_array_extended)
+{
+	std::set<SamplerParameterType> samplers;
+	SamplerParameterType sampler;
+
+	sampler = ShaderSourceTerrain::get_albedo_array_sampler(false);
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+
+	sampler = ShaderSourceTerrain::get_albedo_array_sampler(true);
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+
+	sampler = ShaderSourceTerrain::get_blend_sampler(0);
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+
+	sampler = ShaderSourceTerrain::get_height_sampler();
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+
+	sampler = ShaderSourceTerrain::get_specular_sampler();
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+
+	sampler = ShaderSourceTerrain::get_gloss_sampler();
+
+	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
+		(samplers)(sampler));
+
+	samplers.insert(sampler);
+}

@@ -853,6 +853,12 @@ namespace eternal_lands
 			case pt_usampler2DArray:
 			case pt_usampler2DRect:
 			case pt_usamplerBuffer:
+			case pt_sampler2DMultisample:
+			case pt_sampler2DArrayMultisample:
+			case pt_isampler2DMultisample:
+			case pt_isampler2DArrayMultisample:
+			case pt_usampler2DMultisample:
+			case pt_usampler2DArrayMultisample:
 				break;
 		}
 

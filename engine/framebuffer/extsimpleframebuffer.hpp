@@ -39,7 +39,8 @@ namespace eternal_lands
 			virtual void attach_texture(
 				const TextureSharedPtr &texture,
 				const FrameBufferAttachmentType attachment,
-				const Uint16 layer) override;
+				const Uint16 layer, const Uint16 mipmap)
+				override;
 			virtual void do_attach_depth_render_buffer(
 				bool &depth, bool &stencil) override;
 
@@ -57,9 +58,9 @@ namespace eternal_lands
 			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
 				const Uint16 layer, const bool color,
 				const bool depth, const bool stencil) override;
-			virtual void set_draw_buffer(const Uint16 index,
-				const bool enabled);
-			virtual void blit_buffers();
+			virtual void set_draw_buffers(
+				const glm::bvec4 &enabled) override;
+			virtual void blit_buffers() override;
 
 	};
 

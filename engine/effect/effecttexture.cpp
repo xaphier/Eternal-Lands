@@ -30,7 +30,7 @@ namespace eternal_lands
 	{
 		Uint32 index;
 
-		RANGE_CECK_MAX(m_texture_unit, material_texture_count,
+		RANGE_CECK_MAX(m_texture_unit, material_texture_count - 1,
 			UTF8("texture unit value too big"));
 
 		index = 0;
@@ -875,10 +875,10 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("texture_unit"))
 				== 0)
 			{
-				m_texture_unit = XmlUtil::get_uint32_value(it);
+				m_texture_unit = XmlUtil::get_u32_value(it);
 
 				RANGE_CECK_MAX(m_texture_unit,
-					material_texture_count,
+					material_texture_count - 1,
 					UTF8("texture unit value too big"));
 			}
 		}

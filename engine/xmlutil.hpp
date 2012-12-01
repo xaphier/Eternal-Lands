@@ -66,10 +66,10 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			static glm::mat4 get_mat4_value(const xmlNodePtr node);
 			static float get_float_value(const xmlNodePtr node);
-			static Sint32 get_sint32_value(const xmlNodePtr node);
-			static Uint32 get_uint32_value(const xmlNodePtr node);
-			static Sint16 get_sint16_value(const xmlNodePtr node);
-			static Uint16 get_uint16_value(const xmlNodePtr node);
+			static Sint32 get_s32_value(const xmlNodePtr node);
+			static Uint32 get_u32_value(const xmlNodePtr node);
+			static Sint16 get_s16_value(const xmlNodePtr node);
+			static Uint16 get_u16_value(const xmlNodePtr node);
 			static String get_string_value(const xmlNodePtr node);
 			static BitSet64 get_bitset64_value(
 				const xmlNodePtr node);
@@ -91,6 +91,16 @@ namespace eternal_lands
 				const bool elements_only);
 			static bool get_bool_property(const xmlNodePtr node,
 				const String &property);
+			static FloatVector get_float_vector(
+				const xmlNodePtr node);
+			static Sint32Vector get_s32_vector(
+				const xmlNodePtr node);
+			static Sint16Vector get_s16_vector(
+				const xmlNodePtr node);
+			static Uint32Vector get_u32_vector(
+				const xmlNodePtr node);
+			static Uint16Vector get_u16_vector(
+				const xmlNodePtr node);
 
 	};
 

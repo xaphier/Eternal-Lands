@@ -125,7 +125,7 @@ namespace eternal_lands
 				const Uint16 render_target)
 			{
 				RANGE_CECK_MAX(render_target,
-					m_output_channels.size(),
+					m_output_channels.size() - 1,
 					UTF8("render target too big"));
 				RANGE_CECK_MAX(value, 4, UTF8("value too big"));
 
@@ -185,7 +185,7 @@ namespace eternal_lands
 				const Uint16 render_target) const
 			{
 				RANGE_CECK_MAX(render_target,
-					m_output_channels.size(),
+					m_output_channels.size() - 1,
 					UTF8("render target too big"));
 
 				return glm::bvec4(
@@ -199,7 +199,7 @@ namespace eternal_lands
 				const Uint16 render_target) const
 			{
 				RANGE_CECK_MAX(render_target,
-					m_output_channels.size(),
+					m_output_channels.size() - 1,
 					UTF8("render target too big"));
 
 				return m_output_channels[render_target];

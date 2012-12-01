@@ -30,7 +30,7 @@ namespace eternal_lands
 			uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("reflectance at normal incidence")),
 			String(UTF8("?")), uuid_generator(), ect_fragment);
-		add_input_port(String(UTF8("roughness")), String(UTF8("?")),
+		add_input_port(String(UTF8("gloss")), String(UTF8("?")),
 			uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("emission")), String(UTF8("rgb")),
 			uuid_generator(), ect_fragment);
@@ -109,10 +109,10 @@ namespace eternal_lands
 				default_value = UTF8("vec3(1.0)");
 			}
 
-			if (it->get_name() == UTF8("roughness"))
+			if (it->get_name() == UTF8("gloss"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
-					cpt_roughness);
+					cpt_gloss);
 
 				default_value = UTF8("1.0");
 			}

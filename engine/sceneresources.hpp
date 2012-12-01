@@ -47,6 +47,7 @@ namespace eternal_lands
 				m_uniform_buffer_description_cache;
 			HardwareBufferMapperSharedPtr m_hardware_buffer_mapper;
 			ThreadPoolSharedPtr m_thread_pool;
+			FilterSharedPtr m_filter;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -168,6 +169,12 @@ namespace eternal_lands
 				const noexcept
 			{
 				return m_thread_pool;
+			}
+
+			inline const FilterSharedPtr &get_filter() const
+				noexcept
+			{
+				return m_filter;
 			}
 
 	};

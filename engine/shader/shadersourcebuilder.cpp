@@ -1061,7 +1061,7 @@ namespace eternal_lands
 				const Uint16 render_target) const
 			{
 				RANGE_CECK_MAX(render_target,
-					m_output_channels.size(),
+					m_output_channels.size() - 1,
 					UTF8("render target too big"));
 
 				return m_output_channels[render_target];
@@ -1295,6 +1295,8 @@ namespace eternal_lands
 				}
 			}
 
+			std::cout << file_name << std::endl;
+
 			shader_source->load_xml(xml_reader->get_root_node());
 		}
 		catch (boost::exception &exception)
@@ -1429,20 +1431,20 @@ namespace eternal_lands
 				BAD_CAST UTF8("vertex_lights_count")) == 0)
 			{
 				m_vertex_lights_count =
-					XmlUtil::get_uint16_value(it);
+					XmlUtil::get_u16_value(it);
 			}
 
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("fragment_lights_count")) == 0)
 			{
 				m_fragment_lights_count =
-					XmlUtil::get_uint16_value(it);
+					XmlUtil::get_u16_value(it);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("bones_count"))
 				== 0)
 			{
-				m_bones_count = XmlUtil::get_uint16_value(it);
+				m_bones_count = XmlUtil::get_u16_value(it);
 			}
 
 			if (xmlStrcmp(it->name,
@@ -1997,7 +1999,7 @@ namespace eternal_lands
 
 		add_parameter(String(UTF8("lighting")), cpt_specular, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
-		add_parameter(String(UTF8("lighting")), cpt_roughness, pqt_in,
+		add_parameter(String(UTF8("lighting")), cpt_gloss, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
 		add_parameter(String(UTF8("lighting")), cpt_fragment_normal,
 			pqt_in, function_locals, function_parameters,
@@ -2012,16 +2014,16 @@ namespace eternal_lands
 		stream << local_indent << sslt_specular_colors_sum;
 		stream << UTF8(" = mix(") << cpt_specular << UTF8(", min(");
 		stream << UTF8("60.0 * ") << cpt_specular << UTF8(", 1.0), ");
-		stream << UTF8("pow(1.0 - ") << cpt_roughness << UTF8(" * ");
+		stream << UTF8("pow(1.0 - ") << cpt_gloss << UTF8(" * ");
 		stream << UTF8("max(0.0, dot(") << cpt_fragment_normal;
-		stream << UTF8(", ") << cpt_world_view_direction;
+		stream << UTF8(", -") << cpt_world_view_direction;
 		stream << UTF8(".xyz)), 4.0)) * (");
 		stream << apt_sky_ground_hemispheres << UTF8("[0].a + ");
 		stream << apt_sky_ground_hemispheres << UTF8("[1].a * ");
 		stream << UTF8("clamp(reflect(") << cpt_world_view_direction;
 		stream << UTF8(".xyz, ") << cpt_fragment_normal << UTF8(").z");
-		stream << UTF8(" / (1.0 - ") << cpt_roughness << UTF8("), ");
-		stream << UTF8("-1.0, 1.0));\n");
+		stream << UTF8(" / (1.0 - ") << cpt_gloss << UTF8(") * 0.5 + ");
+		stream << UTF8("0.5, 0.0, 1.0));\n");
 
 		if (shadow)
 		{
@@ -3127,7 +3129,14 @@ namespace eternal_lands
 					cpt_specular, pqt_in, locals,
 					globals, uniform_buffers);
 				main << indent << output << UTF8(".rgb = ");
-				main << UTF8("vec3(") << cpt_specular;
+				main << cpt_specular << UTF8(";\n");
+				break;
+			case sbt_debug_gloss:
+				add_parameter(String(UTF8("fragment")),
+					cpt_specular, pqt_in, locals,
+					globals, uniform_buffers);
+				main << indent << output << UTF8(".rgb = ");
+				main << UTF8("vec3(") << cpt_gloss;
 				main << UTF8(");\n");
 				break;
 			case sbt_debug_emissive:
@@ -3232,22 +3241,7 @@ namespace eternal_lands
 		return shader_source->check_source_parameter(shader_type,
 			build_data.get_version(), name);
 	}
-/**********************
-	bool ShaderSourceBuilder::check(
-		const ShaderSourceTypeStringPair &source,
-		const ShaderVersionType version) const
-	{
-		AbstractShaderSourceSharedPtr shader_source;
 
-		if (!get_shader_source(shader_source_type, build_data,
-			shader_source))
-		{
-			return false;
-		}
-
-		return shader_source->get_has_data(version);
-	}
-*/
 	bool ShaderSourceBuilder::get_source_parameter(
 		const CommonParameterType common_parameter,
 		ShaderSourceBuildData &build_data) const
@@ -3527,6 +3521,9 @@ namespace eternal_lands
 			get_global_vars()->get_clipmap_terrain_slices(),
 			ParameterSizeUtil::get_max_size(
 				pst_clipmap_terrain_slices));
+		array_sizes[pst_render_targets] =
+			EffectDescriptionUtil::get_render_targets_count(
+				description.get_description());
 
 		build_data.set_option(ssbot_transparent,
 			description.get_transparent());

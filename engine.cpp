@@ -738,8 +738,8 @@ extern "C" void engine_cull_scene()
 
 	for (i = 0; i < 3; i++)
 	{
-		sky_hemisphere[i] = skybox_light_ambient_color[i] * 1.5f;
-		main_light_color[i] = skybox_light_diffuse_color[i] * 1.1f;
+		sky_hemisphere[i] = skybox_light_ambient_color[i] * 1.1f;
+		main_light_color[i] = skybox_light_diffuse_color[i] * 2.1f;
 		main_light_direction[i] = sun_position[i];
 	}
 
@@ -1693,11 +1693,6 @@ extern "C" void engine_set_clipmap_terrain_slices(const int value)
 		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->rebuild_terrain_map();
 	}
-}
-
-extern "C" void engine_set_use_linear_lighting(const int value)
-{
-	global_vars->set_use_linear_lighting(value != 0);
 }
 
 extern "C" void engine_set_use_multithreaded_culling(const int value)

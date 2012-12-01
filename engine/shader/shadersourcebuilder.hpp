@@ -184,10 +184,6 @@ namespace eternal_lands
 			bool load_shader_source(const String &file_name);
 			ShaderSourceTypeStringMap build_sources(
 				const EffectDescription &description) const;
-			bool check(const ShaderSourceType shader_source_type,
-				ShaderSourceBuildData &build_data,
-				AbstractShaderSourceSharedPtr &shader_source)
-				const;
 			void load_xml(const xmlNodePtr node);
 			void load_sources(const xmlNodePtr node);
 

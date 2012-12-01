@@ -92,7 +92,6 @@ namespace eternal_lands
 			bool m_use_multisample_shadows;
 			bool m_effect_debug;
 			bool m_use_scene_fbo;
-			bool m_use_linear_lighting;
 			bool m_use_multithreaded_culling;
 
 		public:
@@ -230,12 +229,6 @@ namespace eternal_lands
 				noexcept
 			{
 				m_use_scene_fbo = use_scene_fbo;
-			}
-
-			inline void set_use_linear_lighting(
-				const bool use_linear_lighting) noexcept
-			{
-				m_use_linear_lighting = use_linear_lighting;
 			}
 
 			inline void set_use_multithreaded_culling(
@@ -429,11 +422,6 @@ namespace eternal_lands
 			inline bool get_use_scene_fbo() const noexcept
 			{
 				return m_use_scene_fbo;
-			}
-
-			inline bool get_use_linear_lighting() const noexcept
-			{
-				return m_use_linear_lighting;
 			}
 
 			inline bool get_use_multithreaded_culling() const

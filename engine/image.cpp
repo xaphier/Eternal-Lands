@@ -327,11 +327,11 @@ namespace eternal_lands
 
 		size = get_size(mipmap);
 
-		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
+		RANGE_CECK_MAX(mipmap, get_mipmap_count(),
 			UTF8("value mipmap too big"));
-		RANGE_CECK_MAX(x, size.x, UTF8("value x too big"));
-		RANGE_CECK_MAX(y, size.y, UTF8("value y too big"));
-		RANGE_CECK_MAX(z, size.z, UTF8("value z too big"));
+		RANGE_CECK_MAX(x, size.x - 1, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, size.y - 1, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, size.z - 1, UTF8("value z too big"));
 
 		return (get_pixel_size() / 8) * ((z * size.y + y) * size.x +
 			x);
@@ -347,11 +347,11 @@ namespace eternal_lands
 		size.x = (size.x + 3) / 4;
 		size.y = (size.y + 3) / 4;
 
-		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
+		RANGE_CECK_MAX(mipmap, get_mipmap_count(),
 			UTF8("value mipmap too big"));
-		RANGE_CECK_MAX(x, size.x, UTF8("value x too big"));
-		RANGE_CECK_MAX(y, size.y, UTF8("value y too big"));
-		RANGE_CECK_MAX(z, size.z, UTF8("value z too big"));
+		RANGE_CECK_MAX(x, size.x - 1, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, size.y - 1, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, size.z - 1, UTF8("value z too big"));
 
 		return get_block_size() * ((z * size.y + y) * size.x + x);
 	}

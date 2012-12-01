@@ -55,7 +55,7 @@ ELGLWidget::~ELGLWidget()
 
 void ELGLWidget::get_albedo_map_data(const QString &name,
 	const QSize &icon_size, const QSize &image_size, QIcon &icon,
-	bool &use_blend_size_sampler, bool &ok)
+	bool &use_blend_size_texture, bool &ok)
 {
 	ImageSharedPtr image;
 	QImage tmp;
@@ -122,14 +122,14 @@ void ELGLWidget::get_albedo_map_data(const QString &name,
 			(format == tft_rgba_dxt1) ||
 			(format == tft_srgb_a_dxt1))
 		{
-			use_blend_size_sampler = false;
+			use_blend_size_texture = false;
 		}
 		else
 		{
 			if ((format == tft_rgba_dxt5) ||
 				(format == tft_srgb_a_dxt5))
 			{
-				use_blend_size_sampler = true;
+				use_blend_size_texture = true;
 			}
 			else
 			{
@@ -208,7 +208,7 @@ void ELGLWidget::get_albedo_map_data(const QString &name,
 	}
 }
 
-void ELGLWidget::get_extra_map_data(const QString &name,
+void ELGLWidget::get_gloss_height_map_data(const QString &name,
 	const QSize &image_size, bool &ok)
 {
 	ImageSharedPtr image;
@@ -245,6 +245,104 @@ void ELGLWidget::get_extra_map_data(const QString &name,
 		}
 
 		if (format != tft_r_rgtc1)
+		{
+			QMessageBox::critical(this, tr("Error"),
+				QString(tr("File '%1' has wrong format"
+					" %2, only formats %3 supported")).arg(
+					name).arg(format_str).arg(
+					valid_formats_str));
+
+			ok = false;
+
+			return;
+		}
+
+		ok = true;
+	}
+	catch (const boost::exception &exception)
+	{
+		message = "";
+
+		if (boost::get_error_info<errinfo_message>(exception) != 0)
+		{
+			message = QString::fromUtf8(boost::get_error_info<
+				errinfo_message>(exception)->c_str());
+		}
+
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(message).arg(
+			name));
+		ok = false;
+	}
+	catch (const std::exception &exception)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(
+				exception.what()).arg(name));
+		ok = false;
+	}
+	catch (...)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error reading file '%1'")).arg(name));
+		ok = false;
+	}
+}
+
+void ELGLWidget::get_specular_map_data(const QString &name,
+	const QSize &image_size, bool &ok)
+{
+	ImageSharedPtr image;
+	QString message, format_str, valid_formats_str;
+	glm::uvec3 size;
+	TextureFormatType format;
+	Uint16 mipmaps;
+	bool cube_map, array;
+
+	try
+	{
+		m_editor->get_image_data(String(name.toUtf8()), format, size,
+			mipmaps, cube_map, array);
+
+		format_str = QString::fromUtf8(TextureFormatUtil::get_str(
+			format).get().c_str());
+
+		valid_formats_str = "{";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rgb_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_srgb_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rgba_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_srgb_a_dxt1).get(
+				).c_str());
+		valid_formats_str += "}";
+
+		if ((size.x != image_size.width()) ||
+			(size.y != image_size.height()) || (size.z != 0))
+		{
+			QMessageBox::critical(this, tr("Error"), QString(tr(
+				"File '%1' has wrong size of <%2, %3, %4> "
+				"instead of <%5, %6, 0>")).arg(name).arg(
+					size.x).arg(size.y).arg(size.z).arg(
+					image_size.width()).arg(
+					image_size.height()));
+
+			ok = false;
+
+			return;
+		}
+
+		if ((format != tft_rgb_dxt1) && (format != tft_srgb_dxt1) &&
+			(format != tft_rgba_dxt1) &&
+			(format != tft_srgb_a_dxt1))
 		{
 			QMessageBox::critical(this, tr("Error"),
 				QString(tr("File '%1' has wrong format"
@@ -816,6 +914,8 @@ void ELGLWidget::initializeGL()
 	glewExperimental = GL_TRUE;
 #endif	/* OSX */
 	glewInit();
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 	if (!GLEW_VERSION_2_1)
 	{
@@ -871,13 +971,12 @@ void ELGLWidget::initializeGL()
 	m_global_vars->set_effect_debug(false);
 	m_global_vars->set_use_scene_fbo(true);
 	m_global_vars->set_use_cpu_rasterizer(false);
-	m_global_vars->set_use_linear_lighting(false);
 	m_global_vars->set_use_multithreaded_culling(false);
 
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);
 
-	m_timer->start(100);
+	m_timer->start(15);
 
 	emit initialized();
 }
@@ -1504,29 +1603,52 @@ void ELGLWidget::set_fog(const glm::vec3 &color, const float density)
 //	m_editor->get_scene().set_fog(color, density);
 }
 
-void ELGLWidget::set_terrain_material(const QString &albedo_map,
-	const QString &extra_map, const float blend_size,
-	const bool use_blend_size_sampler, const bool use_blend_size,
-	const bool use_extra_map, const int index)
+void ELGLWidget::set_terrain_material(const TerrainTextureData &data,
+	const int index)
 {
-	m_editor->set_terrain_material(String(albedo_map.toUtf8()),
-		String(extra_map.toUtf8()), blend_size, use_blend_size_sampler,
-		use_blend_size, use_extra_map, index);
+	m_editor->set_terrain_material(String(data.get_albedo_map().toUtf8()),
+		String(data.get_specular_map().toUtf8()),
+		String(data.get_gloss_map().toUtf8()),
+		String(data.get_height_map().toUtf8()),
+		glm::vec3(data.get_default_specular().redF(),
+			data.get_default_specular().greenF(),
+			data.get_default_specular().blueF()),
+		data.get_default_gloss(), data.get_default_height(),
+		data.get_blend_size(), data.get_use_blend_size_texture(),
+		data.get_use_specular_map(), data.get_use_gloss_map(),
+		data.get_use_height_map(), index);
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::get_terrain_material(QString &albedo_map,
-	QString &extra_map, float &blend_size, bool &use_blend_size_sampler,
-	bool &use_blend_size, bool &use_extra_map, const int index) const
+TerrainTextureData ELGLWidget::get_terrain_material(const int index) const
 {
-	String tmp_albedo_map, tmp_extra_map;
+	TerrainTextureData result;
+	String albedo_map, specular_map, gloss_map, height_map;
+	glm::vec3 default_specular;
+	float default_gloss, default_height, blend_size;
+	bool use_blend_size_texture, use_specular_map, use_gloss_map;
+	bool use_height_map;
 
-	m_editor->get_terrain_material(tmp_albedo_map, tmp_extra_map,
-		blend_size, use_blend_size_sampler, use_blend_size,
-		use_extra_map, index);
+	m_editor->get_terrain_material(albedo_map, specular_map, gloss_map,
+		height_map, default_specular, default_gloss, default_height,
+		blend_size, use_blend_size_texture, use_specular_map,
+		use_gloss_map, use_height_map, index);
 
-	albedo_map = QString::fromUtf8(tmp_albedo_map.get().c_str());
-	extra_map = QString::fromUtf8(tmp_extra_map.get().c_str());
+	result.set_albedo_map(QString::fromUtf8(albedo_map.get().c_str()));
+	result.set_specular_map(QString::fromUtf8(specular_map.get().c_str()));
+	result.set_gloss_map(QString::fromUtf8(gloss_map.get().c_str()));
+	result.set_height_map(QString::fromUtf8(height_map.get().c_str()));
+	result.set_default_specular(QColor::fromRgbF(default_specular.r,
+		default_specular.g, default_specular.b));
+	result.set_default_gloss(default_gloss);
+	result.set_default_height(default_height);
+	result.set_blend_size(blend_size);
+	result.set_use_blend_size_texture(use_blend_size_texture);
+	result.set_use_specular_map(use_specular_map);
+	result.set_use_gloss_map(use_gloss_map);
+	result.set_use_height_map(use_height_map);
+
+	return result;
 }
 
 void ELGLWidget::set_object_selection(const SelectionType selection)
@@ -1652,9 +1774,10 @@ void ELGLWidget::disable_light()
 	m_light_radius = 0.0f;
 }
 
-void ELGLWidget::save(const QString &name) const
+void ELGLWidget::save(const AbstractProgressSharedPtr &progress,
+	const QString &name) const
 {
-	m_editor->save(String(name.toUtf8()));
+	m_editor->save(progress, String(name.toUtf8()));
 }
 
 glm::vec3 ELGLWidget::get_light_color() const
@@ -1738,25 +1861,66 @@ void ELGLWidget::set_debug_mode(const int value)
 	m_editor->set_debug_mode(std::max(value, 0));
 }
 
-void ELGLWidget::init_terrain(const QSize &size, const QString &albedo_map,
-	const QString &extra_map, const bool use_blend_size_sampler,
-	const bool use_extra_map)
+void ELGLWidget::set_terrain_enabled(const bool enabled)
 {
-	m_editor->init_terrain(glm::uvec2(size.width(), size.height()),
-		String(albedo_map.toUtf8()), String(extra_map.toUtf8()),
-		use_blend_size_sampler, use_extra_map);
+	m_editor->set_terrain_enabled(enabled);
+	emit can_undo(m_editor->get_can_undo());
+}
+	
+void ELGLWidget::set_terrain_translation(const QVector3D &translation)
+{
+	m_editor->set_terrain_translation(glm::vec3(translation.x(),
+		translation.y(), translation.z()));
+	emit can_undo(m_editor->get_can_undo());
+}
+
+QVector3D ELGLWidget::get_terrain_translation() const
+{
+	glm::vec3 translation;
+
+	translation = m_editor->get_terrain_translation();
+
+	return QVector3D(translation.x, translation.y, translation.z);
+}
+
+void ELGLWidget::init_terrain(const QVector3D &translation,
+	const QSize &size, const TerrainTextureData &data)
+{
+	m_editor->init_terrain(glm::vec3(translation.x(), translation.y(),
+		translation.z()), glm::uvec2(size.width(), size.height()),
+		String(data.get_albedo_map().toUtf8()),
+		String(data.get_specular_map().toUtf8()),
+		String(data.get_gloss_map().toUtf8()),
+		String(data.get_height_map().toUtf8()),
+		glm::vec3(data.get_default_specular().redF(),
+			data.get_default_specular().greenF(),
+			data.get_default_specular().blueF()),
+		data.get_default_gloss(), data.get_default_height(),
+		data.get_blend_size(), data.get_use_blend_size_texture(),
+		data.get_use_specular_map(), data.get_use_gloss_map(),
+		data.get_use_height_map());
 
 	emit update_terrain(m_editor->get_terrain());
 }
 
-void ELGLWidget::init_terrain(const QString &height_map, const QSize &size,
-	const QString &albedo_map, const QString &extra_map,
-	const bool use_blend_size_sampler, const bool use_extra_map)
+void ELGLWidget::init_terrain(const QString &height_map,
+	const QVector3D &translation, const QSize &size,
+	const TerrainTextureData &data)
 {
 	m_editor->init_terrain(String(height_map.toUtf8()),
+		glm::vec3(translation.x(), translation.y(), translation.z()), 
 		glm::uvec2(size.width(), size.height()),
-		String(albedo_map.toUtf8()), String(extra_map.toUtf8()),
-		use_blend_size_sampler, use_extra_map);
+		String(data.get_albedo_map().toUtf8()),
+		String(data.get_specular_map().toUtf8()),
+		String(data.get_gloss_map().toUtf8()),
+		String(data.get_height_map().toUtf8()),
+		glm::vec3(data.get_default_specular().redF(),
+			data.get_default_specular().greenF(),
+			data.get_default_specular().blueF()),
+		data.get_default_gloss(), data.get_default_height(),
+		data.get_blend_size(), data.get_use_blend_size_texture(),
+		data.get_use_specular_map(), data.get_use_gloss_map(),
+		data.get_use_height_map());
 
 	emit update_terrain(m_editor->get_terrain());
 }

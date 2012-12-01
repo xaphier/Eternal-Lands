@@ -93,10 +93,10 @@ namespace eternal_lands
 		{
 			for (i = 0; i < count; ++i)
 			{
-				m_blend_map->set_pixel_uint(
+				m_blend_map->set_pixel_packed_uint16(
 					blend_value.get_x(),
 					blend_value.get_y(), i, 0, 0,
-					blend_value.get_value(i));
+					blend_value.get_packed_value(i));
 			}
 		}
 	}
@@ -181,8 +181,9 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			value.set_value(m_blend_map->get_pixel_uint(x, y, i,
-				0, 0), i);
+			value.set_packed_value(
+				m_blend_map->get_pixel_packed_uint16(x, y, i,
+					0, 0), i);
 		}
 
 		blend_values.push_back(value);
@@ -499,24 +500,34 @@ namespace eternal_lands
 			false);
 
 		m_blend_map = boost::make_shared<Image>(String(
-			UTF8("blend map")), false, tft_rgba8, m_size, 0, true);
+			UTF8("blend map")), false, tft_rgba4, m_size, 0, true);
 
 		m_albedo_maps.resize(get_layer_count());
-		m_extra_maps.resize(get_layer_count());
-		m_material_data.resize(get_layer_count() - 1);
+		m_specular_maps.resize(get_layer_count());
+		m_gloss_maps.resize(get_layer_count());
+		m_height_maps.resize(get_layer_count());
+		m_material_data.clear();
+		m_material_data.resize(get_layer_count());
 
 		m_enabled = true;
 
 		m_uv_tool.reset(new UvTool(m_displacement_map));
 	}
 
-	void TerrainEditor::init(const glm::uvec2 &size,
-		const String &albedo_map, const String &extra_map,
-		const bool use_blend_size_sampler, const bool use_extra_map)
+	void TerrainEditor::init(const glm::vec3 &translation,
+		const glm::uvec2 &size, const String &albedo_map,
+		const String &specular_map, const String &gloss_map,
+		const String &height_map, const glm::vec3 &default_specular,
+		const float default_gloss, const float default_height,
+		const float blend_size, const bool use_blend_size_texture,
+		const bool use_specular_map, const bool use_gloss_map,
+		const bool use_height_map)
 	{
 		Uint32 x, y, z, i;
 
 		init(size);
+
+		set_translation(translation);
 
 		for (y = 0; y < m_size.y; ++y)
 		{
@@ -547,24 +558,45 @@ namespace eternal_lands
 			}
 		}
 
+		m_albedo_maps.resize(get_layer_count());
+		m_specular_maps.resize(get_layer_count());
+		m_gloss_maps.resize(get_layer_count());
+		m_height_maps.resize(get_layer_count());
+		m_material_data.clear();
+		m_material_data.resize(get_layer_count());
+
 		for (i = 0; i < get_layer_count(); ++i)
 		{
 			set_albedo_map(albedo_map, i);
-			set_extra_map(extra_map, i);
-			set_use_blend_size_sampler(use_blend_size_sampler, i);
-			set_use_extra_map(use_extra_map, i);
+			set_specular_map(specular_map, i);
+			set_gloss_map(gloss_map, i);
+			set_height_map(height_map, i);
+			set_default_specular(default_specular, i);
+			set_default_gloss(default_gloss, i);
+			set_default_height(default_height, i);
+			set_blend_size(blend_size, i);
+			set_use_blend_size_texture(use_blend_size_texture, i);
+			set_use_specular_map(use_specular_map, i);
+			set_use_gloss_map(use_gloss_map, i);
+			set_use_height_map(use_height_map, i);
 		}
 	}
 
-	void TerrainEditor::init(const ImageSharedPtr &height_map,
-		const glm::uvec2 &size, const String &albedo_map,
-		const String &extra_map, const bool use_blend_size_sampler,
-		const bool use_extra_map)
+	void TerrainEditor::init(const ImageSharedPtr &displacement_map,
+		const glm::vec3 &translation, const glm::uvec2 &size,
+		const String &albedo_map, const String &specular_map,
+		const String &gloss_map, const String &height_map,
+		const glm::vec3 &default_specular, const float default_gloss,
+		const float default_height, const float blend_size,
+		const bool use_blend_size_texture, const bool use_specular_map,
+		const bool use_gloss_map, const bool use_height_map)
 	{
-		init(size, albedo_map, extra_map, use_blend_size_sampler,
-			use_extra_map);
+		init(translation, size, albedo_map, specular_map, gloss_map,
+			height_map, default_specular, default_gloss,
+			default_height, blend_size, use_blend_size_texture,
+			use_specular_map, use_gloss_map, use_height_map);
 
-		import_height_map(height_map);
+		import_height_map(displacement_map);
 	}
 
 	glm::uvec2 TerrainEditor::get_best_normal(const glm::vec3 &normal) const
@@ -935,40 +967,47 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::set_material(const String &albedo_map,
-		const String &extra_map, const float blend_size,
-		const bool use_blend_size_sampler, const bool use_blend_size,
-		const bool use_extra_map, const Uint16 index)
+		const String &specular_map, const String &gloss_map,
+		const String &height_map, const glm::vec3 &default_specular,
+		const float default_gloss, const float default_height,
+		const float blend_size, const bool use_blend_size_texture,
+		const bool use_specular_map, const bool use_gloss_map,
+		const bool use_height_map, const Uint16 index)
 	{
 		set_albedo_map(albedo_map, index);
-		set_extra_map(extra_map, index);
-		set_use_blend_size_sampler(use_blend_size_sampler, index);
-		set_use_extra_map(use_extra_map, index);
-
-		if (index > 0)
-		{
-			set_blend_data(BlendData(blend_size, use_blend_size),
-				index - 1);
-		}
+		set_specular_map(specular_map, index);
+		set_gloss_map(gloss_map, index);
+		set_height_map(height_map, index);
+		set_default_specular(default_specular, index);
+		set_default_gloss(default_gloss, index);
+		set_default_height(default_height, index);
+		set_blend_size(blend_size, index);
+		set_use_blend_size_texture(use_blend_size_texture, index);
+		set_use_specular_map(use_specular_map, index);
+		set_use_gloss_map(use_gloss_map, index);
+		set_use_height_map(use_height_map, index);
 	}
 
 	void TerrainEditor::get_material(String &albedo_map,
-		String &extra_map, float &blend_size,
-		bool &use_blend_size_sampler, bool &use_blend_size,
-		bool &use_extra_map, const Uint16 index) const
+		String &specular_map, String &gloss_map, String &height_map,
+		glm::vec3 &default_specular, float &default_gloss,
+		float &default_height, float &blend_size,
+		bool &use_blend_size_texture, bool &use_specular_map,
+		bool &use_gloss_map, bool &use_height_map, const Uint16 index)
+		const
 	{
 		albedo_map = get_albedo_map(index);
-		extra_map = get_extra_map(index);
-		use_blend_size_sampler = get_use_blend_size_sampler(index);
-		use_extra_map = get_use_extra_map(index);
-
-		blend_size = 1.0f;
-		use_blend_size = false;
-
-		if (index > 0)
-		{
-			blend_size = get_blend_size(index - 1);
-			use_blend_size = get_use_blend_size(index - 1);
-		}
+		specular_map = get_specular_map(index);
+		gloss_map = get_gloss_map(index);
+		height_map = get_height_map(index);
+		default_specular = get_default_specular(index);
+		default_gloss = get_default_gloss(index);
+		default_height = get_default_height(index);
+		blend_size = get_blend_size(index);
+		use_blend_size_texture = get_use_blend_size_texture(index);
+		use_specular_map = get_use_specular_map(index);
+		use_gloss_map = get_use_gloss_map(index);
+		use_height_map = get_use_height_map(index);
 	}
 
 	void TerrainEditor::import_height_map(const ImageSharedPtr &height_map)
@@ -1047,10 +1086,12 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data,
 		const glm::vec4 &dudv_scale_offset,
-		const glm::uvec2 &size)
+		const glm::vec3 &translation, const glm::uvec2 &size)
 	{
 		glm::uvec3 image_size;
 
@@ -1085,13 +1126,17 @@ namespace eternal_lands
 		import_blend_map(blend_map);
 
 		m_albedo_maps = albedo_maps;
-		m_extra_maps = extra_maps;
+		m_specular_maps = specular_maps;
+		m_gloss_maps = gloss_maps;
+		m_height_maps = height_maps;
 		m_material_data = material_data;
 		m_dudv_scale_offset = dudv_scale_offset;
 
-		m_albedo_maps.resize(get_layer_count());
-		m_extra_maps.resize(get_layer_count());
-		m_material_data.resize(get_layer_count() - 1);
+		m_albedo_maps.resize(get_layer_count(), m_albedo_maps[0]);
+		m_specular_maps.resize(get_layer_count(), m_specular_maps[0]);
+		m_gloss_maps.resize(get_layer_count(), m_gloss_maps[0]);
+		m_height_maps.resize(get_layer_count(), m_height_maps[0]);
+		m_material_data.resize(get_layer_count());
 
 		m_enabled = true;
 	}
@@ -1104,7 +1149,7 @@ namespace eternal_lands
 		Uint32 x, y, z;
 
 		m_blend_map = boost::make_shared<Image>(
-			String(UTF8("blend map")), false, tft_rgba8, m_size, 0,
+			String(UTF8("blend map")), false, tft_rgba4, m_size, 0,
 			true);
 
 		if (blend_map.get() == nullptr)
@@ -1271,7 +1316,8 @@ namespace eternal_lands
 
 				for (i = 0; i < (size.z * 4); ++i)
 				{
-					if (mask[i] && !get_use_blend_size(i))
+					if (mask[i] &&
+						!get_use_blend_size_texture(i))
 					{
 						count = i;
 					}
@@ -1358,13 +1404,15 @@ namespace eternal_lands
 	{
 		Vec4Array16 values;
 		glm::vec4 value;
+		glm::vec3 default_specular;
 		glm::uvec3 size;
 		BitSet64 mask;
-		String albedo_map, extra_map;
-		float blend_size;
-		bool use_blend_size_sampler, use_blend_size, use_extra_map;
+		String albedo_map, specular_map, gloss_map, height_map;
 		Uint32 x, y, z, i, count, layer, channel;
 		Sint32 index;
+		float default_gloss, default_height, blend_size;
+		bool use_blend_size_texture, use_specular_map, use_gloss_map;
+		bool use_height_map;
 
 		mask = get_used_layers();
 
@@ -1423,13 +1471,21 @@ namespace eternal_lands
 		{
 			if (mask[i])
 			{
-				get_material(albedo_map, extra_map, blend_size,
-					use_blend_size_sampler, use_blend_size,
-					use_extra_map, i);
+				get_material(albedo_map, specular_map,
+					gloss_map, height_map,
+					default_specular, default_gloss,
+					default_height, blend_size,
+					use_blend_size_texture,
+					use_specular_map, use_gloss_map,
+					use_height_map, i);
 
-				set_material(albedo_map, extra_map, blend_size,
-					use_blend_size_sampler, use_blend_size,
-					use_extra_map, index);
+				set_material(albedo_map, specular_map,
+					gloss_map, height_map,
+					default_specular, default_gloss,
+					default_height, blend_size,
+					use_blend_size_texture,
+					use_specular_map, use_gloss_map,
+					use_height_map, index);
 
 				index++;
 			}
@@ -1492,7 +1548,9 @@ namespace eternal_lands
 		m_uv_tool.reset();
 		m_material_data.clear();
 		m_albedo_maps.clear();
-		m_extra_maps.clear();
+		m_specular_maps.clear();
+		m_gloss_maps.clear();
+		m_height_maps.clear();
 		m_size = glm::vec3(0);
 		m_dudv_scale_offset = glm::vec4(0.0f);
 		m_enabled = false;
@@ -1576,5 +1634,76 @@ namespace eternal_lands
 			}
 		}		
 	}
+
+	Uint16 TerrainEditor::get_used_layer_count() const
+	{
+		glm::vec4 value;
+		glm::uvec3 size;
+		Uint32 x, y, z, i, result;
+
+		size = glm::max(m_size, glm::uvec3(1));
+
+		result = 0;
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				for (z = 0; z < size.z; ++z)
+				{
+					value = m_blend_map->get_pixel(x, y,
+						z, 0, 0);
+
+					for (i = 0; i < 4; ++i)
+					{
+						if (value[i] > 0.0f)
+						{
+							result = std::max(
+								result,
+								i + z * 4 + 1);
+						}
+					}
+				}
+			}
+		}
+
+		// +1 for the first layer that use no blending
+		return result + 1;
+	}
+
+	ImageSharedPtr TerrainEditor::get_partial_blend_map(const Uint16 layer)
+		const
+	{
+		ImageSharedPtr result;
+		glm::uvec3 size;
+		Uint32 x, y, z;
+		Uint16 value;
+
+		size.z = std::max(1, (layer + 2) / 4);
+		size.z = std::min(size.z, m_size.z);
+		size.x = std::max(m_size.x, 1u);
+		size.y = std::max(m_size.y, 1u);
+
+		result = boost::make_shared<Image>(String(UTF8("blend map")),
+			false, tft_rgba4, size, 0, true);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				for (z = 0; z < size.z; ++z)
+				{
+					value = m_blend_map->
+						get_pixel_packed_uint16(x, y,
+							z, 0, 0);
+					result->set_pixel_packed_uint16(x, y,
+						z, 0, 0, value);
+				}
+			}
+		}
+
+		return result;
+	}
+
 
 }

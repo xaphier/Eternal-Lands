@@ -28,13 +28,14 @@ namespace eternal_lands
 			const MaterialBuilderWeakPtr m_material_builder;
 			Mat2x3Vector m_texture_matrices;
 			glm::vec4 m_terrain_texture_size;
-			glm::vec2 m_focus;
+			glm::uvec2 m_slices;
 			glm::vec2 m_terrain_world_size;
+			glm::vec2 m_focus;
 			float m_world_size;
 			float m_distance;
 			Uint16 m_size;
 			Uint16 m_dir_index;
-			Uint16 m_slices;
+			bool m_center_at_focus;
 
 			inline MaterialBuilderSharedPtr get_material_builder()
 				const noexcept
@@ -64,8 +65,8 @@ namespace eternal_lands
 				const float view_distance,
 				const float world_size,	const Uint16 size,
 				const Uint16 slices);
-			bool update(const glm::vec3 &camera,
-				const glm::vec3 &view_dir,
+			bool get_update_needed(const glm::vec2 &camera,
+				const glm::vec2 &view_dir,
 				const glm::vec2 &focus);
 			void update_slice(const Uint16 slice);
 
@@ -97,9 +98,45 @@ namespace eternal_lands
 				return m_world_size;
 			}
 
-			inline Uint16 get_slices() const noexcept
+			inline Uint32 get_all_slices() const noexcept
+			{
+				return std::max(m_slices.x, m_slices.y);
+			}
+
+			inline Uint32 get_albedo_slices() const noexcept
+			{
+				return m_slices.x;
+			}
+
+			inline Uint32 get_normal_slices() const noexcept
+			{
+				return m_slices.y;
+			}
+
+			inline Uint32 get_specular_gloss_slices() const noexcept
+			{
+				return m_slices.y;
+			}
+
+			inline const glm::uvec2 &get_slice_data() const noexcept
 			{
 				return m_slices;
+			}
+
+			inline BitSet64 get_update_mask() const
+			{
+				return (1 << get_all_slices()) - 1;
+			}
+
+			inline bool get_center_at_focus() const noexcept
+			{
+				return m_center_at_focus;
+			}
+
+			inline void set_center_at_focus(
+				const bool center_at_focus) noexcept
+			{
+				m_center_at_focus = center_at_focus;
 			}
 
 	};

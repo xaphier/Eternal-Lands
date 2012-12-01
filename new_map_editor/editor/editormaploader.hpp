@@ -184,9 +184,12 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data,
 				const glm::vec4 &dudv_scale_offset,
+				const glm::vec3 &translation,
 				const glm::uvec2 &sizes) override;
 			virtual void instance() override;
 

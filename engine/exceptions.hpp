@@ -217,12 +217,12 @@ namespace eternal_lands
 
 #ifndef	NDEBUG
 #define RANGE_CECK_MAX(index, max, message)	\
-	assert(((index) < (max)) && (message))
+	assert(((index) <= (max)) && (message))
 #else
 #define RANGE_CECK_MAX(index, max, message)	\
 	do	\
 	{	\
-		if ((index) >= (max))	\
+		if ((index) > (max))	\
 		{	\
 			EL_THROW_EXCEPTION(RangeErrorException()	\
 				<< errinfo_message((message))	\
@@ -254,12 +254,12 @@ namespace eternal_lands
 #ifndef	NDEBUG
 #define RANGE_CECK(index, min, max, message)	\
 	assert(((index) >= (min)) && (message));	\
-	assert(((index) < (max)) && (message))
+	assert(((index) <= (max)) && (message))
 #else
 #define RANGE_CECK(index, min, max, message)	\
 	do	\
 	{	\
-		if (((index) < (min)) || ((index) >= (max)))	\
+		if (((index) < (min)) || ((index) > (max)))	\
 		{	\
 			EL_THROW_EXCEPTION(RangeErrorException()	\
 				<< errinfo_message((message))	\

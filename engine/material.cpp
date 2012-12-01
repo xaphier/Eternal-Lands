@@ -29,11 +29,13 @@ namespace eternal_lands
 
 	}
 
-	Material::Material(const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
-		const MaterialScriptCacheWeakPtr &material_script_cache,
-		const MaterialScriptManagerWeakPtr &material_script_manager):
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
+	Material::Material(const EffectCacheSharedPtr &effect_cache,
+		const TextureCacheSharedPtr &texture_cache,
+		const MaterialScriptCacheSharedPtr &material_script_cache,
+		const MaterialScriptManagerSharedPtr &material_script_manager,
+		const MaterialDescription &material):
+		m_name(material.get_name()), m_effect_cache(effect_cache),
+		m_texture_cache(texture_cache),
 		m_material_script_cache(material_script_cache),
 		m_material_script_manager(material_script_manager)
 	{
@@ -41,22 +43,7 @@ namespace eternal_lands
 		assert(!m_texture_cache.expired());
 		assert(!m_material_script_cache.expired());
 		assert(!m_material_script_manager.expired());
-	}
 
-	Material::~Material() noexcept
-	{
-		if (!m_material_script_manager.expired() &&
-			(m_material_script.get() != nullptr))
-		{
-			m_material_script.reset();
-
-			get_material_script_manager()->remove_material(
-				shared_from_this());
-		}
-	}
-
-	void Material::init(const MaterialDescription &material)
-	{
 		set_effect(material.get_effect());
 		set_material_script(material.get_script());
 
@@ -80,14 +67,24 @@ namespace eternal_lands
 		set_texture(material, spt_effect_15);
 	}
 
+	Material::~Material() noexcept
+	{
+		if (!m_material_script_manager.expired() &&
+			(m_material_script.get() != nullptr))
+		{
+			m_material_script.reset();
+
+			get_material_script_manager()->remove_material(this);
+		}
+	}
+
 	void Material::set_material_script(const String &material_script)
 	{
 		if (material_script.get().empty())
 		{
 			m_material_script.reset();
 
-			get_material_script_manager()->remove_material(
-				shared_from_this());
+			get_material_script_manager()->remove_material(this);
 
 			return;
 		}
@@ -95,8 +92,7 @@ namespace eternal_lands
 		m_material_script = get_material_script_cache(
 			)->get_material_script(material_script);
 
-		get_material_script_manager()->add_material(
-			shared_from_this());
+		get_material_script_manager()->add_material(this);
 
 		assert(m_material_script.get() != nullptr);
 	}

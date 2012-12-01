@@ -261,7 +261,7 @@ namespace eternal_lands
 		Uint32 index, tile_size;
 		VertexSemanticTypeSet semantics;
 
-		materials.push_back(get_terrain_material());
+		materials.push_back(get_material());
 
 		position_scale = glm::vec2(get_patch_scale());
 
@@ -340,7 +340,7 @@ namespace eternal_lands
 		glm::vec2 position_scale;
 		Uint32 tile_size;
 
-		materials.push_back(get_terrain_material());
+		materials.push_back(get_material());
 
 		str << UTF8("terrain ") << position.x << UTF8("x");
 		str << position.y;
@@ -377,7 +377,7 @@ namespace eternal_lands
 
 		transformation.set_translation(
 			glm::vec3(glm::vec2(tile_offset) * position_scale,
-			0.0f));
+			0.0f) + get_translation());
 
 		object_data.set_world_transformation(
 			transformation);
@@ -435,8 +435,8 @@ namespace eternal_lands
 
 		m_object_tree->clear();
 
-		set_terrain_size((glm::vec2(displacement_map->get_size())
-			- 1.0f) * get_patch_scale());
+		set_size((glm::vec2(displacement_map->get_size()) - 1.0f) *
+			get_patch_scale());
 
 		displacement_map_tmp = displacement_map->decompress(false,
 			true, false);
@@ -472,8 +472,8 @@ namespace eternal_lands
 
 		m_object_tree->clear();
 
-		set_terrain_size((glm::vec2(displacement_map->get_size())
-			- 1.0f) * get_patch_scale());
+		set_size((glm::vec2(displacement_map->get_size()) - 1.0f) *
+			get_patch_scale());
 
 		displacement_map_tmp = displacement_map->decompress(false,
 			true, false);

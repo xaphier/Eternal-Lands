@@ -15,8 +15,7 @@ namespace eternal_lands
 	MultiSampleFrameBuffer::MultiSampleFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height, const Uint16 samples,
 		const bool depth_buffer):
-		AbstractFrameBuffer(name, width, height), m_samples(samples),
-		m_draw_buffer(0xFFFF)
+		AbstractFrameBuffer(name, width, height), m_samples(samples)
 	{
 		CHECK_GL_ERROR();
 
@@ -25,7 +24,7 @@ namespace eternal_lands
 		if (depth_buffer)
 		{
 			m_render_buffer.reset(new RenderBuffer(name,
-				get_width(), get_height(), samples,
+				get_width(0), get_height(0), samples,
 				tft_depth24_stencil8));
 
 			CHECK_GL_ERROR_NAME(get_name());
@@ -126,7 +125,7 @@ namespace eternal_lands
 	void MultiSampleFrameBuffer::attach_texture(
 		const TextureSharedPtr &texture,
 		const FrameBufferAttachmentType attachment,
-		const Uint16 layer)
+		const Uint16 layer, const Uint16 mipmap)
 	{
 		FrameBufferAttachmentTypeRenderBufferMap::iterator found;
 		GLenum gl_attachment;
@@ -173,7 +172,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR_NAME(get_name());
 
-		texture->attach(gl_attachment, 0, layer);
+		texture->attach(gl_attachment, mipmap, layer);
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -195,7 +194,7 @@ namespace eternal_lands
 		boost::shared_ptr<RenderBuffer> render_buffer;
 
 		render_buffer.reset(new RenderBuffer(texture->get_name(),
-			get_width(), get_height(), get_samples(),
+			get_width(0), get_height(0), get_samples(),
 			texture->get_format()));
 
 		m_render_buffers.insert(
@@ -288,7 +287,7 @@ namespace eternal_lands
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + layer);
 		glDrawBuffer(GL_BACK);
 
-		glBlitFramebuffer(0, 0, get_width(), get_height(), rect.x,
+		glBlitFramebuffer(0, 0, get_width(0), get_height(0), rect.x,
 			rect.y, rect.z, rect.w, mask, GL_NEAREST);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -309,51 +308,45 @@ namespace eternal_lands
 		stencil = true;
 	}
 
-	void MultiSampleFrameBuffer::set_draw_buffer(const Uint16 index,
-		const bool enabled)
+	void MultiSampleFrameBuffer::set_draw_buffers(const glm::bvec4 &enabled)
 	{
-		if (enabled)
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT0 + index);
+		GLenum buffers[4];
 
-			m_draw_buffer = index;
-		}
-		else
-		{
-			glDrawBuffer(GL_NONE);
+		buffers[0] = enabled[0] ? GL_COLOR_ATTACHMENT0 : GL_NONE;
+		buffers[1] = enabled[1] ? GL_COLOR_ATTACHMENT1 : GL_NONE;
+		buffers[2] = enabled[2] ? GL_COLOR_ATTACHMENT2 : GL_NONE;
+		buffers[3] = enabled[3] ? GL_COLOR_ATTACHMENT3 : GL_NONE;
 
-			m_draw_buffer = 0xFFFF;
-		}
+		glDrawBuffers(4, buffers);
+
+		m_draw_buffers = enabled;
 	}
 
 	void MultiSampleFrameBuffer::blit_buffers()
 	{
+		Uint16 i;
+
 		// blit from multisample buffer to final buffer, triggers resolve
 		m_multisample_frame_buffer.bind(false);
 		m_frame_buffer.bind(true);
 
 		CHECK_GL_ERROR_NAME(get_name());
 
-		for (int i = 0; i < 1; ++i)
+		for (i = 0; i < 4; ++i)
 		{
+			if (!m_draw_buffers[i])
+			{
+				continue;
+			}
 			glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
 			glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
 
-			glBlitFramebuffer(0, 0, get_width(), get_height(), 0,
-				0, get_width(), get_height(),
+			glBlitFramebuffer(0, 0, get_width(0), get_height(0), 0,
+				0, get_width(0), get_height(0),
 				GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		}
 
-		if (m_draw_buffer != 0xFFFF)
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT0 + m_draw_buffer);
-		}
-		else
-		{
-			glDrawBuffer(GL_NONE);
-
-			m_draw_buffer = 0xFFFF;
-		}
+		set_draw_buffers(m_draw_buffers);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

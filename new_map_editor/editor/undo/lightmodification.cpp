@@ -67,6 +67,7 @@ namespace eternal_lands
 			case mt_objects_name_changed:
 			case mt_terrain_material_changed:
 			case mt_terrain_scale_offset_changed:
+			case mt_terrain_translation_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ground_hemisphere_changed:
 			case mt_dungeon_changed:

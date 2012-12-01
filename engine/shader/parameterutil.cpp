@@ -32,6 +32,13 @@ namespace eternal_lands
 			pft_matrix
 		};
 
+		enum ParameterSamplerType
+		{
+			pst_none,
+			pst_default,
+			pst_multisample
+		};
+
 		class ParameterTypeData
 		{
 			private:
@@ -40,7 +47,7 @@ namespace eternal_lands
 				const GLenum m_gl_type;
 				const ParameterValueType m_value_type;
 				const ParameterFormatType m_format_type;
-				const bool m_sampler;
+				const ParameterSamplerType m_sampler;
 
 			public:
 				inline ParameterTypeData(
@@ -53,7 +60,7 @@ namespace eternal_lands
 					m_gl_type(gl_type),
 					m_value_type(value_type),
 					m_format_type(format_type),
-					m_sampler(false)
+					m_sampler(pst_none)
 				{
 					assert(get_count() > 0);
 					assert(get_value_type() != pvt_shadow);
@@ -66,12 +73,14 @@ namespace eternal_lands
 					const String &name,
 					const GLenum gl_type,
 					const ParameterValueType value_type,
-					const ParameterFormatType format_type):
+					const ParameterFormatType format_type,
+					const bool multisampler = false):
 					m_name(name), m_count(1),
 					m_gl_type(gl_type),
 					m_value_type(value_type),
 					m_format_type(format_type),
-					m_sampler(true)
+					m_sampler(multisampler ?
+						pst_multisample : pst_default)
 				{
 					assert(get_count() > 0);
 					assert(get_value_type() != pvt_bool);
@@ -97,7 +106,8 @@ namespace eternal_lands
 					return m_gl_type;
 				}
 
-				inline bool get_sampler() const noexcept
+				inline ParameterSamplerType get_sampler() const
+					noexcept
 				{
 					return m_sampler;
 				}
@@ -242,7 +252,31 @@ namespace eternal_lands
 				pvt_unsigned_int, pft_rect),
 			ParameterTypeData(String(UTF8("usamplerBuffer")),
 				GL_UNSIGNED_INT_SAMPLER_BUFFER,
-				pvt_unsigned_int, pft_buffer)
+				pvt_unsigned_int, pft_buffer),
+			ParameterTypeData(
+				String(UTF8("sampler2DMultisample")),
+				GL_SAMPLER_2D_MULTISAMPLE, pvt_float, pft_none,
+				true),
+			ParameterTypeData(
+				String(UTF8("sampler2DArrayMultisample")),
+				GL_SAMPLER_2D_MULTISAMPLE_ARRAY, pvt_float,
+				pft_array, true),
+			ParameterTypeData(
+				String(UTF8("isampler2DMultisample")),
+				GL_INT_SAMPLER_2D_MULTISAMPLE, pvt_int,
+				pft_none, true),
+			ParameterTypeData(
+				String(UTF8("isampler2DArrayMultisample")),
+				GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, pvt_int,
+				pft_array, true),
+			ParameterTypeData(
+				String(UTF8("usampler2DMultisample")),
+				GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE,
+				pvt_unsigned_int, pft_none, true),
+			ParameterTypeData(
+				String(UTF8("usampler2DArrayMultisample")),
+				GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,
+				pvt_unsigned_int, pft_array, true)
 		};
 
 		const Uint32 parameter_datas_count =

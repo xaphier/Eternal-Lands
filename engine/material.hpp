@@ -29,6 +29,7 @@ namespace eternal_lands
 	{
 		private:
 			MaterialData m_data;
+			const String m_name;
 			const EffectCacheWeakPtr m_effect_cache;
 			const TextureCacheWeakPtr m_texture_cache;
 			const MaterialScriptCacheWeakPtr
@@ -91,14 +92,14 @@ namespace eternal_lands
 				const SamplerParameterType sampler);
 
 		public:
-			Material(const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
-				const MaterialScriptCacheWeakPtr
+			Material(const EffectCacheSharedPtr &effect_cache,
+				const TextureCacheSharedPtr &texture_cache,
+				const MaterialScriptCacheSharedPtr
 					&material_script_cache,
-				const MaterialScriptManagerWeakPtr
-					&material_script_manager);
+				const MaterialScriptManagerSharedPtr
+					&material_script_manager,
+				const MaterialDescription &material);
 			~Material() noexcept;
-			void init(const MaterialDescription &material);
 			void set_texture(const String &name,
 				const SamplerParameterType sampler,
 				const bool sRGB);
@@ -118,6 +119,11 @@ namespace eternal_lands
 				asIScriptContext* context);
 			void lock() noexcept;
 			void unlock() noexcept;
+
+			inline const String &get_name() const noexcept
+			{
+				return m_name;
+			}
 
 			inline void set_effect(const EffectSharedPtr &effect)
 				noexcept

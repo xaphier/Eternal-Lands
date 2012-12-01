@@ -248,9 +248,30 @@ namespace eternal_lands
 			description);
 	}
 
-	Filter::Filter(const GlslProgramCacheSharedPtr &glsl_program_cache,
-		const MeshCacheSharedPtr &mesh_cache,
-		const GlobalVarsSharedPtr &global_vars)
+	void Filter::build_bloom_filter(
+		const GlslProgramCacheSharedPtr &glsl_program_cache,
+		const Uint16 version, const Uint16 channel_count,
+		const Uint16 mipmap_count)
+	{
+		ShaderTypeStringMap description;
+		Uint32 index;
+
+		index = glm::clamp(static_cast<Uint32>(mipmap_count), 1u,
+			5u) - 1;
+		index += (glm::clamp(static_cast<Uint32>(channel_count), 1u,
+			5u) - 1) * 4;
+
+		description[st_vertex] = get_vertex_str(version);
+		description[st_fragment] = get_fragment_bloom_str(version,
+			channel_count, mipmap_count);
+
+		m_bloom_programs[index] = glsl_program_cache->get_program(
+			description);
+	}
+
+	Filter::Filter(const GlobalVarsSharedPtr &global_vars,
+		const GlslProgramCacheSharedPtr &glsl_program_cache,
+		const MeshCacheSharedPtr &mesh_cache)
 	{
 		Uint32 i, j;
 
@@ -278,13 +299,21 @@ namespace eternal_lands
 					true, false);
 				build_filter(glsl_program_cache, 130, i, j,
 					true, true);
+
+				build_bloom_filter(
+					glsl_program_cache, 130, i, j + 1);
 			}
+		}
+
+		if (!global_vars->get_opengl_3_2())
+		{
+			return;
 		}
 
 		for (i = 1; i < 5; ++i)
 		{
-			build_multisample_filter(glsl_program_cache, 130, i, 2);
-			build_multisample_filter(glsl_program_cache, 130, i, 4);
+			build_multisample_filter(glsl_program_cache, 150, i, 2);
+			build_multisample_filter(glsl_program_cache, 150, i, 4);
 		}
 	}
 
@@ -298,7 +327,17 @@ namespace eternal_lands
 
 		str << UTF8("#version ") << version << UTF8("\n");
 		str << UTF8("\n");
-		str << UTF8("attribute vec2 ") << vst_position << UTF8(";\n");
+
+		if (version > 120)
+		{
+			str << UTF8("in");
+		}
+		else
+		{
+			str << UTF8("attribute");
+		}
+
+		str << UTF8(" vec2 ") << vst_position << UTF8(";\n");
 		str << UTF8("\n");
 		str << UTF8("\n");
 		str << UTF8("void main()\n");
@@ -423,9 +462,29 @@ namespace eternal_lands
 
 		str << UTF8("#version ") << version << UTF8("\n");
 		str << UTF8("\n");
-		str << UTF8("attribute vec2 ") << vst_position << UTF8(";\n");
+
+		if (version > 120)
+		{
+			str << UTF8("in");
+		}
+		else
+		{
+			str << UTF8("attribute");
+		}
+
+		str << UTF8(" vec2 ") << vst_position << UTF8(";\n");
 		str << UTF8("\n");
-		str << UTF8("varying vec2 uv;\n");
+
+		if (version > 120)
+		{
+			str << UTF8("out");
+		}
+		else
+		{
+			str << UTF8("varying");
+		}
+
+		str << UTF8(" vec2 uv;\n");
 		str << UTF8("\n");
 		str << UTF8("uniform vec4 source_scale_offset;\n");
 		str << UTF8("uniform vec4 dest_scale_offset;\n");
@@ -452,7 +511,17 @@ namespace eternal_lands
 
 		str << UTF8("#version ") << version << UTF8("\n");
 		str << UTF8("\n");
-		str << UTF8("varying vec2 uv;\n");
+
+		if (version > 120)
+		{
+			str << UTF8("in");
+		}
+		else
+		{
+			str << UTF8("varying");
+		}
+
+		str << UTF8(" vec2 uv;\n");
 		str << UTF8("\n");
 		str << UTF8("uniform vec4 scale;\n");
 		str << UTF8("uniform vec4 offset;\n");
@@ -594,6 +663,89 @@ namespace eternal_lands
 		}
 
 		str << UTF8("\n");
+		str << UTF8("\tgl_FragColor = ");
+
+		switch (channel_count)
+		{
+			case 1:
+				str << UTF8("vec4(color, 0.0f, 0.0f, 0.0f);\n");
+				break;
+			case 2:
+				str << UTF8("vec4(color, 0.0f, 0.0f);\n");
+				break;
+			case 3:
+				str << UTF8("vec4(color, 0.0f);\n");
+				break;
+			case 4:
+				str << UTF8("color;\n");
+				break;
+		}
+
+		str << UTF8("}\n");
+
+		return String(str.str());
+	}
+
+	String Filter::get_fragment_bloom_str(const Uint16 version,
+		const Uint16 channel_count, const Uint16 mipmap_count)
+	{
+		StringStream str;
+		std::string channels;
+		Uint32 i;
+
+		str << UTF8("#version ") << version << UTF8("\n");
+		str << UTF8("\n");
+		str << UTF8("in vec2 uv;\n");
+		str << UTF8("\n");
+
+		str << UTF8("uniform sampler2D ") << spt_effect_0;
+		str << UTF8(";\n");
+		str << UTF8("uniform sampler2D ") << spt_effect_1;
+		str << UTF8(";\n");
+		str << UTF8("uniform float scale;\n");
+		str << UTF8("uniform vec4 mipmap_scale;\n");
+		str << UTF8("uniform vec4 mipmaps;\n");
+		str << UTF8("\n");
+		str << UTF8("void main()\n");
+		str << UTF8("{\n");
+
+		switch (channel_count)
+		{
+			case 1:
+				str << UTF8("\tfloat color;\n");
+				channels = UTF8(".r");
+				break;
+			case 2:
+				str << UTF8("\tvec2 color;\n");
+				channels = UTF8(".rg");
+				break;
+			case 3:
+				str << UTF8("\tvec3 color;\n");
+				channels = UTF8(".rgb");
+				break;
+			case 4:
+				str << UTF8("\tvec4 color;\n");
+				channels = UTF8("");
+				break;
+		}
+
+		str << UTF8("\tcolor = textureLod(") << spt_effect_1;
+		str << UTF8(", uv, 0.0)") << channels << UTF8(" * scale;\n");
+
+		for (i = 0; i < mipmap_count; ++i)
+		{
+			str << UTF8("\tcolor += max(textureLod(") << spt_effect_0;
+			str << UTF8(", uv, mipmaps[") << i << UTF8("])");
+			str << channels << UTF8(" - 1.0, 0.0) * mipmap_scale[") << i;
+			str << UTF8("];\n");
+		}
+
+		str << UTF8("\n");
+
+		str << UTF8("\tcolor = 1.0 - exp(-color);\n");
+/*		str << UTF8("\tfloat lum = dot(color, vec3(0.2126, 0.7152, 0.0722));\n");
+		str << UTF8("\tcolor = color / (lum + 1.0);\n");
+*/		str << UTF8("\n");
 		str << UTF8("\tgl_FragColor = ");
 
 		switch (channel_count)
@@ -781,6 +933,61 @@ namespace eternal_lands
 		index = get_multisample_index(channel_count, sample_count);
 
 		state_manager.switch_program(m_multisample_programs[index]);
+		state_manager.switch_mesh(m_mesh);
+		state_manager.draw(0, 1);
+	}
+
+	void Filter::bind_bloom_tone_mapping(const Uint32 width,
+		const Uint32 height, const Uint16 channel_count,
+		const Uint16 mipmap_count, StateManager &state_manager)
+	{
+		glm::vec4 scale, offset, scale_offset;
+		glm::vec4 dest_scale_offset, source_scale_offset;
+		Uint32 index;
+
+
+		scale_offset.x = (width - 1) / static_cast<float>(width);
+		scale_offset.y = (height - 1) / static_cast<float>(height);
+		scale_offset.z = 0.5f / static_cast<float>(width);
+		scale_offset.w = 0.5f / static_cast<float>(height);
+
+		dest_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+		source_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+
+		source_scale_offset.x *= scale_offset.x;
+		source_scale_offset.y *= scale_offset.y;
+		source_scale_offset.z *= scale_offset.x;
+		source_scale_offset.w *= scale_offset.y;
+		source_scale_offset.z += scale_offset.z;
+		source_scale_offset.w += scale_offset.w;
+
+		dest_scale_offset *= 2.0f;
+		dest_scale_offset.z -= 1.0f;
+		dest_scale_offset.w -= 1.0f;
+
+
+		index = glm::clamp(static_cast<Uint32>(mipmap_count), 1u,
+			5u) - 1;
+		index += (glm::clamp(static_cast<Uint32>(channel_count), 1u,
+			5u) - 1) * 4;
+
+		state_manager.switch_program(m_bloom_programs[index]);
+
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("source_scale_offset")),
+			source_scale_offset);
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("dest_scale_offset")),
+			dest_scale_offset);
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("scale")), 0.85f);
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("mipmap_scale")),
+			glm::vec4(0.15f / mipmap_count));
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("mipmaps")),
+			glm::vec4(0.0f, 1.0f, 2.0f, 3.0f));
+
 		state_manager.switch_mesh(m_mesh);
 		state_manager.draw(0, 1);
 	}

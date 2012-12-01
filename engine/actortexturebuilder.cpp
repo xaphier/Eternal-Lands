@@ -584,7 +584,7 @@ namespace eternal_lands
 
 		m_alphas.reset();
 		compressed = m_global_vars->get_use_s3tc_for_actors();
-		sRGB = get_global_vars()->get_use_linear_lighting();
+		sRGB = true;
 
 		if (parts[aptt_pants_tex].get() != nullptr)
 		{
@@ -846,7 +846,6 @@ namespace eternal_lands
 		m_global_vars(global_vars)
 	{
 		TextureFormatType texture_format;
-		bool sRGB;
 
 		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
@@ -856,29 +855,13 @@ namespace eternal_lands
 		m_compression = m_global_vars->get_use_s3tc_for_actors();
 		m_alphas.reset();
 
-		sRGB = get_global_vars()->get_use_linear_lighting();
-
 		if (m_compression)
 		{
-			if (sRGB)
-			{
-				texture_format = tft_srgb_a_dxt5;
-			}
-			else
-			{
-				texture_format = tft_rgba_dxt5;
-			}
+			texture_format = tft_srgb_a_dxt5;
 		}
 		else
 		{
-			if (sRGB)
-			{
-				texture_format = tft_srgb8_a8;
-			}
-			else
-			{
-				texture_format = tft_rgba8;
-			}
+			texture_format = tft_srgb8_a8;
 		}
 
 		m_texture = boost::make_shared<Texture>(m_name, m_size,

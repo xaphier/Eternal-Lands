@@ -27,8 +27,10 @@ namespace eternal_lands
 	ClipmapTerrain::ClipmapTerrain(
 		const MaterialBuilderWeakPtr &material_builder):
 		m_material_builder(material_builder), m_world_size(16.0f),
-		m_distance(0.0f), m_size(512), m_dir_index(0), m_slices(4)
+		m_distance(0.0f), m_size(512), m_dir_index(0),
+		m_center_at_focus(false)
 	{
+		m_slices = glm::uvec2(4, 3);
 	}
 
 	ClipmapTerrain::~ClipmapTerrain() noexcept
@@ -45,10 +47,11 @@ namespace eternal_lands
 		m_terrain_world_size = terrain_world_size;
 		m_world_size = world_size;
 		m_size = size;
-		m_slices = slices;
+		m_slices = glm::uvec2(slices);
+//		m_slices.y = glm::min(m_slices.y, 3u);
 		m_dir_index = 0;
 
-		m_texture_matrices.resize(m_slices);
+		m_texture_matrices.resize(m_slices.x);
 
 		terrain_texture_size = (glm::vec2(terrain_world_size) *
 			static_cast<float>(size)) / world_size;
@@ -59,39 +62,33 @@ namespace eternal_lands
 		m_terrain_texture_size.w = 1.0f / terrain_texture_size.y;
 	}
 
-	bool ClipmapTerrain::update(const glm::vec3 &camera,
-		const glm::vec3 &view_dir, const glm::vec2 &focus)
+	bool ClipmapTerrain::get_update_needed(const glm::vec2 &camera,
+		const glm::vec2 &view_dir, const glm::vec2 &focus)
 	{
-#if	0
-		glm::vec2 dir;
+		BitSet64 result;
 		Uint16 dir_index;
+		float distance;
 
-		dir = glm::vec2(view_dir);
 		dir_index = get_dir_index();
 
-		if (std::abs(glm::dot(dir, dir)) > epsilon)
+		if (std::abs(glm::dot(view_dir, view_dir)) > epsilon)
 		{
-			dir_index = get_dir_index(glm::normalize(dir));
+			dir_index = get_dir_index(glm::normalize(view_dir));
 		}
+
+		distance = ceil(glm::distance(camera, focus));
 
 		if ((dir_index != get_dir_index()) ||
-			(glm::distance(focus, get_focus()) > 1.0f))
+			(glm::distance(focus, m_focus) > 1.0f) ||
+			(std::abs(distance - m_distance - 0.5f) > 0.5f))
 		{
+			m_distance = distance;
 			m_focus = focus;
 			m_dir_index = dir_index;
-			m_distance = glm::distance(glm::vec2(camera), focus);
 
 			return true;
 		}
-#else
-		if (glm::distance(focus, get_focus()) > 1.0f)
-		{
-			m_focus = focus;
-			m_distance = glm::distance(glm::vec2(camera), focus);
 
-			return true;
-		}
-#endif
 		return false;
 	}
 
@@ -139,13 +136,13 @@ namespace eternal_lands
 		world_size = get_world_size() *	static_cast<float>(1 << slice);
 
 		offset = get_focus() - world_size * 0.5f;
-/*
-		offset -= dir[get_dir_index()] * world_size * 0.495f;
-//		offset += dir[get_dir_index()] * get_world_size() * 0.5f;
-//		offset -= dir[get_dir_index()] *
-//			(get_world_size() * 0.5f - m_distance);
-		offset += dir[get_dir_index()] * m_distance * 1.05f;
-*/
+
+		if ((slice > 0) && !get_center_at_focus())
+		{
+			offset -= dir[get_dir_index()] * world_size * 0.5f;
+			offset += dir[get_dir_index()] * m_distance;
+		}
+
 		offset /= world_size;
 		scale = get_terrain_world_size() / world_size;
 

@@ -773,8 +773,6 @@ void init_gl_extensions()
 			engine_opengl_version - 1));
 	}
 
-	engine_set_use_linear_lighting(engine_use_linear_lighting);
-
 	CHECK_GL_ERRORS();
 
 	if (engine_get_opengl_4_2())

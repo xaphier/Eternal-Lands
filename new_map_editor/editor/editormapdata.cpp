@@ -101,7 +101,8 @@ namespace eternal_lands
 	}
 
 	EditorMapData::EditorMapData(const GlobalVarsSharedPtr &global_vars,
-		const FileSystemSharedPtr &file_system)
+		const FileSystemSharedPtr &file_system):
+		m_id(std::numeric_limits<Uint32>::max()), m_renderable(rt_none)
 	{
 		m_scene.reset(new EditorScene(global_vars, file_system));
 		m_scene->set_sky_hemisphere(glm::vec4(0.2f));
@@ -434,9 +435,9 @@ namespace eternal_lands
 		glm::vec3 offset;
 		Uint32 id;
 
-		RANGE_CECK_MAX(x, m_tile_map.shape()[0],
+		RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
 			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_tile_map.shape()[1],
+		RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
 			UTF8("index value too big"));
 
 		id = m_scene->get_free_ids()->get_object_id(x + (y << 10),
@@ -499,9 +500,9 @@ namespace eternal_lands
 
 	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y) const
 	{
-		RANGE_CECK_MAX(x, m_tile_map.shape()[0],
+		RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
 			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_tile_map.shape()[1],
+		RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
 			UTF8("index value too big"));
 
 		return m_tile_map[x][y];
@@ -517,9 +518,9 @@ namespace eternal_lands
 	void EditorMapData::set_height(const Uint16 x, const Uint16 y,
 		const Uint16 height)
 	{
-		RANGE_CECK_MAX(x, m_height_map.shape()[0],
+		RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
 			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_height_map.shape()[1],
+		RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
 			UTF8("index value too big"));
 
 		m_scene->set_height(x, y, height);
@@ -529,9 +530,9 @@ namespace eternal_lands
 
 	Uint16 EditorMapData::get_height(const Uint16 x, const Uint16 y) const
 	{
-		RANGE_CECK_MAX(x, m_height_map.shape()[0],
+		RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
 			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_height_map.shape()[1],
+		RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
 			UTF8("index value too big"));
 
 		return m_height_map[x][y];
@@ -554,7 +555,8 @@ namespace eternal_lands
 		m_scene->update_terrain_geometry_maps(
 			m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
-			m_terrain_editor.get_dudv_map());
+			m_terrain_editor.get_dudv_map(),
+			m_terrain_editor.get_translation());
 	}
 
 	void EditorMapData::set_terrain_blend_values(
@@ -567,17 +569,23 @@ namespace eternal_lands
 	}
 
 	void EditorMapData::set_terrain_material(const String &albedo_map,
-		const String &extra_map, const float blend_size,
-		const bool use_blend_size_sampler, const bool use_blend_size,
-		const bool use_extra_map, const Uint16 index)
+		const String &specular_map, const String &gloss_map,
+		const String &height_map, const glm::vec3 &default_specular,
+		const float default_gloss, const float default_height,
+		const float blend_size, const bool use_blend_size_texture,
+		const bool use_specular_map, const bool use_gloss_map,
+		const bool use_height_map, const Uint16 index)
 	{
-		m_terrain_editor.set_material(albedo_map, extra_map,
-			blend_size, use_blend_size_sampler, use_blend_size,
-			use_extra_map, index);
+		m_terrain_editor.set_material(albedo_map, specular_map,
+			gloss_map, height_map, default_specular, default_gloss,
+			default_height, blend_size, use_blend_size_texture,
+			use_specular_map, use_gloss_map, use_height_map, index);
 
 		m_scene->set_terrain_material(
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data());
 	}
 
@@ -725,45 +733,83 @@ namespace eternal_lands
 			mipmaps, cube_map, array);
 	}
 
-	void EditorMapData::init_terrain(const glm::uvec2 &size,
-		const String &albedo_map, const String &extra_map,
-		const bool use_blend_size_sampler, const bool use_extra_map)
+	void EditorMapData::init_terrain(const glm::vec3 &translation,
+		const glm::uvec2 &size, const String &albedo_map,
+		const String &specular_map, const String &gloss_map,
+		const String &height_map, const glm::vec3 &default_specular,
+		const float default_gloss, const float default_height,
+		const float blend_size, const bool use_blend_size_texture,
+		const bool use_specular_map, const bool use_gloss_map,
+		const bool use_height_map)
 	{
-		m_terrain_editor.init(size, albedo_map, extra_map,
-			use_blend_size_sampler, use_extra_map);
+		m_terrain_editor.init(translation, size, albedo_map,
+			specular_map, gloss_map, height_map, default_specular,
+			default_gloss, default_height, blend_size,
+			use_blend_size_texture, use_specular_map,
+			use_gloss_map, use_height_map);
 
 		m_scene->set_terrain(m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
 			m_terrain_editor.get_dudv_map(),
 			m_terrain_editor.get_blend_map(),
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale_offset());
+			m_terrain_editor.get_dudv_scale_offset(),
+			m_terrain_editor.get_translation());
 	}
 
-	void EditorMapData::init_terrain(const String &height_map_name,
-		const glm::uvec2 &size,	const String &albedo_map,
-		const String &extra_map, const bool use_blend_size_sampler,
-		const bool use_extra_map)
+	void EditorMapData::init_terrain(const String &displacement_map_name,
+		const glm::vec3 &translation, const glm::uvec2 &size,
+		const String &albedo_map, const String &specular_map,
+		const String &gloss_map, const String &height_map,
+		const glm::vec3 &default_specular, const float default_gloss,
+		const float default_height, const float blend_size,
+		const bool use_blend_size_texture, const bool use_specular_map,
+		const bool use_gloss_map, const bool use_height_map)
 	{
-		ImageSharedPtr height_map;
+		ImageSharedPtr displacement_map;
 
-		height_map = CodecManager::load_image(height_map_name,
-			m_scene->get_file_system(), ImageCompressionTypeSet(),
-			false, false, false);
+		displacement_map = CodecManager::load_image(
+			displacement_map_name, m_scene->get_file_system(),
+			ImageCompressionTypeSet(), false, false, false);
 
-		m_terrain_editor.init(height_map, size, albedo_map, extra_map,
-			use_blend_size_sampler, use_extra_map);
+		m_terrain_editor.init(displacement_map, translation, size,
+			albedo_map, specular_map, gloss_map, height_map,
+			default_specular, default_gloss, default_height,
+			blend_size, use_blend_size_texture, use_specular_map,
+			use_gloss_map, use_height_map);
 
 		m_scene->set_terrain(m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
 			m_terrain_editor.get_dudv_map(),
 			m_terrain_editor.get_blend_map(),
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale_offset());
+			m_terrain_editor.get_dudv_scale_offset(),
+			m_terrain_editor.get_translation());
+	}
+
+	void EditorMapData::set_terrain_enabled(const bool enabled)
+	{
+		m_terrain_editor.set_enabled(enabled);
+	}
+
+	void EditorMapData::set_terrain_translation(
+		const glm::vec3 &translation)
+	{
+		m_terrain_editor.set_translation(translation);
+
+		m_scene->update_terrain_geometry_maps(
+			m_terrain_editor.get_displacement_map(),
+			m_terrain_editor.get_normal_tangent_map(),
+			m_terrain_editor.get_dudv_map(),
+			m_terrain_editor.get_translation());
 	}
 
 	void EditorMapData::set_focus(const glm::vec3 &focus) noexcept
@@ -820,13 +866,14 @@ namespace eternal_lands
 		return true;
 	}
 
-	void EditorMapData::save(const String &file_name) const
+	void EditorMapData::save(const AbstractProgressSharedPtr &progress,
+		const String &file_name) const
 	{
 		WriterSharedPtr writer;
 
 		writer = boost::make_shared<Writer>(file_name);
 
-		save(writer, mvt_1_1);
+		save(progress, writer, mvt_1_1);
 	}
 
 	void EditorMapData::import_terrain_height_map(const String &name)
@@ -842,7 +889,8 @@ namespace eternal_lands
 		m_scene->update_terrain_geometry_maps(
 			m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
-			m_terrain_editor.get_dudv_map());
+			m_terrain_editor.get_dudv_map(),
+			m_terrain_editor.get_translation());
 	}
 
 	void EditorMapData::import_terrain_blend_map(const String &name)
@@ -864,23 +912,29 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data,
 		const glm::vec4 &dudv_scale_offset,
-		const glm::uvec2 &size)
+		const glm::vec3 &translation, const glm::uvec2 &size)
 	{
 		m_terrain_editor.set(displacement_map, normal_tangent_map,
-			dudv_map, blend_map, albedo_maps, extra_maps,
-			material_data, dudv_scale_offset, size);
+			dudv_map, blend_map, albedo_maps, specular_maps,
+			gloss_maps, height_maps, material_data,
+			dudv_scale_offset, translation, size);
 
 		m_scene->set_terrain(m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
 			m_terrain_editor.get_dudv_map(),
 			m_terrain_editor.get_blend_map(),
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale_offset());
+			m_terrain_editor.get_dudv_scale_offset(),
+			m_terrain_editor.get_translation());
 	}
 
 	void EditorMapData::update_terrain_dudv()
@@ -888,7 +942,8 @@ namespace eternal_lands
 		m_scene->update_terrain_geometry_maps(
 			m_terrain_editor.get_displacement_map(),
 			m_terrain_editor.get_normal_tangent_map(),
-			m_terrain_editor.get_dudv_map());
+			m_terrain_editor.get_dudv_map(),
+			m_terrain_editor.get_translation());
 
 		m_scene->set_terrain_dudv_scale_offset(
 			m_terrain_editor.get_dudv_scale_offset());
@@ -903,7 +958,9 @@ namespace eternal_lands
 
 		m_scene->set_terrain_material(
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data());
 	}
 
@@ -916,7 +973,9 @@ namespace eternal_lands
 
 		m_scene->set_terrain_material(
 			m_terrain_editor.get_albedo_maps(),
-			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
 			m_terrain_editor.get_material_data());
 	}
 
@@ -948,8 +1007,9 @@ namespace eternal_lands
 			m_terrain_editor.get_blend_map());
 	}
 
-	void EditorMapData::save(const WriterSharedPtr &writer,
-		const MapVersionType version) const
+	void EditorMapData::save(const AbstractProgressSharedPtr &progress,
+		const WriterSharedPtr &writer, const MapVersionType version)
+		const
 	{
 		std::map<Uint32, EditorObjectDescription>::const_iterator
 			object_it, object_end;
@@ -963,7 +1023,7 @@ namespace eternal_lands
 		String dudv_map_name, blend_map_name;
 		glm::vec4 ground_hemisphere;
 		glm::uvec2 size;
-		BitSet64 use_blend_sizes;
+		BitSet64 mask;
 		Uint32 x, y, i, id, count;
 		Uint32 material_count, material_index;
 		Uint32 tile_map_offset;
@@ -988,7 +1048,6 @@ namespace eternal_lands
 		Uint32 terrain_offset;
 		Uint32 water_offset;
 		Uint16 dungeon;
-		Uint16 index;
 		IdType type;
 
 		map_name = FileSystem::get_name_without_extension(
@@ -1306,6 +1365,8 @@ namespace eternal_lands
 		{
 			terrain_offset = writer->get_position();
 
+			count = m_terrain_editor.get_used_layer_count();
+
 			CodecManager::save_image_as_dds_dxt10(
 				m_terrain_editor.get_displacement_map(),
 				displacement_map_name);
@@ -1316,7 +1377,7 @@ namespace eternal_lands
 				m_terrain_editor.get_dudv_map(),
 				dudv_map_name);
 			CodecManager::save_image_as_dds_dxt10(
-				m_terrain_editor.get_blend_map(),
+				m_terrain_editor.get_partial_blend_map(count),
 				blend_map_name);
 
 			displacement_map_name = FileSystem::get_file_name(
@@ -1342,48 +1403,71 @@ namespace eternal_lands
 			writer->write_float_le(
 				m_terrain_editor.get_dudv_scale_offset().w);
 
+			writer->write_float_le(
+				m_terrain_editor.get_translation().x);
+			writer->write_float_le(
+				m_terrain_editor.get_translation().y);
+			writer->write_float_le(
+				m_terrain_editor.get_translation().z);
+
 			writer->write_u32_le(m_terrain_editor.get_size().x);
 			writer->write_u32_le(m_terrain_editor.get_size().y);
 
-			writer->write_u32_le(m_terrain_editor.get_material_data(
-				).get_blend_datas().size() + 1);
+			writer->write_u32_le(count);
 
-			writer->write_u64_le(m_terrain_editor.get_material_data(
-				).get_use_blend_size_samplers().to_ulong());
-			writer->write_u64_le(m_terrain_editor.get_material_data(
-				).get_use_extra_maps().to_ulong());
-
-			index = 0;
-
-			BOOST_FOREACH(const BlendData &blend_data,
-				m_terrain_editor.get_material_data(
-				).get_blend_datas())
+			for (i = 0; i < count; ++i)
 			{
-				use_blend_sizes[index] = 
-					blend_data.get_use_blend_size();
-				index++;
+				mask[i] = true;
 			}
 
-			writer->write_u64_le(use_blend_sizes.to_ulong());
-
-			BOOST_FOREACH(const BlendData &blend_data,
+			writer->write_u64_le((
 				m_terrain_editor.get_material_data(
-					).get_blend_datas())
+					).get_use_blend_size_textures() &
+						mask).to_ulong());
+			writer->write_u64_le((
+				m_terrain_editor.get_material_data(
+					).get_use_specular_maps() &
+						mask).to_ulong());
+			writer->write_u64_le((
+				m_terrain_editor.get_material_data(
+					).get_use_gloss_maps() &
+						mask).to_ulong());
+			writer->write_u64_le((
+				m_terrain_editor.get_material_data(
+					).get_use_height_maps() &
+						mask).to_ulong());
+
+			for (i = 0; i < count; ++i)
 			{
 				writer->write_float_le(
-					blend_data.get_blend_size());
-			}
+					m_terrain_editor.get_default_specular(
+						i).r);
+				writer->write_float_le(
+					m_terrain_editor.get_default_specular(
+						i).g);
+				writer->write_float_le(
+					m_terrain_editor.get_default_specular(
+						i).b);
+				writer->write_float_le(
+					m_terrain_editor.get_default_gloss(i));
+				writer->write_float_le(
+					m_terrain_editor.get_default_height(
+						i));
+				writer->write_float_le(
+					m_terrain_editor.get_blend_size(i));
 
-			BOOST_FOREACH(const String &albedo_map,
-				m_terrain_editor.get_albedo_maps())
-			{
-				writer->write_utf8_string(albedo_map, 128);
-			}
-
-			BOOST_FOREACH(const String &extra_map,
-				m_terrain_editor.get_extra_maps())
-			{
-				writer->write_utf8_string(extra_map, 128);
+				writer->write_utf8_string(
+					m_terrain_editor.get_albedo_map(i),
+					128);
+				writer->write_utf8_string(
+					m_terrain_editor.get_specular_map(i),
+					128);
+				writer->write_utf8_string(
+					m_terrain_editor.get_gloss_map(i),
+					128);
+				writer->write_utf8_string(
+					m_terrain_editor.get_height_map(i),
+					128);
 			}
 		}
 

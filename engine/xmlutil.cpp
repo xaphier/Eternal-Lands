@@ -554,7 +554,7 @@ namespace eternal_lands
 			node->children->content);
 	}
 
-	Sint32 XmlUtil::get_sint32_value(const xmlNodePtr node)
+	Sint32 XmlUtil::get_s32_value(const xmlNodePtr node)
 	{
 		if (node == 0)
 		{
@@ -571,7 +571,7 @@ namespace eternal_lands
 		return boost::lexical_cast<Sint32>(node->children->content);
 	}
 
-	Uint32 XmlUtil::get_uint32_value(const xmlNodePtr node)
+	Uint32 XmlUtil::get_u32_value(const xmlNodePtr node)
 	{
 		if (node == 0)
 		{
@@ -588,7 +588,7 @@ namespace eternal_lands
 		return boost::lexical_cast<Uint32>(node->children->content);
 	}
 
-	Sint16 XmlUtil::get_sint16_value(const xmlNodePtr node)
+	Sint16 XmlUtil::get_s16_value(const xmlNodePtr node)
 	{
 		if (node == 0)
 		{
@@ -605,7 +605,7 @@ namespace eternal_lands
 		return boost::lexical_cast<Sint16>(node->children->content);
 	}
 
-	Uint16 XmlUtil::get_uint16_value(const xmlNodePtr node)
+	Uint16 XmlUtil::get_u16_value(const xmlNodePtr node)
 	{
 		if (node == 0)
 		{
@@ -959,6 +959,236 @@ namespace eternal_lands
 			<< errinfo_message(UTF8("Property not found"))
 			<< errinfo_item_name(property)
 			<< errinfo_parameter_name((char*)node->name));
+	}
+
+	FloatVector XmlUtil::get_float_vector(const xmlNodePtr node)
+	{
+		FloatVector result;
+		StringStream values_str;
+		String string;
+		std::vector<std::string> values;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return result;
+		}
+
+		values_str << node->children->content;
+		string = String(values_str.str());
+
+		boost::split(values, string.get(),
+			boost::is_any_of(UTF8("\n\t ")),
+			boost::token_compress_on);
+
+		BOOST_FOREACH(const std::string &value, values)
+		{
+			StringStream str;
+			float tmp;
+
+			if (value.empty())
+			{
+				continue;
+			}
+
+			str << value;
+			str >> tmp;
+
+			result.push_back(tmp);
+		}
+
+		return result;
+
+	}
+
+	Sint32Vector XmlUtil::get_s32_vector(const xmlNodePtr node)
+	{
+		Sint32Vector result;
+		StringStream values_str;
+		String string;
+		std::vector<std::string> values;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return result;
+		}
+
+		values_str << node->children->content;
+		string = String(values_str.str());
+
+		boost::split(values, string.get(),
+			boost::is_any_of(UTF8("\n\t ")),
+			boost::token_compress_on);
+
+		BOOST_FOREACH(const std::string &value, values)
+		{
+			StringStream str;
+			Sint32 tmp;
+
+			if (value.empty())
+			{
+				continue;
+			}
+
+			str << value;
+			str >> tmp;
+
+			result.push_back(tmp);
+		}
+
+		return result;
+
+	}
+
+	Sint16Vector XmlUtil::get_s16_vector(const xmlNodePtr node)
+	{
+		Sint16Vector result;
+		StringStream values_str;
+		String string;
+		std::vector<std::string> values;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return result;
+		}
+
+		values_str << node->children->content;
+		string = String(values_str.str());
+
+		boost::split(values, string.get(),
+			boost::is_any_of(UTF8("\n\t ")),
+			boost::token_compress_on);
+
+		BOOST_FOREACH(const std::string &value, values)
+		{
+			StringStream str;
+			Sint16 tmp;
+
+			if (value.empty())
+			{
+				continue;
+			}
+
+			str << value;
+			str >> tmp;
+
+			result.push_back(tmp);
+		}
+
+		return result;
+
+	}
+
+	Uint32Vector XmlUtil::get_u32_vector(const xmlNodePtr node)
+	{
+		Uint32Vector result;
+		StringStream values_str;
+		String string;
+		std::vector<std::string> values;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return result;
+		}
+
+		values_str << node->children->content;
+		string = String(values_str.str());
+
+		boost::split(values, string.get(),
+			boost::is_any_of(UTF8("\n\t ")),
+			boost::token_compress_on);
+
+		BOOST_FOREACH(const std::string &value, values)
+		{
+			StringStream str;
+			Uint32 tmp;
+
+			if (value.empty())
+			{
+				continue;
+			}
+
+			str << value;
+			str >> tmp;
+
+			result.push_back(tmp);
+		}
+
+		return result;
+
+	}
+
+	Uint16Vector XmlUtil::get_u16_vector(const xmlNodePtr node)
+	{
+		Uint16Vector result;
+		StringStream values_str;
+		String string;
+		std::vector<std::string> values;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return result;
+		}
+
+		values_str << node->children->content;
+		string = String(values_str.str());
+
+		boost::split(values, string.get(),
+			boost::is_any_of(UTF8("\n\t ")),
+			boost::token_compress_on);
+
+		BOOST_FOREACH(const std::string &value, values)
+		{
+			StringStream str;
+			Uint16 tmp;
+
+			if (value.empty())
+			{
+				continue;
+			}
+
+			str << value;
+			str >> tmp;
+
+			result.push_back(tmp);
+		}
+
+		return result;
+
 	}
 
 }

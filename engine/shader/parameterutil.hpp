@@ -82,7 +82,13 @@ namespace eternal_lands
 		pt_usampler1DArray,
 		pt_usampler2DArray,
 		pt_usampler2DRect,
-		pt_usamplerBuffer
+		pt_usamplerBuffer,
+		pt_sampler2DMultisample,
+		pt_sampler2DArrayMultisample,
+		pt_isampler2DMultisample,
+		pt_isampler2DArrayMultisample,
+		pt_usampler2DMultisample,
+		pt_usampler2DArrayMultisample
 	};
 	/**
 	 * @}

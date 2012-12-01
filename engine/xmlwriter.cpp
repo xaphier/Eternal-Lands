@@ -462,4 +462,114 @@ namespace eternal_lands
 		write_property(property, String(str.str()));
 	}
 
+	void XmlWriter::write_float_vector_element(const String &name,
+		const FloatVector &values)
+	{
+		StringStream str;
+		bool start;
+
+		start = true;
+
+		BOOST_FOREACH(const float value, values)
+		{
+			if (!start)
+			{
+				str << UTF8(" ");
+			}
+
+			str << value;
+			start = false;
+		}
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_s16_vector_element(const String &name,
+		const Sint16Vector &values)
+	{
+		StringStream str;
+		bool start;
+
+		start = true;
+
+		BOOST_FOREACH(const Sint16 value, values)
+		{
+			if (!start)
+			{
+				str << UTF8(" ");
+			}
+
+			str << value;
+			start = false;
+		}
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_s32_vector_element(const String &name,
+		const Sint32Vector &values)
+	{
+		StringStream str;
+		bool start;
+
+		start = true;
+
+		BOOST_FOREACH(const Sint32 value, values)
+		{
+			if (!start)
+			{
+				str << UTF8(" ");
+			}
+
+			str << value;
+			start = false;
+		}
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_u16_vector_element(const String &name,
+		const Uint16Vector &values)
+	{
+		StringStream str;
+		bool start;
+
+		start = true;
+
+		BOOST_FOREACH(const Uint16 value, values)
+		{
+			if (!start)
+			{
+				str << UTF8(" ");
+			}
+
+			str << value;
+			start = false;
+		}
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_u32_vector_element(const String &name,
+		const Uint32Vector &values)
+	{
+		StringStream str;
+		bool start;
+
+		start = true;
+
+		BOOST_FOREACH(const Uint32 value, values)
+		{
+			if (!start)
+			{
+				str << UTF8(" ");
+			}
+
+			str << value;
+			start = false;
+		}
+
+		write_element(name, String(str.str()));
+	}
+
 }

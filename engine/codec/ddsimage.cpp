@@ -726,7 +726,7 @@ namespace eternal_lands
 				case dds::DXGI_FORMAT_R10G10B10A2_UINT:
 					return tft_rgb10_a2_ui;
 				case dds::DXGI_FORMAT_R11G11B10_FLOAT:
-					return tft_r10f_b11f_g10f;
+					return tft_r11f_b11f_g10f;
 				case dds::DXGI_FORMAT_R8G8B8A8_UNORM:
 					return tft_rgba8;
 				case dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
@@ -930,7 +930,7 @@ namespace eternal_lands
 					flags = dds::DDPF_RGBA;
 					position = glm::uvec4(3, 2, 1, 0);
 					return true;
-				case tft_r10f_b11f_g10f:
+				case tft_r11f_b11f_g10f:
 					format = dds::DXGI_FORMAT_R11G11B10_FLOAT;
 					swap_size = 4;
 					flags = dds::DDPF_RGB;
@@ -2025,7 +2025,7 @@ namespace eternal_lands
 						rg_formats);
 					return;
 				case dds::DXGI_FORMAT_R11G11B10_FLOAT:
-					set_dxt10_format(tft_r10f_b11f_g10f,
+					set_dxt10_format(tft_r11f_b11f_g10f,
 						rg_formats);
 					return;
 				case dds::DXGI_FORMAT_R8G8B8A8_UNORM:
@@ -2776,7 +2776,7 @@ namespace eternal_lands
 		texture_formats.push_back(tft_rg32_i);
 		texture_formats.push_back(tft_rgb10_a2);
 		texture_formats.push_back(tft_rgb10_a2_ui);
-		texture_formats.push_back(tft_r10f_b11f_g10f);
+		texture_formats.push_back(tft_r11f_b11f_g10f);
 		texture_formats.push_back(tft_rgba8);
 		texture_formats.push_back(tft_srgb8_a8);
 		texture_formats.push_back(tft_rgba8_ui);

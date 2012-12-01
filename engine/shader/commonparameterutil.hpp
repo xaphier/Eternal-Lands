@@ -43,7 +43,7 @@ namespace eternal_lands
 		cpt_view_position,
 		cpt_albedo,
 		cpt_specular,
-		cpt_roughness,
+		cpt_gloss,
 		cpt_fragment_normal,
 		cpt_fog,
 		cpt_shadow_uvs,

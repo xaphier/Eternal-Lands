@@ -43,6 +43,9 @@
      <scale>1</scale>
     </parameter>
     <parameter>
+     <auto_parameter>terrain_translation</auto_parameter>
+    </parameter>
+    <parameter>
      <common_parameter>world_normal</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
@@ -67,7 +70,7 @@ morph_dir = fract(position.xy * 0.5) * instance_data_0.w;
 vertex_uv = instance_data_0.xy + position.xy * instance_data_0.z;
 morph_position = vec3(vertex_uv * terrain_lod_offset.w, 0);
 vertex_position = morph_position;
-morph_position.xy += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0)).xy;
+morph_position.xy += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0)).xy + terrain_translation.xy;
 dist = length(morph_position + terrain_lod_offset.xyz);
 morph = clamp(dist * instance_data_1.x + instance_data_1.y, 0.0, 1.0);
 vertex_uv += morph_dir * morph;
@@ -75,7 +78,7 @@ vertex_uv *= terrain_lod_offset.w;
 vertex_position = vec3(vertex_uv, 0.0);
 vertex_uv *= terrain_scale.zw;
 terrain_texture_coordinate = vertex_position.xy;
-vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0));
+vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0)) + terrain_translation.xyz;
 world_position = vertex_position;
 
 normal_tangent = textureLod(effect_sampler_9, vertex_uv, instance_data_1.z + morph);

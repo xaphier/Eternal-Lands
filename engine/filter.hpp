@@ -69,6 +69,7 @@ namespace eternal_lands
 			boost::array<GlslProgramSharedPtr, 64> m_programs;
 			boost::array<GlslProgramSharedPtr, 16>
 				m_multisample_programs;
+			boost::array<GlslProgramSharedPtr, 16> m_bloom_programs;
 
 			void build_filter(const GlslProgramCacheSharedPtr
 					&glsl_program_cache,
@@ -82,6 +83,12 @@ namespace eternal_lands
 				const Uint16 version,
 				const Uint16 channel_count,
 				const Uint16 sample_count);
+			void build_bloom_filter(
+				const GlslProgramCacheSharedPtr
+					&glsl_program_cache,
+				const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 mipmap_count);
 			static String get_vertex_str(const Uint16 version);
 			static String get_fragment_str(const Uint16 version,
 				const Uint16 channel_count,
@@ -95,6 +102,10 @@ namespace eternal_lands
 				const Uint16 version,
 				const Uint16 channel_count,
 				const Uint16 sample_count);
+			static String get_fragment_bloom_str(
+				const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 mipmap_count);
 
 			static inline Uint16 get_index(
 				const Uint16 channel_count,
@@ -131,10 +142,10 @@ namespace eternal_lands
 
 				assert(channel_count > 0);
 				assert(channel_count < 5);
-				assert((sample_count != 2) &&
-					(sample_count != 4) &&
-					(sample_count != 8) &&
-					(sample_count != 16));
+				assert((sample_count == 2) ||
+					(sample_count == 4) ||
+					(sample_count == 8) ||
+					(sample_count == 16));
 
 				result = channel_count - 1;
 
@@ -158,10 +169,10 @@ namespace eternal_lands
 			}
 
 		public:
-			Filter(const GlslProgramCacheSharedPtr
+			Filter(const GlobalVarsSharedPtr &global_vars,
+				const GlslProgramCacheSharedPtr
 					&glsl_program_cache,
-				const MeshCacheSharedPtr &mesh_cache,
-				const GlobalVarsSharedPtr &global_vars);
+				const MeshCacheSharedPtr &mesh_cache);
 			~Filter() noexcept;
 			void bind(const glm::vec4 &source,
 				const glm::vec4 &dest, const Uint32 width,
@@ -176,6 +187,11 @@ namespace eternal_lands
 				StateManager &state_manager);
 			void bind(const Uint16 channel_count,
 				const Uint16 sample_count,
+				StateManager &state_manager);
+			void bind_bloom_tone_mapping(const Uint32 width,
+				const Uint32 height,
+				const Uint16 channel_count,
+				const Uint16 mipmap_count,
 				StateManager &state_manager);
 
 	};

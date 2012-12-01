@@ -238,7 +238,6 @@ int engine_effect_debug = 0;
 int engine_use_multisample_shadows = engine_true;
 int engine_use_scene_fbo = engine_true;
 int engine_light_system = 0;
-int engine_use_linear_lighting = engine_true;
 int engine_use_multithreaded_culling = engine_true;
 char el2_data_dir[256] = { 0 }; /*!< the default directory where we look for el2 data files (aka installation dir) */
 
@@ -429,30 +428,6 @@ void change_engine_optmize_shader_source(int* var)
 {
 	*var = !*var;
 	engine_set_optmize_shader_source(*var);
-}
-
-void change_engine_use_linear_lighting(int* var)
-{
-	if (*var)
-	{
-		*var = engine_false;
-	}
-	else
-	{
-		if (!gl_extensions_loaded || GL_EXT_framebuffer_sRGB ||
-			GL_ARB_framebuffer_sRGB || engine_get_opengl_3_0() ||
-			(var == 0))
-		{
-			*var = engine_true;
-		}
-		else
-		{
-			*var = engine_false;
-			LOG_TO_CONSOLE(c_green2, "OpenGL 3.0, "
-				"GL_EXT_framebuffer_sRGB or "
-				"GL_ARB_framebuffer_sRGB needed");
-		}
-	}
 }
 
 void change_engine_use_multithreaded_culling(int* var)
@@ -1490,7 +1465,6 @@ void check_options()
 	check_option_var("use_simd");
 	check_option_var("use_s3tc_for_actors");
 	check_option_var("light_system");
-	check_option_var("use_linear_lighting");
 }
 
 int check_var (char *str, var_name_type type)
@@ -2045,10 +2019,9 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_multisample_shadows", "ums", &engine_use_multisample_shadows, change_engine_use_multisample_shadows, engine_true, "Use multisample shadows", "Use multisample shadows for better quality.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_scene_fbo", "usf", &engine_use_scene_fbo, change_engine_use_scene_fbo, engine_true, "Use scene fbo", "Use scene framebuffer object and blit it with framebuffer.", TROUBLESHOOT);
-	add_var(OPT_BOOL, "use_linear_lighting", "ull", &engine_use_linear_lighting, change_engine_use_linear_lighting, engine_true, "Use linear lighting fbo", "Use linear lighting. Needs client restart", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_multithreaded_culling", "umc", &engine_use_multithreaded_culling, change_engine_use_multithreaded_culling, engine_true, "Use multihreaded culling", "Use multiple threads for culling to increase performance.", TROUBLESHOOT);
 
-	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_tbn_matrix_0", "debug_tbn_matrix_1", "debug_tbn_matrix_2", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", "debug_packed_light_index", "debug_light_index", 0);
+	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_tbn_matrix_0", "debug_tbn_matrix_1", "debug_tbn_matrix_2", "debug_shadow", "debug_specular", "debug_gloss", "debug_emissive", "debug_diffuse_light", "debug_specular_light", "debug_packed_light_index", 0);
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

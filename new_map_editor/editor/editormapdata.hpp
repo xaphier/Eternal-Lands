@@ -73,7 +73,8 @@ namespace eternal_lands
 			Uint32 m_id;
 			RenderableType m_renderable;
 
-			void save(const WriterSharedPtr &writer,
+			void save(const AbstractProgressSharedPtr &progress,
+				const WriterSharedPtr &writer,
 				const MapVersionType version) const;
 			void change_selection(const Uint32 id,
 				const RenderableType renderable,
@@ -126,10 +127,17 @@ namespace eternal_lands
 			void set_terrain_blend_values(
 				const ImageValueVector &blend_values);
 			void set_terrain_material(const String &albedo_map,
-				const String &extra_map, const float blend_size,
-				const bool use_blend_size_sampler,
-				const bool use_blend_size,
-				const bool use_extra_map, const Uint16 index);
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map, const Uint16 index);
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
 			void use_object_id(const Uint32 id);
@@ -163,22 +171,41 @@ namespace eternal_lands
 				TextureFormatType &format, glm::uvec3 &sizes,
 				Uint16 &mipmaps, bool &cube_map, bool &array)
 				const;
-			void init_terrain(const glm::uvec2 &size,
-				const String &albedo_map,
-				const String &extra_map,
-				const bool use_blend_size_sampler,
-				const bool use_extra_map);
-			void init_terrain(const String &height_map_name,
+			void init_terrain(const glm::vec3 &translation,
 				const glm::uvec2 &size,
 				const String &albedo_map,
-				const String &extra_map,
-				const bool use_blend_size_sampler,
-				const bool use_extra_map);
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map);
+			void init_terrain(const String &height_map_name,
+				const glm::vec3 &translation,
+				const glm::uvec2 &size,
+				const String &albedo_map,
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map);
 			void set_focus(const glm::vec3 &focus) noexcept;
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
 			double get_depth() const;
-			void save(const String &file_name) const;
+			void save(const AbstractProgressSharedPtr &progress,
+				const String &file_name) const;
 			void draw_selection(const glm::uvec4 &selection_rect);
 			bool get_water_vertex(const glm::vec3 &start_position,
 				const glm::vec3 &world_position,
@@ -191,9 +218,12 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data,
 				const glm::vec4 &dudv_scale_offset,
+				const glm::vec3 &translation,
 				const glm::uvec2 &size);
 			void update_terrain_dudv();
 			glm::vec3 get_map_min() const;
@@ -206,6 +236,14 @@ namespace eternal_lands
 			void fill_terrain_blend_layer(const float strength,
 				const BlendEffectType effect,
 				const Uint16 layer);
+			void set_terrain_enabled(const bool enabled);
+			void set_terrain_translation(
+				const glm::vec3 &translation);
+
+			inline const glm::vec3 &get_terrain_translation() const
+			{
+				return m_terrain_editor.get_translation();
+			}
 
 			inline glm::vec3 get_terrain_displacement(
 				const glm::uvec2 &vertex) const
@@ -262,15 +300,20 @@ namespace eternal_lands
 			}
 
 			inline void get_terrain_material(String &albedo_map,
-				String &extra_map, float &blend_size,
-				bool &use_blend_size_sampler,
-				bool &use_blend_size, bool &use_extra_map,
-				const Uint16 index) const
+				String &specular_map, String &gloss_map,
+				String &height_map, glm::vec3 &default_specular,
+				float &default_gloss, float &default_height,
+				float &blend_size, bool &use_blend_size_texture,
+				bool &use_specular_map, bool &use_gloss_map,
+				bool &use_height_map, const Uint16 index) const
 			{
 				m_terrain_editor.get_material(albedo_map,
-					extra_map, blend_size,
-					use_blend_size_sampler, use_blend_size,
-					use_extra_map, index);
+					specular_map, gloss_map, height_map,
+					default_specular, default_gloss,
+					default_height, blend_size,
+					use_blend_size_texture,
+					use_specular_map, use_gloss_map,
+					use_height_map, index);
 			}
 
 			inline void get_terrain_displacement_values(

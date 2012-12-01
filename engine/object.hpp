@@ -15,7 +15,6 @@
 #include "prerequisites.hpp"
 #include "boundedobject.hpp"
 #include "objectdata.hpp"
-#include "loddata.hpp"
 
 /**
  * @file
@@ -66,14 +65,6 @@ namespace eternal_lands
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
 				const MaterialSharedPtrVector &materials);
-
-			/**
-			 * Default constructor.
-			 */
-			Object(const ObjectData &object_data,
-				const AbstractMeshSharedPtr &mesh,
-				const MaterialSharedPtrVector &materials,
-				const LodData &lod_data);
 
 			/**
 			 * Default constructor.

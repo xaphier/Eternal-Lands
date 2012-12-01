@@ -165,31 +165,39 @@ namespace eternal_lands
 			BoundingBox get_bounding_box() const;
 			void add_particle(const ParticleData &particle);
 			glm::vec4 get_terrain_size_data() const;
+			glm::vec3 get_terrain_translation() const;
 			glm::vec2 get_terrain_size() const;
 			void set_clipmap_terrain_texture(
+				const TextureSharedPtr &texture);
+			void set_clipmap_terrain_specular_gloss_texture(
 				const TextureSharedPtr &texture);
 			void set_clipmap_terrain_normal_texture(
 				const TextureSharedPtr &texture);
 			void set_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void set_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
 			void update_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void update_terrain_blend_map(
 				const ImageSharedPtr &blend_map,
 				const BitSet64 &layers);
 			void set_terrain_material(
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data);
 			bool get_terrain() const;
-			const MaterialSharedPtr &get_clipmap_terrain_material()
-				const;
+			const MaterialSharedPtr &get_clipmap_terrain_material(
+				const bool write_height,
+				const bool write_specular_gloss) const;
 			const MaterialSharedPtr &get_terrain_material() const;
 			void set_terrain_dudv_scale_offset(
 				const glm::vec4 &dudv_scale_offset);
@@ -237,9 +245,9 @@ namespace eternal_lands
 			inline void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height)
 			{
-				RANGE_CECK_MAX(x, m_height_map.shape()[0],
+				RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_height_map.shape()[1],
+				RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
 				m_height_map[x][y] = height;
@@ -248,9 +256,9 @@ namespace eternal_lands
 			inline Uint16 get_height(const Uint16 x, const Uint16 y)
 				const
 			{
-				RANGE_CECK_MAX(x, m_height_map.shape()[0],
+				RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_height_map.shape()[1],
+				RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
 				return m_height_map[x][y];
@@ -259,9 +267,11 @@ namespace eternal_lands
 			inline float get_walk_height(const Uint16 x,
 				const Uint16 y) const
 			{
-				RANGE_CECK_MAX(x, m_walk_height_map.shape()[0],
+				RANGE_CECK_MAX(x,
+					m_walk_height_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_walk_height_map.shape()[1],
+				RANGE_CECK_MAX(y,
+					m_walk_height_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
 				return m_walk_height_map[x][y];
@@ -286,9 +296,9 @@ namespace eternal_lands
 			inline void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile)
 			{
-				RANGE_CECK_MAX(x, m_tile_map.shape()[0],
+				RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_tile_map.shape()[1],
+				RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
 				m_tile_map[x][y] = tile;
@@ -297,9 +307,9 @@ namespace eternal_lands
 			inline Uint16 get_tile(const Uint16 x, const Uint16 y)
 				const
 			{
-				RANGE_CECK_MAX(x, m_tile_map.shape()[0],
+				RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_tile_map.shape()[1],
+				RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
 				return m_tile_map[x][y];

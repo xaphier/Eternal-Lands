@@ -325,17 +325,28 @@ namespace eternal_lands
 
 	glm::vec4 Map::get_terrain_size_data() const
 	{
-		return m_terrain->get_terrain_size_data();
+		return m_terrain->get_size_data();
+	}
+
+	glm::vec3 Map::get_terrain_translation() const
+	{
+		return m_terrain->get_translation();
 	}
 
 	glm::vec2 Map::get_terrain_size() const
 	{
-		return m_terrain->get_terrain_size();
+		return m_terrain->get_size();
 	}
 
 	void Map::set_clipmap_terrain_texture(const TextureSharedPtr &texture)
 	{
 		m_terrain->set_clipmap_texture(texture);
+	}
+
+	void Map::set_clipmap_terrain_specular_gloss_texture(
+		const TextureSharedPtr &texture)
+	{
+		m_terrain->set_clipmap_specular_gloss_texture(texture);
 	}
 
 	void Map::set_clipmap_terrain_normal_texture(
@@ -347,10 +358,10 @@ namespace eternal_lands
 	void Map::set_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
 	{
 		m_terrain->set_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map);
+			normal_tangent_map, dudv_map, translation);
 
 		init_walk_height_map(displacement_map->decompress(false, true,
 			false));
@@ -364,10 +375,10 @@ namespace eternal_lands
 	void Map::update_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
 	{
 		m_terrain->update_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map);
+			normal_tangent_map, dudv_map, translation);
 	}
 
 	void Map::update_terrain_blend_map(const ImageSharedPtr &blend_map,
@@ -377,30 +388,65 @@ namespace eternal_lands
 	}
 
 	void Map::set_terrain_material(const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data)
 	{
-		TerrainMaterialData material_data_no_extra;
+		TerrainMaterialData tmp_material_data;
 		EffectSharedPtr effect;
 
-		m_terrain->set_texture_maps(albedo_maps, extra_maps,
-			material_data.get_use_blend_size_samplers(),
-			material_data.get_use_extra_maps(),
+		m_terrain->set_texture_maps(albedo_maps, specular_maps,
+			gloss_maps, height_maps,
+			material_data.get_use_blend_size_textures(),
+			material_data.get_use_specular_maps(),
+			material_data.get_use_gloss_maps(),
+			material_data.get_use_height_maps(),
 			get_texture_cache());
 
-		material_data_no_extra = material_data;
-		material_data_no_extra.set_use_extra_maps(0);
+		if (!get_global_vars()->get_opengl_3_0())
+		{
+			tmp_material_data = material_data;
+			tmp_material_data.set_write_height(false);
+			tmp_material_data.set_write_specular_gloss(false);
 
-		effect = get_terrain_builder()->get_effect(get_name(),
-			material_data_no_extra);
+			m_terrain->set_effect(effect, true, true);
+			m_terrain->set_effect(effect, false, true);
+			m_terrain->set_effect(effect, true, false);
+			m_terrain->set_effect(effect, false, false);
 
-		m_terrain->set_effect(effect, qt_low);
-		m_terrain->set_effect(effect, qt_medium);
+			return;
+		}
 
 		effect = get_terrain_builder()->get_effect(get_name(),
 			material_data);
 
-		m_terrain->set_effect(effect, qt_high);
+		m_terrain->set_effect(effect, true, true);
+
+		tmp_material_data = material_data;
+		tmp_material_data.set_write_height(false);
+
+		effect = get_terrain_builder()->get_effect(get_name(),
+			tmp_material_data);
+
+		m_terrain->set_effect(effect, false, true);
+
+		tmp_material_data = material_data;
+		tmp_material_data.set_write_specular_gloss(false);
+
+		effect = get_terrain_builder()->get_effect(get_name(),
+			tmp_material_data);
+
+		m_terrain->set_effect(effect, true, false);
+
+		tmp_material_data = material_data;
+		tmp_material_data.set_write_height(false);
+		tmp_material_data.set_write_specular_gloss(false);
+
+		effect = get_terrain_builder()->get_effect(get_name(),
+			tmp_material_data);
+
+		m_terrain->set_effect(effect, false, false);
 	}
 
 	bool Map::get_terrain() const
@@ -408,14 +454,16 @@ namespace eternal_lands
 		return !m_terrain->get_empty();
 	}
 
-	const MaterialSharedPtr &Map::get_clipmap_terrain_material() const
+	const MaterialSharedPtr &Map::get_clipmap_terrain_material(
+		const bool write_height, const bool write_specular_gloss) const
 	{
-		return m_terrain->get_clipmap_terrain_material();
+		return m_terrain->get_clipmap_material(write_height,
+			write_specular_gloss);
 	}
 
 	const MaterialSharedPtr &Map::get_terrain_material() const
 	{
-		return m_terrain->get_terrain_material();
+		return m_terrain->get_material();
 	}
 
 	void Map::set_terrain_dudv_scale_offset(

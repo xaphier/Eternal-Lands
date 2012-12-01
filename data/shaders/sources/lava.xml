@@ -18,34 +18,56 @@
      <type>sampler2D</type>
     </parameter>
     <parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>gloss</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <name>uv</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>3</scale>
     </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
    </parameters>
-   <source>{
-	vec4 noise;
-	vec3 color;
-	vec2 tmp_uv[2];
-	float p;
+   <source>vec4 noise;
+vec3 color;
+vec2 tmp_uv[2];
+float p;
 
-	noise = texture(effect_sampler_1, uv[0]);
+noise = texture(effect_sampler_1, uv[0]);
 
-	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
-	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
+tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
+tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture(effect_sampler_1, tmp_uv[0]).a;
-	color = texture(effect_sampler_0, tmp_uv[1]).rgb;
-	color = color * p * 2.0 + color * color - 0.1;
+p = texture(effect_sampler_1, tmp_uv[0]).a;
+color = texture(effect_sampler_0, tmp_uv[1]).rgb;
+color = color * p * 2.0 + color * color - 0.1;
 
-	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
-	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
-	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
+color.bg += clamp(color.r - 2.0, 0.0, 1.0);
+color.rb += clamp(color.g - 1.0, 0.0, 1.0);
+color.rg += clamp(color.b - 1.0, 0.0, 1.0);
 
-	albedo = vec4(color, 1.0);
-}
+albedo = vec4(color, 1.0);
+emission = vec3(0.0);
+specular = vec3(0.0);
+gloss = 0.0;
+fragment_normal = normalize(world_normal);
 </source>
    <version>130</version>
    <shader_types>fragment</shader_types>
@@ -65,34 +87,56 @@
      <type>sampler2D</type>
     </parameter>
     <parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>gloss</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <name>uv</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>3</scale>
     </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
    </parameters>
-   <source>{
-	vec4 noise;
-	vec3 color;
-	vec2 tmp_uv[2];
-	float p;
+   <source>vec4 noise;
+vec3 color;
+vec2 tmp_uv[2];
+float p;
 
-	noise = texture2D(effect_sampler_1, uv[0]);
+noise = texture2D(effect_sampler_1, uv[0]);
 
-	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
-	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
+tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
+tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture2D(effect_sampler_1, tmp_uv[0]).a;
-	color = texture2D(effect_sampler_0, tmp_uv[1]).rgb;
-	color = color * p * 2.0 + color * color - 0.1;
+p = texture2D(effect_sampler_1, tmp_uv[0]).a;
+color = texture2D(effect_sampler_0, tmp_uv[1]).rgb;
+color = color * p * 2.0 + color * color - 0.1;
 
-	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
-	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
-	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
+color.bg += clamp(color.r - 2.0, 0.0, 1.0);
+color.rb += clamp(color.g - 1.0, 0.0, 1.0);
+color.rg += clamp(color.b - 1.0, 0.0, 1.0);
 
-	albedo = vec4(color, 1.0);
-}
+albedo = vec4(color, 1.0);
+emission = vec3(0.0);
+specular = vec3(0.0);
+gloss = 0.0;
+fragment_normal = normalize(world_normal);
 </source>
    <version>120</version>
    <shader_types>fragment</shader_types>

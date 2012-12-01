@@ -16,6 +16,7 @@
 #include "allterraintexturesdialog.hpp"
 #include "loadmapdialog.hpp"
 #include "initterraindialog.hpp"
+#include "terraintranslationdialog.hpp"
 #include "terraintexturedata.hpp"
 #include "qprogress.hpp"
 #include "nodes/texturedialog.hpp"
@@ -31,13 +32,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 	private:
 		enum TextureLayerRoles
 		{
-			tlr_index = Qt::UserRole,
-			tlr_albedo_map = Qt::UserRole + 1,
-			tlr_extra_map = Qt::UserRole + 2,
-			tlr_blend_size = Qt::UserRole + 3,
-			tlr_use_blend_size_sampler = Qt::UserRole + 4,
-			tlr_use_blend_size = Qt::UserRole + 5,
-			tlr_use_extra_map = Qt::UserRole + 6
+			tlr_index = Qt::UserRole + 128
 		};
 
 		QVector<QObject*> m_object_witdgets;
@@ -59,6 +54,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		AllTerrainTexturesDialog* m_all_terrain_textures;
 		LoadMapDialog* m_load_map;
 		InitTerrainDialog* m_init_terrain;
+		TerrainTranslationDialog* m_terrain_translation;
 		QString m_file_name;
 		QAction* action_move_l;
 		QAction* action_move_r;
@@ -111,14 +107,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		bool check_save_nodes();
 		void set_terrain_blend_data();
 		void set_dirs();
-		QIcon get_terrain_texture_icon(const QString &albedo_map,
-			const QString &extra_map,
-			const bool use_blend_size_sampler,
-			const bool use_extra_map);
-		bool get_terrain_texture_data(const QString &name, QIcon &icon,
-			QString &albedo_map, QString &extra_map,
-			bool &use_blend_size_sampler, bool &use_extra_map)
-			const;
+		bool get_terrain_texture_icon(
+			TerrainTextureData &terrain_texture_data);
+		bool get_terrain_texture_data(const QString &name,
+			TerrainTextureData &terrain_texture_data) const;
+		QColor get_light_color() const;
 
 	private slots:
 		void update_object();
@@ -192,6 +185,9 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void terrain_normal(const QVector3D &normal);
 		void replace_all_copies_of_object();
 		void fill_terrain_blend_layer();
+		void change_light_power();
+		void change_terrain_translation();
+		void remove_terrain();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);
@@ -203,8 +199,12 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 	signals:
 		void get_albedo_map_data(const QString &name,
 			const QSize &icon_size,	const QSize &image_size,
-			QIcon &icon, bool &use_blend_size_sampler, bool &ok);
-		void get_extra_map_data(const QString &name,
+			QIcon &icon, bool &use_blend_size_texture, bool &ok);
+		void get_specular_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_gloss_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_height_map_data(const QString &name,
 			const QSize &image_size, bool &ok);
 
 };

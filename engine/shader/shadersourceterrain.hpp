@@ -37,12 +37,27 @@ namespace eternal_lands
 				const Uint16 index, const bool use_glsl_130,
 				OutStream &str) const;
 			void write_mix_result(const String &indent,
-				const bool use_extra_map, OutStream &str) const;
+				const bool write_height,
+				const bool write_specular_gloss, OutStream &str)
+				const;
 			void write_albedo_fetch(const String &indent,
 				const Uint16 index, const bool use_glsl_130,
 				OutStream &str) const;
-			void write_extra_fetch(const String &indent,
+			void write_height_fetch(const String &indent,
 				const Uint16 index, OutStream &str) const;
+			void write_specular_fetch(const String &indent,
+				const Uint16 index, OutStream &str) const;
+			void write_gloss_fetch(const String &indent,
+				const Uint16 index, OutStream &str) const;
+			void write_height_value(const String &indent,
+				const Uint16 index, OutStream &str,
+				Uint16 &texture_index) const;
+			void write_specular_value(const String &indent,
+				const Uint16 index, OutStream &str,
+				Uint16 &texture_index) const;
+			void write_gloss_value(const String &indent,
+				const Uint16 index, OutStream &str,
+				Uint16 &texture_index) const;
 			virtual ShaderSourceParameterVector get_parameters(
 				const ShaderType shader_type,
 				const ShaderVersionType version) const;
@@ -54,6 +69,8 @@ namespace eternal_lands
 			virtual void do_save_xml(
 				const XmlWriterSharedPtr &xml_writer) const
 				override;
+			void load_layer_xml(const xmlNodePtr node,
+				const Uint32 index);
 
 		public:
 			ShaderSourceTerrain();
@@ -62,11 +79,20 @@ namespace eternal_lands
 			virtual bool get_has_data(const ShaderType shader_type,
 				const ShaderVersionType version) const override;
 			static String get_xml_id();
-			static Uint32 get_non_array_albedo_sampler_count();
-			static Uint32 get_non_array_blend_sampler_count();
+			static Uint32 get_non_array_albedo_sampler_count()
+				noexcept;
+			static Uint32 get_non_array_blend_sampler_count()
+				noexcept;
 			static SamplerParameterType get_albedo_sampler(
 				const Uint16 index);
-			static SamplerParameterType get_extra_sampler();
+			static SamplerParameterType get_albedo_array_sampler(
+				const bool use_blend_size_texture) noexcept;
+			static SamplerParameterType get_height_sampler()
+				noexcept;
+			static SamplerParameterType get_specular_sampler()
+				noexcept;
+			static SamplerParameterType get_gloss_sampler()
+				noexcept;
 			static SamplerParameterType get_blend_sampler(
 				const Uint16 index);
 
@@ -80,123 +106,6 @@ namespace eternal_lands
 				const TerrainMaterialData &material_data)
 			{
 				m_material_data = material_data;
-			}
-
-			inline bool get_use_any_blend_size_sampler() const
-			{
-				return m_material_data.
-					get_use_any_blend_size_sampler();
-			}
-
-			inline bool get_use_any_none_blend_size_sampler() const
-			{
-				return m_material_data.
-					get_use_any_none_blend_size_sampler();
-			}
-
-			inline bool get_use_any_extra_map() const
-			{
-				return m_material_data.get_use_any_extra_map();
-			}
-
-			inline Uint32 get_blend_datas_size() const
-			{
-				return m_material_data.get_blend_datas_size();
-			}
-
-			inline void resize(const Uint16 size)
-			{
-				m_material_data.resize(size);
-			}
-
-			inline void clear()
-			{
-				m_material_data.clear();
-			}
-
-			inline const BlendData &get_blend_data(
-				const Uint16 index) const
-			{
-				return m_material_data.get_blend_data(index);
-			}
-
-			inline void set_blend_data(
-				const BlendData &blend_data,
-				const Uint16 index)
-			{
-				m_material_data.set_blend_data(blend_data,
-					index);
-			}
-
-			inline void append_blend_data(
-				const BlendData &blend_data)
-			{
-				m_material_data.append_blend_data(blend_data);
-			}
-
-			inline const BlendDataVector &get_blend_datas()
-				const
-			{
-				return m_material_data.get_blend_datas();
-			}
-
-			inline void set_blend_datas(
-				const BlendDataVector &blend_datas)
-			{
-				m_material_data.set_blend_datas(blend_datas);
-			}
-
-			inline bool get_use_extra_map(const Uint16 index) const
-			{
-				return m_material_data.get_use_extra_map(index);
-			}
-
-			inline const BitSet64 &get_use_extra_maps() const
-			{
-				return m_material_data.get_use_extra_maps();
-			}
-
-			inline void set_use_extra_map(const bool use_extra_map,
-				const Uint16 index)
-			{
-				m_material_data.set_use_extra_map(
-					use_extra_map, index);
-			}
-
-			inline void set_use_extra_maps(
-				const BitSet64 &use_extra_maps)
-			{
-				m_material_data.set_use_extra_maps(
-					use_extra_maps);
-			}
-
-			inline bool get_use_blend_size_sampler(
-				const Uint16 index) const
-			{
-				return m_material_data.
-					get_use_blend_size_sampler(index);
-			}
-
-			inline const BitSet64 &get_use_blend_size_samplers()
-				const
-			{
-				return m_material_data.
-					get_use_blend_size_samplers();
-			}
-
-			inline void set_use_blend_size_sampler(
-				const bool use_blend_size_sampler,
-				const Uint16 index)
-			{
-				m_material_data.set_use_blend_size_sampler(
-					use_blend_size_sampler, index);
-			}
-
-			inline void set_use_blend_size_samplers(
-				const BitSet64 &use_blend_size_samplers)
-			{
-				m_material_data.set_use_blend_size_samplers(
-					use_blend_size_samplers);
 			}
 
 	};

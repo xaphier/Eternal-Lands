@@ -108,7 +108,7 @@ namespace eternal_lands
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("id")) == 0)
 			{
-				m_id = XmlUtil::get_uint32_value(it);
+				m_id = XmlUtil::get_u32_value(it);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("position")) == 0)

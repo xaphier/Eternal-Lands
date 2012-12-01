@@ -105,7 +105,6 @@ void ELPreviewWidget::initializeGL()
 	m_global_vars->set_effect_debug(false);
 	m_global_vars->set_use_scene_fbo(false);
 	m_global_vars->set_use_cpu_rasterizer(false);
-	m_global_vars->set_use_linear_lighting(false);
 	m_global_vars->set_use_multithreaded_culling(false);
 
 	m_scene = new Scene(m_global_vars, m_file_system);

@@ -19,6 +19,7 @@
 #include "undo/displacementvaluemodification.hpp"
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
+#include "undo/terraintranslationmodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -115,27 +116,61 @@ namespace eternal_lands
 		m_undo.add(modification);
 	}
 
-	void Editor::set_terrain_material(const String &albedo_map,
-		const String &extra_map, const float blend_size,
-		const bool use_blend_size_sampler, const bool use_blend_size,
-		const bool use_extra_map, const Uint16 index)
+	void Editor::set_terrain_translation(const glm::vec3 &translation)
 	{
-		String old_albedo_map, old_extra_map;
-		float old_blend_size;
-		bool old_use_blend_size_sampler, old_use_blend_size;
-		bool old_use_extra_map;
+		if (translation == get_terrain_translation())
+		{
+			return;
+		}
 
-		get_terrain_material(old_albedo_map, old_extra_map,
-			old_blend_size, old_use_blend_size_sampler,
-			old_use_blend_size, old_use_extra_map, index);
+		if (add_needed(0, mt_terrain_translation_changed))
+		{
+			ModificationAutoPtr modification(new
+				TerrainTranslationModification(
+					get_terrain_translation(),
+					mt_terrain_translation_changed,
+					get_edit_id()));
+
+			m_undo.add(modification);
+		}
+
+		m_data.set_terrain_translation(translation);
+	}
+
+	void Editor::set_terrain_material(const String &albedo_map,
+		const String &specular_map, const String &gloss_map,
+		const String &height_map, const glm::vec3 &default_specular,
+		const float default_gloss, const float default_height,
+		const float blend_size, const bool use_blend_size_texture,
+		const bool use_specular_map, const bool use_gloss_map,
+		const bool use_height_map, const Uint16 index)
+	{
+		String old_albedo_map, old_specular_map, old_gloss_map;
+		String old_height_map;
+		glm::vec3 old_default_specular;
+		float old_default_gloss, old_default_height, old_blend_size;
+		bool old_use_blend_size_texture, old_use_specular_map;
+		bool old_use_gloss_map, old_use_height_map;
+
+		get_terrain_material(old_albedo_map, old_specular_map,
+			old_gloss_map, old_height_map, old_default_specular,
+			old_default_gloss, old_default_height, old_blend_size,
+			old_use_blend_size_texture, old_use_specular_map,
+			old_use_gloss_map, old_use_height_map, index);
 
 		if ((old_albedo_map == albedo_map) &&
-			(old_extra_map == extra_map) &&
+			(old_specular_map == specular_map) &&
+			(old_gloss_map == gloss_map) &&
+			(old_height_map == height_map) &&
+			(old_default_specular == default_specular) &&
+			(old_default_gloss == default_gloss) &&
+			(old_default_height == default_height) &&
 			(old_blend_size == blend_size) &&
-			(old_use_blend_size_sampler ==
-				use_blend_size_sampler) &&
-			(old_use_blend_size == use_blend_size) &&
-			(old_use_extra_map == use_extra_map))
+			(old_use_blend_size_texture ==
+				use_blend_size_texture) &&
+			(old_use_specular_map == use_specular_map) &&
+			(old_use_gloss_map == use_gloss_map) &&
+			(old_use_height_map == use_height_map))
 		{
 			return;
 		}
@@ -144,17 +179,23 @@ namespace eternal_lands
 		{
 			ModificationAutoPtr modification(new
 				TerrainMaterialModification(old_albedo_map,
-					old_extra_map, old_blend_size,
-					old_use_blend_size_sampler,
-					old_use_blend_size, old_use_extra_map,
+					old_specular_map, old_gloss_map,
+					old_height_map, old_default_specular,
+					old_default_gloss, old_default_height,
+					old_blend_size,
+					old_use_blend_size_texture,
+					old_use_specular_map,
+					old_use_gloss_map, old_use_height_map,
 					index, mt_terrain_material_changed,
 					get_edit_id()));
 
 			m_undo.add(modification);
 		}
 
-		m_data.set_terrain_material(albedo_map, extra_map, blend_size,
-			use_blend_size_sampler, use_blend_size, use_extra_map,
+		m_data.set_terrain_material(albedo_map, specular_map,
+			gloss_map, height_map, default_specular, default_gloss,
+			default_height, blend_size, use_blend_size_texture,
+			use_specular_map, use_gloss_map, use_height_map,
 			index);
 	}
 

@@ -168,10 +168,9 @@ namespace eternal_lands
 
 	VECTOR(Uint16);
 	VECTOR(Uint32);
+	VECTOR(Sint16);
 	VECTOR(Sint32);
 	VECTOR(String);
-	VECTOR(Uint16Array2);
-	VECTOR(Uint32Array2);
 
 	VECTOR_NAME(glm::ivec4, Ivec4);
 	VECTOR_NAME(glm::ivec3, Ivec3);
@@ -213,12 +212,10 @@ namespace eternal_lands
 	class ActorTextureBuilder;
 	class AngelScript;
 	class Atlas;
-	class BlendData;
 	class BoundedObject;
 	class BoundingBox;
 	class CdLodQuadTree;
 	class ClipmapTerrain;
-	class ClipmapTerrainData;
 	class ColorCorrection;
 	class ConvexBody;
 	class CpuRasterizer;
@@ -463,7 +460,6 @@ namespace eternal_lands
 
 	VECTOR(AbstractReadWriteMemorySharedPtr);
 	VECTOR(ActorSharedPtr);
-	VECTOR(BlendData);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
 	VECTOR(ConvexBody);
@@ -564,6 +560,23 @@ namespace eternal_lands
 	typedef std::set<boost::uuids::uuid> UuidSet;
 
 	typedef boost::shared_array<double> DoubleSharedArray;
+
+	template<typename T>
+	inline String to_string(const std::vector<T> &value)
+	{
+		StringStream str;
+		Uint32 i, count;
+
+		count = value.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			str << UTF8("[") << i << UTF8("] ") << value[i];
+			str << std::endl;
+		}
+
+		return String(str.str());
+	}
 
 }
 

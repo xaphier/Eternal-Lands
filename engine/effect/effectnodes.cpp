@@ -490,7 +490,7 @@ namespace eternal_lands
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("ids")) == 0)
 			{
-				m_ids = XmlUtil::get_uint32_value(it);
+				m_ids = XmlUtil::get_u32_value(it);
 			}
 
 			if (xmlStrcmp(it->name,	BAD_CAST UTF8("nodes")) == 0)

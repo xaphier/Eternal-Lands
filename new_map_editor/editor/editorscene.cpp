@@ -51,9 +51,11 @@ namespace eternal_lands
 
 	EditorScene::EditorScene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
-		Scene(global_vars, file_system), m_draw_objects(true),
-		m_draw_terrain(true), m_draw_lights(false),
-		m_draw_light_spheres(false)
+		Scene(global_vars, file_system), m_depth(-1.0f),
+		m_selected_object(std::numeric_limits<Uint32>::max()),
+		m_draw_objects(true), m_draw_terrain(true),
+		m_draw_lights(false), m_draw_light_spheres(false),
+		m_draw_heights(false), m_querie_id(0)
 	{
 		MaterialDescription material_description;
 
@@ -72,6 +74,8 @@ namespace eternal_lands
 		m_height_tree.reset(new RStarTree());
 
 		glGenQueries(1, &m_querie_id);
+
+		set_center_at_focus(true);
 	}
 
 	EditorScene::~EditorScene() throw()
@@ -334,10 +338,10 @@ namespace eternal_lands
 	void EditorScene::set_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
 	{
 		get_map()->set_terrain_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map);
+			normal_tangent_map, dudv_map, translation);
 	}
 
 	void EditorScene::set_terrain_blend_map(
@@ -348,21 +352,23 @@ namespace eternal_lands
 	}
 
 	void EditorScene::set_terrain_material(const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data)
 	{
-		get_map()->set_terrain_material(albedo_maps, extra_maps,
-			material_data);
+		get_map()->set_terrain_material(albedo_maps, specular_maps,
+			gloss_maps, height_maps, material_data);
 		rebuild_terrain_map();
 	}
 
 	void EditorScene::update_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
 	{
 		get_map()->update_terrain_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map);
+			normal_tangent_map, dudv_map, translation);
 		rebuild_terrain_map();
 	}
 
@@ -385,17 +391,20 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec4 &dudv_scale_offset)
+		const glm::vec4 &dudv_scale_offset,
+		const glm::vec3 &translation)
 	{
 		get_map()->set_terrain_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map);
+			normal_tangent_map, dudv_map, translation);
 
 		get_map()->set_terrain_blend_map(blend_map);
 
-		get_map()->set_terrain_material(albedo_maps, extra_maps,
-			material_data);
+		get_map()->set_terrain_material(albedo_maps, specular_maps,
+			gloss_maps, height_maps, material_data);
 
 		get_map()->set_terrain_dudv_scale_offset(dudv_scale_offset);
 

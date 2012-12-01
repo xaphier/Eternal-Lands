@@ -16,6 +16,12 @@ InitTerrainDialog::InitTerrainDialog(QWidget *parent): QDialog(parent)
 		SLOT(change_height_map_toggle(const bool)));
 	QObject::connect(height_map_change, SIGNAL(clicked()), this,
 		SLOT(change_height_map()));
+	QObject::connect(translation_x, SIGNAL(valueChanged(const double)),
+		this, SLOT(change_translation()));
+	QObject::connect(translation_y, SIGNAL(valueChanged(const double)),
+		this, SLOT(change_translation()));
+	QObject::connect(translation_z, SIGNAL(valueChanged(const double)),
+		this, SLOT(change_translation()));
 
 	change_patches();
 }
@@ -96,6 +102,12 @@ void InitTerrainDialog::change_patches()
 
 	size_x->setText(QString::number(fx) + tr("m"));
 	size_y->setText(QString::number(fy) + tr("m"));
+}
+
+void InitTerrainDialog::change_translation()
+{
+	m_translation = QVector3D(translation_x->value(),
+		translation_y->value(), translation_z->value());
 }
 
 QString InitTerrainDialog::get_height_map() const

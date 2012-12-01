@@ -18,11 +18,19 @@
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
+     <sampler_parameter>effect_sampler_2</sampler_parameter>
+     <type>sampler2DArray</type>
+    </parameter>
+    <parameter>
      <common_parameter>emission</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
      <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>gloss</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
@@ -35,6 +43,10 @@
     </parameter>
     <parameter>
      <common_parameter>terrain_uvs</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
     <parameter>
@@ -92,12 +104,15 @@ vec4 normal;
 vec3 uv, view_dir;
 float h;
 
-const vec2 scale_bias = vec2(0.06, -0.03) * 0.05 / (index + 1);
+const vec2 scale_bias = vec2(0.06, -0.03) * 0.2 / (index + 1);
 
-view_dir = vec3(world_view_direction.xyz * mat2x3(tbn_matrix), -1.0);
+view_dir = world_view_direction.xyz * tbn_matrix;
 uv = vec3(terrain_uvs[index], 0.0);
-/*
-for (i = 0; i &lt; 4; i++)
+
+#if	0
+#if	1
+
+for (i = 0; i &lt; 2; i++)
 {
 	normal.xy = textureGrad(effect_sampler_1, vec3(uv.xy, index), ddx, ddy).rg;
 	normal.xy = normal.xy * 2.0 - 1.0;
@@ -107,16 +122,28 @@ for (i = 0; i &lt; 4; i++)
 	h = normal.a * scale_bias.x + scale_bias.y;
 	uv += (h - uv.z) * normal.z * view_dir;
 }
-*/
+#else
 
-normal.xy = textureGrad(effect_sampler_1, vec3(terrain_uvs[index], index), ddx, ddy).rg;
+// calculate the UV offset
+float height = textureGrad(effect_sampler_0, vec3(uv.xy, index), ddx, ddy).a;
+float v = height * scale_bias.r - scale_bias.g;
+
+uv.xy += view_dir.xy * v;
+
+#endif
+#endif
+
+normal.xy = textureGrad(effect_sampler_1, vec3(uv.xy, index), ddx, ddy).rg;
 normal.xy = normal.xy * 2.0 - 1.0;
 normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 
-albedo = textureGrad(effect_sampler_0, vec3(terrain_uvs[index], index), ddx, ddy);
-
+albedo = textureGrad(effect_sampler_0, vec3(uv.xy, index), ddx, ddy);
 emission = vec3(0.0);
-specular = vec3(0.0);
+
+tmp = textureGrad(effect_sampler_2, vec3(uv.xy, index), ddx, ddy);
+
+specular = tmp.rgb;
+gloss = tmp.a;
 
 fragment_normal = tbn_matrix * normal.xyz;</source>
    <version>130</version>
@@ -138,6 +165,10 @@ fragment_normal = tbn_matrix * normal.xyz;</source>
     </parameter>
     <parameter>
      <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>gloss</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
@@ -175,6 +206,8 @@ albedo = texture3D(effect_sampler_0, vec3(terrain_uvs[index],
 	(index + 0.5) / clipmap_terrain_slices));
 emission = vec3(0.0);
 specular = vec3(0.0);
+rougtness = 0.0;
+
 fragment_normal = normalize(world_normal);</source>
    <version>120</version>
    <shader_types>fragment</shader_types>

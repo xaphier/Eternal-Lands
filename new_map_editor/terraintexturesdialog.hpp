@@ -11,10 +11,12 @@ class TerrainTexturesDialog: public QDialog, public Ui::TerrainTextures
 
 	private:
 		const QStringTerrainTextureDataQMap &m_terrain_texture_datas;
+		QColor m_color;
 
 	private slots:
 		void texture_clicked(QListWidgetItem* item,
 			QListWidgetItem* previous);
+		void change_default_specular();
 
 	public:
 		TerrainTexturesDialog(const QStringTerrainTextureDataQMap
@@ -23,12 +25,20 @@ class TerrainTexturesDialog: public QDialog, public Ui::TerrainTextures
 		void update_terrain_texture_datas();
 		void set_icon_size(const QSize &size);
 		void set_texture(const QString &texture);
-		void set_use_blend_size(const bool enabled);
+		void set_default_specular(const QColor &value);
+		void set_default_gloss(const float value);
+		void set_default_height(const float value);
 		void set_blend_size(const float value);
 		void set_label(const QString &label);	
 		QString get_texture() const;
-		bool get_use_blend_size() const;
+		float get_default_gloss() const;
+		float get_default_height() const;
 		float get_blend_size() const;
+
+		inline const QColor &get_default_specular() const
+		{
+			return m_color;
+		}
 
 };
 

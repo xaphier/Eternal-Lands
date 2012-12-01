@@ -9,10 +9,39 @@
 #include "scriptengine.hpp"
 #include "material.hpp"
 #include "thread/autolock.hpp"
-#include "thread/materiallock.hpp"
 
 namespace eternal_lands
 {
+
+	namespace
+	{
+
+		class MaterialLock
+		{
+			private:
+				Material* m_material;
+
+			public:
+				inline MaterialLock(Material* material):
+					m_material(material)
+				{
+					m_material->lock();
+				}
+
+				inline ~MaterialLock()
+				{
+					m_material->unlock();
+				}
+
+				inline Material* operator->()
+				{
+					return m_material;
+				}
+
+		};
+
+	}
+
 
 	int MaterialScriptManager::thread_main(void* material_script_manager)
 	{
@@ -67,8 +96,7 @@ namespace eternal_lands
 				return;
 			}
 
-			BOOST_FOREACH(const MaterialSharedPtr &material,
-				m_materials)
+			BOOST_FOREACH(Material* material, m_materials)
 			{
 				MaterialLock locked_material(material);
 
@@ -80,16 +108,14 @@ namespace eternal_lands
 		}
 	}
 
-	void MaterialScriptManager::add_material(
-		const MaterialSharedPtr &material)
+	void MaterialScriptManager::add_material(Material* material)
 	{
 		AutoLock lock(m_mutex);
 
 		m_materials.insert(material);
 	}
 
-	void MaterialScriptManager::remove_material(
-		const MaterialSharedPtr &material)
+	void MaterialScriptManager::remove_material(Material* material)
 	{
 		AutoLock lock(m_mutex);
 

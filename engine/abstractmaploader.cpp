@@ -22,7 +22,6 @@
 #include "freeidsmanager.hpp"
 #include "glmutil.hpp"
 #include "simplexnoise.hpp"
-#include "blenddata.hpp"
 #include "codec/codecmanager.hpp"
 #include "terrain/terrainmaterialdata.hpp"
 #include "image.hpp"
@@ -372,18 +371,20 @@ namespace eternal_lands
 		ImageCompressionTypeSet compressions;
 		ImageSharedPtr displacement_map, normal_tangent_map, dudv_map;
 		ImageSharedPtr blend_map;
-		BlendDataVector blend_datas;
-		BlendData blend_data;
-		StringVector albedo_maps, extra_maps;
+		Vec3Vector default_speculars;
+		FloatVector default_glosses, default_heights, blend_sizes;
+		StringVector albedo_maps, specular_maps, gloss_maps;
+		StringVector height_maps;
 		String displacement_map_name, normal_tangent_map_name;
-		String dudv_map_name, blend_map_name, albedo_map, extra_map;
-		String dir_name;
+		String dudv_map_name, blend_map_name, albedo_map, height_map;
+		String specular_map, gloss_map, dir_name;
+		glm::vec4 dudv_scale_offset;
+		glm::vec3 default_specular, translation;
 		glm::uvec3 image_size;
 		glm::uvec2 size;
-		glm::vec4 dudv_scale_offset;
-		BitSet64 use_blend_size_samplers, use_extra_maps;
-		BitSet64 use_blend_sizes;
-		float blend_size;
+		BitSet64 use_blend_size_textures, use_height_maps, mask;
+		BitSet64 use_blend_sizes, use_specular_maps, use_gloss_maps;
+		float blend_size, default_height, default_gloss;
 		Uint32 i, count;
 
 		if (version == mvt_1_0)
@@ -417,41 +418,83 @@ namespace eternal_lands
 			dudv_scale_offset.z = get_reader()->read_float_le();
 			dudv_scale_offset.w = get_reader()->read_float_le();
 
+			translation.x = get_reader()->read_float_le();
+			translation.y = get_reader()->read_float_le();
+			translation.z = get_reader()->read_float_le();
+
 			size.x = get_reader()->read_u32_le();
 			size.y = get_reader()->read_u32_le();
 
 			count = get_reader()->read_u32_le();
 
-			use_blend_size_samplers = get_reader()->read_u64_le();
-			use_extra_maps = get_reader()->read_u64_le();
-			use_blend_sizes = get_reader()->read_u64_le();
+			use_blend_size_textures = get_reader()->read_u64_le();
+			use_specular_maps = get_reader()->read_u64_le();
+			use_gloss_maps = get_reader()->read_u64_le();
+			use_height_maps = get_reader()->read_u64_le();
 
-			for (i = 0; i < (count - 1); ++i)
+			for (i = 0; i < count; ++i)
 			{
+				mask[i] = true;
+
+				default_specular.r =
+					get_reader()->read_float_le();
+				default_specular.g =
+					get_reader()->read_float_le();
+				default_specular.b =
+					get_reader()->read_float_le();
+				default_gloss = get_reader()->read_float_le();
+				default_height = get_reader()->read_float_le();
 				blend_size = get_reader()->read_float_le();
 
-				blend_data.set_blend_size(blend_size);
-				blend_data.set_use_blend_size(
-					use_blend_sizes[i]);
-
-				blend_datas.push_back(blend_data);
-			}
-
-			for (i = 0; i < count; ++i)
-			{
 				albedo_map = get_reader()->read_utf8_string(
 					128);
-
-				albedo_maps.push_back(albedo_map);
-			}
-
-			for (i = 0; i < count; ++i)
-			{
-				extra_map = get_reader()->read_utf8_string(
+				specular_map = get_reader(
+					)->read_utf8_string(128);
+				gloss_map = get_reader(
+					)->read_utf8_string(128);
+				height_map = get_reader()->read_utf8_string(
 					128);
 
-				extra_maps.push_back(extra_map);
+				default_speculars.push_back(default_specular);
+				default_glosses.push_back(default_gloss);
+				default_heights.push_back(default_height);
+				blend_sizes.push_back(blend_size);
+				albedo_maps.push_back(albedo_map);
+				specular_maps.push_back(specular_map);
+				gloss_maps.push_back(gloss_map);
+				height_maps.push_back(height_map);
 			}
+
+			use_blend_size_textures &= mask;
+			use_specular_maps &= mask;
+			use_gloss_maps &= mask;
+			use_height_maps &= mask;
+
+			material_data.set_use_blend_size_textures(
+				use_blend_size_textures);
+			material_data.set_use_specular_maps(use_specular_maps);
+			material_data.set_use_gloss_maps(use_gloss_maps);
+			material_data.set_use_height_maps(use_height_maps);
+			material_data.set_blend_sizes(blend_sizes);
+			material_data.set_default_speculars(default_speculars);
+			material_data.set_default_glosses(default_glosses);
+			material_data.set_default_heights(default_heights);
+
+			LOG_DEBUG(lt_map_loader, UTF8("Adding terrain with "
+				"displacement '%1%', normal & tangengt '%2%', "
+				"dudv '%3%' and blend '%4%', dudv scale offset "
+				"%5%, size %6%, material '%7%', albedo maps "
+				"'%8%', specular maps '%9%', gloss maps '%10%',"
+				" height maps '%11%' and translation %12%."),
+				displacement_map_name % normal_tangent_map_name
+				% dudv_map_name % blend_map_name %
+				glm::to_string(dudv_scale_offset) %
+				glm::to_string(size) %
+				material_data.save_xml_string() %
+				to_string(albedo_maps) %
+				to_string(specular_maps) %
+				to_string(gloss_maps) % to_string(height_maps)
+				% glm::to_string(translation));
 
 			if (get_global_vars()->get_opengl_3_0())
 			{
@@ -531,14 +574,11 @@ namespace eternal_lands
 						dudv_map_name));
 			}
 
-			material_data.set_use_blend_size_samplers(
-				use_blend_size_samplers);
-			material_data.set_use_extra_maps(use_extra_maps);
-			material_data.set_blend_datas(blend_datas);
-
 			set_terrain(displacement_map, normal_tangent_map,
-				dudv_map, blend_map, albedo_maps, extra_maps,
-				material_data, dudv_scale_offset, size);
+				dudv_map, blend_map, albedo_maps,
+				specular_maps, gloss_maps, height_maps,
+				material_data, dudv_scale_offset,
+				translation, size);
 		}
 		catch (boost::exception &exception)
 		{

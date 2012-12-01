@@ -32,28 +32,52 @@ namespace eternal_lands
 			const MaterialScriptManagerWeakPtr
 				m_material_script_manager;
 
-			inline const EffectCacheWeakPtr &get_effect_cache()
-				const
+			inline EffectCacheSharedPtr get_effect_cache()
+				const noexcept
 			{
-				return m_effect_cache;
+				EffectCacheSharedPtr result;
+
+				result = m_effect_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const TextureCacheWeakPtr &get_texture_cache()
-				const
+			inline TextureCacheSharedPtr get_texture_cache() const
+				noexcept
 			{
-				return m_texture_cache;
+				TextureCacheSharedPtr result;
+
+				result = m_texture_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const MaterialScriptCacheWeakPtr
-				&get_material_script_cache() const
+			inline MaterialScriptCacheSharedPtr
+				get_material_script_cache() const noexcept
 			{
-				return m_material_script_cache;
+				MaterialScriptCacheSharedPtr result;
+
+				result = m_material_script_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const MaterialScriptManagerWeakPtr
-				&get_material_script_manager() const
+			inline MaterialScriptManagerSharedPtr
+				get_material_script_manager() const noexcept
 			{
-				return m_material_script_manager;
+				MaterialScriptManagerSharedPtr result;
+
+				result = m_material_script_manager.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
 		public:

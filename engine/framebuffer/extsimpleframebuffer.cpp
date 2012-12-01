@@ -26,13 +26,13 @@ namespace eternal_lands
 			if (GLEW_EXT_packed_depth_stencil)
 			{
 				m_render_buffer.reset(new ExtRenderBuffer(name,
-					get_width(), get_height(),
+					get_width(0), get_height(0),
 					tft_depth24_stencil8));
 			}
 			else
 			{
 				m_render_buffer.reset(new ExtRenderBuffer(name,
-					get_width(), get_height(),
+					get_width(0), get_height(0),
 					tft_depth32));
 
 			}
@@ -107,7 +107,7 @@ namespace eternal_lands
 	void ExtSimpleFrameBuffer::attach_texture(
 		const TextureSharedPtr &texture,
 		const FrameBufferAttachmentType attachment,
-		const Uint16 layer)
+		const Uint16 layer, const Uint16 mipmap)
 	{
 		GLenum gl_attachment;
 
@@ -147,7 +147,7 @@ namespace eternal_lands
 				return;
 		}
 
-		texture->attach_ext(gl_attachment, 0, layer);
+		texture->attach_ext(gl_attachment, mipmap, layer);
 	}
 
 	void ExtSimpleFrameBuffer::bind()
@@ -238,7 +238,7 @@ namespace eternal_lands
 		glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + layer);
 		glDrawBuffer(GL_BACK);
 
-		glBlitFramebufferEXT(0, 0, get_width(), get_height(), rect.x,
+		glBlitFramebufferEXT(0, 0, get_width(0), get_height(0), rect.x,
 			rect.y, rect.z, rect.w, mask, GL_NEAREST);
 
 		glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, 0);
@@ -264,17 +264,16 @@ namespace eternal_lands
 		}
 	}
 
-	void ExtSimpleFrameBuffer::set_draw_buffer(const Uint16 index,
-		const bool enabled)
+	void ExtSimpleFrameBuffer::set_draw_buffers(const glm::bvec4 &enabled)
 	{
-		if (enabled)
-		{
-			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + index);
-		}
-		else
-		{
-			glDrawBuffer(GL_NONE);
-		}
+		GLenum buffers[4];
+
+		buffers[0] = enabled[0] ? GL_COLOR_ATTACHMENT0_EXT : GL_NONE;
+		buffers[1] = enabled[1] ? GL_COLOR_ATTACHMENT1_EXT : GL_NONE;
+		buffers[2] = enabled[2] ? GL_COLOR_ATTACHMENT2_EXT : GL_NONE;
+		buffers[3] = enabled[3] ? GL_COLOR_ATTACHMENT3_EXT : GL_NONE;
+
+		glDrawBuffers(4, buffers);
 	}
 
 	void ExtSimpleFrameBuffer::blit_buffers()

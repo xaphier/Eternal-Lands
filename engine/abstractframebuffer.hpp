@@ -40,7 +40,7 @@ namespace eternal_lands
 			virtual void attach_texture(
 				const TextureSharedPtr &texture,
 				const FrameBufferAttachmentType attachment,
-				const Uint16 layer) = 0;
+				const Uint16 layer, const Uint16 mipmap) = 0;
 			virtual void do_attach_depth_render_buffer(
 				bool &depth, bool &stencil) = 0;
 
@@ -62,7 +62,7 @@ namespace eternal_lands
 			void attach_depth_render_buffer();
 			void attach(const TextureSharedPtr &texture,
 				const FrameBufferAttachmentType attachment,
-				const Uint16 layer);
+				const Uint16 layer, const Uint16 mipmap);
 			bool detach(const TextureSharedPtr &texture);
 			bool detach(
 				const FrameBufferAttachmentType attachment);
@@ -74,8 +74,8 @@ namespace eternal_lands
 			const TextureSharedPtr &get_texture(
 				const FrameBufferAttachmentType attachment)
 				const;
-			virtual void set_draw_buffer(const Uint16 index,
-				const bool enabled) = 0;
+			virtual void set_draw_buffers(
+				const glm::bvec4 &enabled) = 0;
 			virtual void blit_buffers() = 0;
 
 			inline bool get_has_attachment(
@@ -85,19 +85,22 @@ namespace eternal_lands
 				return m_attachments[attachment];
 			}
 
-			inline void set_view_port() noexcept
+			inline void set_view_port(const Uint16 mipmap) noexcept
 			{
-				glViewport(0, 0, get_width(), get_height());
+				glViewport(0, 0, get_width(mipmap),
+					get_height(mipmap));
 			}
 
-			inline Uint32 get_width() const noexcept
+			inline Uint32 get_width(const Uint16 mipmap) const
+				noexcept
 			{
-				return m_width;
+				return std::max(1u, m_width >> mipmap);
 			}
 
-			inline Uint32 get_height() const noexcept
+			inline Uint32 get_height(const Uint16 mipmap) const
+				noexcept
 			{
-				return m_height;
+				return std::max(1u, m_height >> mipmap);
 			}
 
 			inline bool get_depth() const noexcept

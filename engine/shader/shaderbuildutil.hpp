@@ -42,6 +42,7 @@ namespace eternal_lands
 		sbt_debug_tbn_matrix_2,
 		sbt_debug_shadow,
 		sbt_debug_specular,
+		sbt_debug_gloss,
 		sbt_debug_emissive,
 		sbt_debug_diffuse_light,
 		sbt_debug_specular_light,

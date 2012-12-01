@@ -87,14 +87,11 @@ namespace eternal_lands
 			UniformBufferTypeData(boost::assign::list_of
 				(apt_terrain_scale)
 				(apt_terrain_texture_size)
-				(apt_clipmap_terrain_matrices),
+				(apt_clipmap_terrain_matrices)
+				(apt_terrain_lod_offset)
+				(apt_terrain_translation),
 				String(UTF8("terrain")),
 				String(UTF8("Terrain"))),
-			UniformBufferTypeData(boost::assign::list_of
-				(apt_terrain_lod_offset)
-				(apt_terrain_instances),
-				String(UTF8("terrain_instances")),
-				String(UTF8("TerrainInstances")))
 		};
 
 		const Uint32 uniform_buffer_type_datas_count =

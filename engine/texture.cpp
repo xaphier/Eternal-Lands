@@ -203,6 +203,8 @@ namespace eternal_lands
 			(compressed ? UTF8("") : UTF8("un")) % get_target() %
 			image->get_name());
 
+		assert(image->get_size(mipmap).x == width);
+
 		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
@@ -242,6 +244,9 @@ namespace eternal_lands
 			(compressed ? UTF8("") : UTF8("un")) % get_target() %
 			image->get_name());
 
+		assert(image->get_size(mipmap).x == width);
+		assert(image->get_size(mipmap).y == height);
+
 		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
@@ -280,6 +285,10 @@ namespace eternal_lands
 			"from image '%8%'."), mipmap % get_name() % width %
 			height % depth % (compressed ? UTF8("") : UTF8("un")) %
 			get_target() % image->get_name());
+
+		assert(image->get_size(mipmap).x == width);
+		assert(image->get_size(mipmap).y == height);
+		assert(image->get_size(mipmap).z == depth);
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -339,6 +348,9 @@ namespace eternal_lands
 		size = image->get_mipmap_size(mipmap);
 		gl_face = CubeMapFaceUtil::get_gl_type(face);
 
+		assert(image->get_size(mipmap).x == width);
+		assert(image->get_size(mipmap).y == height);
+
 		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
@@ -397,6 +409,10 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_mipmap_size(mipmap);
 
+		assert(image->get_size(mipmap).x == width);
+		assert(image->get_size(mipmap).y == height);
+		assert(image->get_size(mipmap).z == depth);
+
 		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
@@ -435,6 +451,9 @@ namespace eternal_lands
 			"from image '%8%'."), mipmap %  get_name() % width %
 			height % layer % (compressed ? UTF8("") : UTF8("un")) %
 			get_target() % image->get_name());
+
+		assert(image->get_size(mipmap).x == width);
+		assert(image->get_size(mipmap).y == height);
 
 		CHECK_GL_ERROR_NAME(get_name());
 

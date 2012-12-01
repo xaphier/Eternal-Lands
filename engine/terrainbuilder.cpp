@@ -9,11 +9,11 @@
 #include "terrain/cdlodterrain.hpp"
 #include "terrain/simpleterrain.hpp"
 #include "globalvars.hpp"
-#include "clipmapterraindata.hpp"
 #include "effect/effect.hpp"
 #include "effect/effectcache.hpp"
 #include "effect/effectdescription.hpp"
 #include "shader/shadersourceterrain.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -98,8 +98,31 @@ namespace eternal_lands
 		shader_source_terrain->set_name(name);
 		shader_source_terrain->set_material_data(material_data);
 
+		LOG_DEBUG(lt_effect, UTF8("terrain effect '%1%'."),
+			shader_source_terrain->save_xml_string());
+
 		effect_description.set_main(
 			shader_source_terrain->save_xml_string());
+
+		if (material_data.get_write_specular_gloss())
+		{
+			effect_description.set_description(edt_screen_quad_2);
+			effect_description.set_output_channel_count(4, 1);
+		}
+		else
+		{
+			effect_description.set_description(edt_screen_quad_1);
+			effect_description.set_output_channel_count(0, 1);
+		}
+
+		if (material_data.get_write_height())
+		{
+			effect_description.set_output_channel_count(4, 0);
+		}
+		else
+		{
+			effect_description.set_output_channel_count(3, 0);
+		}
 
 		result = get_effect_cache()->build_effect(effect_description);
 

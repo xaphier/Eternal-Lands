@@ -117,10 +117,10 @@ namespace eternal_lands
 				pt_mat2x3, pst_clipmap_terrain_slices),
 			AutoParameterTypeData(String(UTF8("z_params")),
 				pt_vec4),
-			AutoParameterTypeData(String(UTF8("terrain_instances")),
-				pt_mat2x4, pst_one, 1000),
 			AutoParameterTypeData(
-				String(UTF8("terrain_lod_offset")), pt_vec4)
+				String(UTF8("terrain_lod_offset")), pt_vec4),
+			AutoParameterTypeData(
+				String(UTF8("terrain_translation")), pt_vec4)
 		};
 
 		const Uint32 auto_parameter_datas_count =

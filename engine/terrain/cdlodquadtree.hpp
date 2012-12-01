@@ -74,10 +74,12 @@ namespace eternal_lands
 				Uint32 &instance_count) const;
 			void update_level_zero(
 				const ImageSharedPtr &displacement_map,
+				const glm::vec3 &translation,
 				const glm::uvec2 &offset,
 				const glm::uvec2 &size);
 			void update_level_zero_rgb10_a2(
 				const ImageSharedPtr &displacement_map,
+				const glm::vec3 &translation,
 				const glm::uvec2 &offset,
 				const glm::uvec2 &size);
 
@@ -106,6 +108,7 @@ namespace eternal_lands
 				const Uint16 max_instances,
 				BoundingBox &bounding_box) const;
 			void init(const ImageSharedPtr &displacement_map,
+				const glm::vec3 &translation,
 				const float patch_scale);
 			void clear();
 			static const Uvec2Array4 &get_quad_order(

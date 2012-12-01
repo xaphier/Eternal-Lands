@@ -21,7 +21,7 @@ namespace eternal_lands
 	class ImageValue
 	{
 		private:
-			Uint8Array16 m_values;
+			Uint16Array4 m_values;
 			Uint16 m_x;
 			Uint16 m_y;
 
@@ -49,49 +49,40 @@ namespace eternal_lands
 
 			inline glm::uvec4 get_value(const Uint16 index) const
 			{
-				glm::uvec4 result;
-
-				result.x = m_values[index * 4 + 0];
-				result.y = m_values[index * 4 + 1];
-				result.z = m_values[index * 4 + 2];
-				result.w = m_values[index * 4 + 3];
-
-				return result;
+				return glm::uvec4(PackTool::unpack_uint_4_4_4_4(
+					false, m_values[index]));
 			}
 
 			inline glm::vec4 get_normalized_value(
 				const Uint16 index) const
 			{
-				glm::vec4 result;
+				return PackTool::unpack_uint_4_4_4_4(true,
+					m_values[index]);
+			}
 
-				result.x = m_values[index * 4 + 0];
-				result.y = m_values[index * 4 + 1];
-				result.z = m_values[index * 4 + 2];
-				result.w = m_values[index * 4 + 3];
-
-				return result / 255.0f;
+			inline Uint16 get_packed_value(const Uint16 index) const
+			{
+				return m_values[index];
 			}
 
 			inline void set_value(const glm::uvec4 &value,
 				const Uint16 index)
 			{
-				m_values[index * 4 + 0] = value.x;
-				m_values[index * 4 + 1] = value.y;
-				m_values[index * 4 + 2] = value.z;
-				m_values[index * 4 + 3] = value.w;
+				m_values[index] = PackTool::pack_uint_4_4_4_4(
+					false, glm::vec4(value));
 			}
 
 			inline void set_normalized_value(
 				const glm::vec4 &value, const Uint16 index)
 			{
-				m_values[index * 4 + 0] = value.x * 255.0f +
-					0.5f;
-				m_values[index * 4 + 1] = value.y * 255.0f +
-					0.5f;
-				m_values[index * 4 + 2] = value.z * 255.0f +
-					0.5f;
-				m_values[index * 4 + 3] = value.w * 255.0f +
-					0.5f;
+				m_values[index] = PackTool::pack_uint_4_4_4_4(
+					true, glm::vec4(value));
+			}
+
+			inline void set_packed_value(const Uint16 value,
+				const Uint16 index)
+			{
+				m_values[index] = value;
 			}
 
 			static inline Uint16 get_image_count()

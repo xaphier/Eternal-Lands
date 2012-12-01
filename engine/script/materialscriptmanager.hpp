@@ -26,14 +26,13 @@ namespace eternal_lands
 	class MaterialScriptManager: public boost::noncopyable
 	{
 		private:
-			typedef std::set<MaterialSharedPtr>
-				MaterialSharedPtrSet;
+			typedef std::set<Material*> MaterialPtrSet;
 
 			asIScriptContext* m_context;
 			SDL_mutex* m_mutex;
 			SDL_cond* m_condition;
 			SDL_Thread* m_thread;
-			MaterialSharedPtrSet m_materials;
+			MaterialPtrSet m_materials;
 			glm::vec4 m_time;
 			volatile ThreadStateType m_state;
 
@@ -52,8 +51,8 @@ namespace eternal_lands
 			 */
 			~MaterialScriptManager() noexcept;
 
-			void add_material(const MaterialSharedPtr &material);
-			void remove_material(const MaterialSharedPtr &material);
+			void add_material(Material* material);
+			void remove_material(Material* material);
 			void execute_scripts(const glm::vec4 &time);
 
 	};

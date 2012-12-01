@@ -617,7 +617,7 @@ namespace eternal_lands
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("scale")) == 0)
 			{
-				set_scale(XmlUtil::get_uint32_value(it));
+				set_scale(XmlUtil::get_u32_value(it));
 			}
 		}
 		while (XmlUtil::next(it, true));

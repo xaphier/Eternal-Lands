@@ -161,14 +161,17 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
-		const StringVector &extra_maps,
+		const StringVector &specular_maps,
+		const StringVector &gloss_maps,
+		const StringVector &height_maps,
 		const TerrainMaterialData &material_data,
 		const glm::vec4 &dudv_scale_offset,
-		const glm::uvec2 &sizes)
+		const glm::vec3 &translation, const glm::uvec2 &sizes)
 	{
 		m_data.set_terrain(displacement_map, normal_tangent_map,
-			dudv_map, blend_map, albedo_maps, extra_maps,
-			material_data, dudv_scale_offset, sizes);
+			dudv_map, blend_map, albedo_maps, specular_maps,
+			gloss_maps, height_maps, material_data,
+			dudv_scale_offset, translation, sizes);
 	}
 
 }

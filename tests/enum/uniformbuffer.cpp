@@ -138,9 +138,9 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
 		el::ubt_material).get(), "material");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
-		el::ubt_terrain).get(), "terrain");
+		el::ubt_animation).get(), "animation");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
-		el::ubt_terrain_instances).get(), "terrain_instances");
+		el::ubt_terrain).get(), "terrain");
 }
 
 BOOST_AUTO_TEST_CASE(get_identifier_value)
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(get_identifier_value)
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
 		el::ubt_material).get(), "Material");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
-		el::ubt_terrain).get(), "Terrain");
+		el::ubt_animation).get(), "Animation");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
-		el::ubt_terrain_instances).get(), "TerrainInstances");
+		el::ubt_terrain).get(), "Terrain");
 }

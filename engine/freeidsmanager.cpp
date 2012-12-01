@@ -39,7 +39,7 @@ namespace eternal_lands
 
 	Uint32 FreeIdsManager::get_next_free_object_id(const IdType type)
 	{
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		return m_free_ids[type].get_next_free_id();
@@ -51,7 +51,7 @@ namespace eternal_lands
 
 		type = FreeIds::get_type_value(id);
 
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		m_free_ids[type].free_id(id);
@@ -63,7 +63,7 @@ namespace eternal_lands
 
 		type = FreeIds::get_type_value(id);
 
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		m_free_ids[type].use_id(id);
@@ -72,7 +72,7 @@ namespace eternal_lands
 	Uint32 FreeIdsManager::use_typeless_object_id(const Uint32 typeless_id,
 		const IdType type)
 	{
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		return m_free_ids[type].use_typeless_id(typeless_id);
@@ -81,7 +81,7 @@ namespace eternal_lands
 	Uint32 FreeIdsManager::get_object_id(const Uint32 typeless_id,
 		const IdType type)
 	{
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		return m_free_ids[type].get_id(typeless_id);
@@ -138,7 +138,7 @@ namespace eternal_lands
 
 		type = FreeIds::get_type_value(id);
 
-		RANGE_CECK_MAX(type, m_free_ids.size(),
+		RANGE_CECK_MAX(type, m_free_ids.size() - 1,
 			UTF8("type value too big"));
 
 		return m_free_ids[type].get_is_id_free(id);

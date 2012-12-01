@@ -82,6 +82,9 @@ namespace eternal_lands
 			get_material_builder(), get_material_cache(),
 			get_mesh_builder(), get_mesh_cache(),
 			get_mesh_data_cache(), get_texture_cache());
+		m_filter = boost::make_shared<Filter>(
+			global_vars, get_glsl_program_cache(),
+			get_mesh_cache());
 	}
 
 	SceneResources::~SceneResources() noexcept

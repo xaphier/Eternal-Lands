@@ -191,7 +191,7 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::init(const ImageSharedPtr &displacement_map,
-		const float patch_scale)
+		const glm::vec3 &translation, const float patch_scale)
 	{
 		glm::vec3 min, max;
 		glm::uvec2 size;
@@ -225,12 +225,12 @@ namespace eternal_lands
 				GL_UNSIGNED_INT_10_10_10_2))
 		{
 			update_level_zero_rgb10_a2(displacement_map,
-				glm::uvec2(0), size);
+				translation, glm::uvec2(0), size);
 		}
 		else
 		{
-			update_level_zero(displacement_map, glm::uvec2(0),
-				size);
+			update_level_zero(displacement_map, translation,
+				glm::uvec2(0), size);
 		}
 
 		level = get_lod_count() - 1;
@@ -274,7 +274,8 @@ namespace eternal_lands
 
 	void CdLodQuadTree::update_level_zero_rgb10_a2(
 		const ImageSharedPtr &displacement_map,
-		const glm::uvec2 &offset, const glm::uvec2 &size)
+		const glm::vec3 &translation, const glm::uvec2 &offset,
+		const glm::uvec2 &size)
 	{
 		Uint32 x, y;
 
@@ -294,15 +295,16 @@ namespace eternal_lands
 					glm::uvec2(x, y) * get_patch_size(),
 					get_patch_size() + 1, min, max);
 
-				m_lods[0].min_max[x][y][0] = min;
-				m_lods[0].min_max[x][y][1] = max;
+				m_lods[0].min_max[x][y][0] = min + translation;
+				m_lods[0].min_max[x][y][1] = max + translation;
 			}
 		}
 	}
 
 	void CdLodQuadTree::update_level_zero(
 		const ImageSharedPtr &displacement_map,
-		const glm::uvec2 &offset, const glm::uvec2 &size)
+		const glm::vec3 &translation, const glm::uvec2 &offset,
+		const glm::uvec2 &size)
 	{
 		Uint32 x, y;
 
@@ -322,8 +324,8 @@ namespace eternal_lands
 					glm::uvec2(x, y) * get_patch_size(),
 					get_patch_size() + 1, min, max);
 
-				m_lods[0].min_max[x][y][0] = min;
-				m_lods[0].min_max[x][y][1] = max;
+				m_lods[0].min_max[x][y][0] = min + translation;
+				m_lods[0].min_max[x][y][1] = max + translation;
 			}
 		}
 	}

@@ -26,7 +26,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>roughness</common_parameter>
+     <common_parameter>gloss</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
@@ -56,20 +56,7 @@
    </parameters>
    <source>vec3 normal;
 vec2 ddx, ddy;
-float lod, blend;
-float det, squared_length_major, length_major;
-float ratio_of_anisotropy, length_minor;
 int i, index;
-
-ddx = dFdx(world_uv);
-ddy = dFdy(world_uv);
-
-squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
-det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
-length_major = sqrt(squared_length_major);
-ratio_of_anisotropy = squared_length_major / det;
-length_minor = max((ratio_of_anisotropy &gt; 16.0) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
-lod = log2(length_minor);
 
 ddx = dFdx(terrain_uvs[0]);
 ddy = dFdy(terrain_uvs[0]);
@@ -85,22 +72,17 @@ for (i = 0; i &lt; (clipmap_terrain_slices - 1); ++i)
 	}
 }
 
-lod = clamp(lod, index, clipmap_terrain_slices - 1);
-index = int(lod);
-blend = fract(lod);
-
 ddx /= exp2(index);
 ddy /= exp2(index);
 
+albedo = textureGrad(effect_sampler_0, vec3(terrain_uvs[index], index), ddx, ddy);
 normal.xy = textureGrad(effect_sampler_1, vec3(terrain_uvs[index], index), ddx, ddy).rg;
 normal.xy = normal.xy * 2.0 - 1.0;
 normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 
-albedo = textureGrad(effect_sampler_0, vec3(terrain_uvs[index], index), ddx, ddy);
-
 emission = vec3(0.0);
-specular = vec3(0.01);
-roughness = albedo.a;
+specular = vec3(0.0);
+gloss = 0.0;
 fragment_normal = tbn_matrix * normal;</source>
    <version>130</version>
    <shader_types>fragment</shader_types>
@@ -124,7 +106,7 @@ fragment_normal = tbn_matrix * normal;</source>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>roughness</common_parameter>
+     <common_parameter>gloss</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
@@ -162,7 +144,7 @@ albedo = texture3D(effect_sampler_0, vec3(terrain_uvs[index],
 	(index + 0.5) / clipmap_terrain_slices));
 emission = vec3(0.0);
 specular = vec3(0.0);
-roughness = 0.0;
+gloss = 0.0;
 fragment_normal = normalize(world_normal);</source>
    <version>120</version>
    <shader_types>fragment</shader_types>

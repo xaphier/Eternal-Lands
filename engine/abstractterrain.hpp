@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "boundingbox.hpp"
 #include "qualityutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 
 /**
  * @file
@@ -29,9 +30,10 @@ namespace eternal_lands
 		private:
 			const GlobalVarsSharedPtr m_global_vars;
 			BoundingBox m_bounding_box;
-			glm::vec4 m_terrain_size_data;
-			MaterialSharedPtrArray3 m_terrain_materials;
-			MaterialSharedPtrArray3 m_clipmap_terrain_materials;
+			MaterialSharedPtrArray3 m_materials;
+			MaterialSharedPtrArray4 m_clipmap_materials;
+			glm::vec4 m_size_data;
+			glm::vec3 m_translation;
 			const bool m_low_quality_terrain;
 
 			virtual void do_set_geometry_maps(
@@ -45,9 +47,28 @@ namespace eternal_lands
 			void set_albedo_maps(const StringVector &albedo_maps,
 				const BitSet64 &blend_size_textures,
 				const TextureCacheSharedPtr &texture_cache);
-			void set_extra_maps(const StringVector &extra_maps,
-				const BitSet64 &use_extra_maps,
+			void set_specular_maps(
+				const StringVector &specular_maps,
+				const BitSet64 &use_specular_maps,
 				const TextureCacheSharedPtr &texture_cache);
+			void set_gloss_maps(const StringVector &gloss_maps,
+				const BitSet64 &use_gloss_maps,
+				const TextureCacheSharedPtr &texture_cache);
+			void set_height_maps(const StringVector &height_maps,
+				const BitSet64 &use_height_maps,
+				const TextureCacheSharedPtr &texture_cache);
+
+			static inline Uint16 get_clipmap_material_index(
+				const bool write_height,
+				const bool write_specular_gloss) noexcept
+			{
+				BitSet16 result;
+
+				result[0] = write_height;
+				result[1] = write_specular_gloss;
+
+				return result.to_ulong();
+			}				
 
 		protected:
 			AbstractTerrain(const GlobalVarsSharedPtr &global_vars,
@@ -57,6 +78,9 @@ namespace eternal_lands
 				const MaterialCacheSharedPtr &material_cache,
 				const StringArray3 &material,
 				const String &effect);
+			void set_clipmap_material_texture(
+				const TextureSharedPtr &texture,
+				const SamplerParameterType sampler);
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
 				const noexcept
@@ -70,13 +94,9 @@ namespace eternal_lands
 				m_bounding_box = bounding_box;
 			}
 
-			inline void set_terrain_size(
-				const glm::vec2 &terrain_size) noexcept
+			inline void set_size(const glm::vec2 &size) noexcept
 			{
-				m_terrain_size_data.x = terrain_size.x;
-				m_terrain_size_data.y = terrain_size.y;
-				m_terrain_size_data.z = 1.0f / terrain_size.x;
-				m_terrain_size_data.w = 1.0f / terrain_size.y;
+				m_size_data = glm::vec4(size, 1.0f / size);
 			}
 
 		public:
@@ -94,37 +114,41 @@ namespace eternal_lands
 			virtual void clear() = 0;
 			void set_clipmap_texture(
 				const TextureSharedPtr &texture);
+			void set_clipmap_specular_gloss_texture(
+				const TextureSharedPtr &texture);
 			void set_clipmap_normal_texture(
 				const TextureSharedPtr &texture);
 			void set_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void set_blend_map(const ImageSharedPtr &blend_map,
 				const TextureCacheSharedPtr &texture_cache);
 			void update_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map,
+				const glm::vec3 &translation);
 			void update_blend_map(
 				const ImageSharedPtr &blend_map,
 				const BitSet64 &layers);
 			void set_texture_maps(const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &height_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
 				const BitSet64 &blend_size_textures,
-				const BitSet64 &use_extra_maps,
+				const BitSet64 &use_height_maps,
+				const BitSet64 &use_specular_maps,
+				const BitSet64 &use_gloss_maps,
 				const TextureCacheSharedPtr &texture_cache);
-			void set_medium_quality_effect(
-				const EffectSharedPtr &effect);
 			void set_effect(const EffectSharedPtr &effect,
-				const QualityType quality);
+				const bool write_height,
+				const bool write_specular_gloss);
 			void set_dudv_scale_offset(
 				const glm::vec4 &dudv_scale_offset);
 			const glm::vec4 &get_dudv_scale_offset() const;
-			const MaterialSharedPtr	&get_terrain_material()	const
-				noexcept;
-			const MaterialSharedPtr	&get_clipmap_terrain_material()
-				const noexcept;
+			const MaterialSharedPtr	&get_material() const noexcept;
 			static const glm::vec3 &get_vector_min() noexcept;
 			static const glm::vec3 &get_vector_max() noexcept;
 			static const glm::vec3 &get_vector_scale() noexcept;
@@ -140,29 +164,35 @@ namespace eternal_lands
 				return m_bounding_box;
 			}
 
-			inline glm::vec2 get_terrain_size() const noexcept
+			inline const glm::vec4 &get_size_data() const noexcept
 			{
-				return glm::vec2(m_terrain_size_data);
+				return m_size_data;
 			}
 
-			inline const glm::vec4 &get_terrain_size_data() const
-				noexcept
+			inline const glm::vec3 &get_translation() const noexcept
 			{
-				return m_terrain_size_data;
+				return m_translation;
 			}
 
-			inline const MaterialSharedPtr &get_terrain_material(
+			inline glm::vec2 get_size() const noexcept
+			{
+				return glm::vec2(m_size_data);
+			}
+
+			inline const MaterialSharedPtr &get_material(
 				const QualityType quality) const noexcept
 			{
-				return m_terrain_materials[quality];
+				return m_materials[quality];
 			}
 
-			inline const MaterialSharedPtr
-				&get_clipmap_terrain_material(
-					const QualityType quality) const
-					noexcept
+			inline const MaterialSharedPtr &get_clipmap_material(
+				const bool write_height,
+				const bool write_specular_gloss) const noexcept
 			{
-				return m_clipmap_terrain_materials[quality];
+				return m_clipmap_materials[
+					get_clipmap_material_index(
+						write_height,
+						write_specular_gloss)];
 			}
 
 			inline bool get_low_quality_terrain() const noexcept

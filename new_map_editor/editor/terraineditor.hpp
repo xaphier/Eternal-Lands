@@ -101,9 +101,12 @@ namespace eternal_lands
 			boost::scoped_ptr<UvTool> m_uv_tool;
 			TerrainMaterialData m_material_data;
 			StringVector m_albedo_maps;
-			StringVector m_extra_maps;
-			glm::uvec3 m_size;
+			StringVector m_specular_maps;
+			StringVector m_gloss_maps;
+			StringVector m_height_maps;
 			glm::vec4 m_dudv_scale_offset;
+			glm::vec3 m_translation;
+			glm::uvec3 m_size;
 			bool m_enabled;
 
 			glm::uvec2 get_best_normal(const glm::vec3 &normal)
@@ -152,17 +155,35 @@ namespace eternal_lands
 					&displacement_values);
 			void set_blend_values(
 				const ImageValueVector &blend_values);
-			void init(const glm::uvec2 &size,
-				const String &albedo_map,
-				const String &extra_map,
-				const bool use_blend_size_sampler,
-				const bool use_extra_map);
-			void init(const ImageSharedPtr &height_map,
+			void init(const glm::vec3 &translation,
 				const glm::uvec2 &size,
 				const String &albedo_map,
-				const String &extra_map,
-				const bool use_blend_size_sampler,
-				const bool use_extra_map);
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map);
+			void init(const ImageSharedPtr &displacement_map,
+				const glm::vec3 &translation,
+				const glm::uvec2 &size,
+				const String &albedo_map,
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map);
 			void get_displacement_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
@@ -237,15 +258,26 @@ namespace eternal_lands
 				const float direction, const float speed,
 				const Uint16 index);
 			void set_material(const String &albedo_map,
-				const String &extra_map, const float blend_size,
-				const bool use_blend_size_sampler,
-				const bool use_blend_size,
-				const bool use_extra_map, const Uint16 index);
+				const String &specular_map,
+				const String &gloss_map,
+				const String &height_map,
+				const glm::vec3 &default_specular,
+				const float default_gloss,
+				const float default_height,
+				const float blend_size,
+				const bool use_blend_size_texture,
+				const bool use_specular_map,
+				const bool use_gloss_map,
+				const bool use_height_map, const Uint16 index);
 			void get_material(String &albedo_map,
-				String &extra_map, float &blend_size,
-				bool &use_blend_size_sampler,
-				bool &use_blend_size, bool &use_extra_map,
-				const Uint16 index) const;
+				String &specular_map, String &gloss_map,
+				String &height_map,
+				glm::vec3 &default_specular,
+				float &default_gloss, float &default_height,
+				float &blend_size,
+				bool &use_blend_size_texture,
+				bool &use_specular_map, bool &use_gloss_map,
+				bool &use_height_map, const Uint16 index) const;
 			void import_height_map(
 				const ImageSharedPtr &height_map);
 			void get_all_displacement_values(
@@ -258,9 +290,12 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
-				const StringVector &extra_maps,
+				const StringVector &specular_maps,
+				const StringVector &gloss_maps,
+				const StringVector &height_maps,
 				const TerrainMaterialData &material_data,
 				const glm::vec4 &dudv_scale_offset,
+				const glm::vec3 &translation,
 				const glm::uvec2 &size);
 			void relax_uv(
 				const AbstractProgressSharedPtr &progress,
@@ -281,6 +316,25 @@ namespace eternal_lands
 			void fill_blend_layer(const float strength,
 				const BlendEffectType effect,
 				const Uint16 layer);
+			Uint16 get_used_layer_count() const;
+			ImageSharedPtr get_partial_blend_map(const Uint16 layer)
+				const;
+
+			inline void set_enabled(const bool enabled)
+			{
+				m_enabled = enabled;
+			}
+
+			inline void set_translation(
+				const glm::vec3 &translation)
+			{
+				m_translation = translation;
+			}
+
+			inline const glm::vec3 &get_translation() const
+			{
+				return m_translation;
+			}
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)
@@ -288,30 +342,79 @@ namespace eternal_lands
 				m_albedo_maps[index] = name;
 			}
 
-			inline void set_extra_map(const String &name,
+			inline void set_height_map(const String &name,
 				const Uint16 index)
 			{
-				m_extra_maps[index] = name;
+				m_height_maps[index] = name;
 			}
 
-			inline void set_use_blend_size_sampler(const bool value,
+			inline void set_specular_map(const String &name,
 				const Uint16 index)
 			{
-				m_material_data.set_use_blend_size_sampler(
+				m_specular_maps[index] = name;
+			}
+
+			inline void set_gloss_map(const String &name,
+				const Uint16 index)
+			{
+				m_gloss_maps[index] = name;
+			}
+
+			inline void set_use_blend_size_texture(const bool value,
+				const Uint16 index)
+			{
+				m_material_data.set_use_blend_size_texture(
 					value, index);
 			}
 
-			inline void set_use_extra_map(const bool value,
+			inline void set_use_height_map(const bool value,
 				const Uint16 index)
 			{
-				m_material_data.set_use_extra_map(value,
+				m_material_data.set_use_height_map(value,
 					index);
 			}
 
-			inline void set_blend_data(const BlendData &blend_data,
+			inline void set_use_specular_map(const bool value,
 				const Uint16 index)
 			{
-				m_material_data.set_blend_data(blend_data,
+				m_material_data.set_use_specular_map(value,
+					index);
+			}
+
+			inline void set_use_gloss_map(const bool value,
+				const Uint16 index)
+			{
+				m_material_data.set_use_gloss_map(value,
+					index);
+			}
+
+			inline void set_default_specular(
+				const glm::vec3 &default_specular,
+				const Uint16 index)
+			{
+				m_material_data.set_default_specular(
+					default_specular, index);
+			}
+
+			inline void set_default_gloss(
+				const float default_gloss,
+				const Uint16 index)
+			{
+				m_material_data.set_default_gloss(
+					default_gloss, index);
+			}
+
+			inline void set_default_height(
+				const float default_height, const Uint16 index)
+			{
+				m_material_data.set_default_height(
+					default_height, index);
+			}
+
+			inline void set_blend_size(const float blend_size,
+				const Uint16 index)
+			{
+				m_material_data.set_blend_size(blend_size,
 					index);
 			}
 
@@ -362,10 +465,22 @@ namespace eternal_lands
 				return m_albedo_maps;
 			}
 
-			inline const StringVector &get_extra_maps() const
+			inline const StringVector &get_height_maps() const
 				noexcept
 			{
-				return m_extra_maps;
+				return m_height_maps;
+			}
+
+			inline const StringVector &get_specular_maps() const
+				noexcept
+			{
+				return m_specular_maps;
+			}
+
+			inline const StringVector &get_gloss_maps() const
+				noexcept
+			{
+				return m_gloss_maps;
 			}
 
 			inline const String &get_albedo_map(const Uint16 index)
@@ -374,41 +489,94 @@ namespace eternal_lands
 				return m_albedo_maps[index];
 			}
 
-			inline const String &get_extra_map(const Uint16 index)
+			inline const String &get_height_map(const Uint16 index)
 				const noexcept
 			{
-				return m_extra_maps[index];
+				return m_height_maps[index];
 			}
 
-			inline bool get_use_blend_size_sampler(
+			inline const String &get_specular_map(
+				const Uint16 index) const noexcept
+			{
+				return m_specular_maps[index];
+			}
+
+			inline const String &get_gloss_map(const Uint16 index)
+				const noexcept
+			{
+				return m_gloss_maps[index];
+			}
+
+			inline bool get_use_blend_size_texture(
 				const Uint16 index) const
 			{
 				return m_material_data.
-					get_use_blend_size_sampler(index);
+					get_use_blend_size_texture(index);
 			}
 
-			inline bool get_use_extra_map(const Uint16 index) const
+			inline bool get_use_height_map(const Uint16 index)
+				const
 			{
-				return m_material_data.get_use_extra_map(index);
+				return m_material_data.get_use_height_map(
+					index);
 			}
 
-			inline const BlendData &get_blend_data(
+			inline bool get_use_specular_map(const Uint16 index)
+				const
+			{
+				return m_material_data.get_use_specular_map(
+					index);
+			}
+
+			inline bool get_use_gloss_map(const Uint16 index) const
+			{
+				return m_material_data.get_use_gloss_map(index);
+			}
+
+			inline const Vec3Vector &get_default_speculars() const
+			{
+				return m_material_data.get_default_speculars();
+			}
+
+			inline const FloatVector &get_default_glosses() const
+			{
+				return m_material_data.get_default_glosses();
+			}
+
+			inline const FloatVector &get_default_heights() const
+			{
+				return m_material_data.get_default_heights();
+			}
+
+			inline const FloatVector &get_blend_sizes() const
+			{
+				return m_material_data.get_blend_sizes();
+			}
+
+			inline const glm::vec3 &get_default_specular(
 				const Uint16 index) const
 			{
-				return m_material_data.get_blend_data(index);
+				return m_material_data.get_default_specular(
+					index);
+			}
+
+			inline float get_default_gloss(const Uint16 index)
+				const
+			{
+				return m_material_data.get_default_gloss(
+					index);
+			}
+
+			inline float get_default_height(const Uint16 index)
+				const
+			{
+				return m_material_data.get_default_height(
+					index);
 			}
 
 			inline float get_blend_size(const Uint16 index) const
 			{
-				return m_material_data.get_blend_data(
-					index).get_blend_size();
-			}
-
-			inline bool get_use_blend_size(const Uint16 index)
-				const
-			{
-				return m_material_data.get_blend_data(
-					index).get_use_blend_size();
+				return m_material_data.get_blend_size(index);
 			}
 
 			inline const glm::vec4 &get_dudv_scale_offset() const

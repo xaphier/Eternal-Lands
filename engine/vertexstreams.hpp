@@ -66,7 +66,7 @@ namespace eternal_lands
 			inline const VertexStream &get_stream(
 				const Uint32 index) const
 			{
-				RANGE_CECK_MAX(index, m_streams.size(),
+				RANGE_CECK_MAX(index, m_streams.size() - 1,
 					UTF8("index value too big"));
 
 				return m_streams[index];
@@ -74,7 +74,7 @@ namespace eternal_lands
 
 			inline VertexStream &get_streams(const Uint32 index)
 			{
-				RANGE_CECK_MAX(index, m_streams.size(),
+				RANGE_CECK_MAX(index, m_streams.size() - 1,
 					UTF8("index value too big"));
 
 				return m_streams[index];

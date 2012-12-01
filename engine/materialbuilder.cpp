@@ -36,9 +36,7 @@ namespace eternal_lands
 
 		result = boost::make_shared<Material>(get_effect_cache(),
 			get_texture_cache(), get_material_script_cache(),
-			get_material_script_manager());
-
-		result->init(material);
+			get_material_script_manager(), material);
 
 		return result;
 	}

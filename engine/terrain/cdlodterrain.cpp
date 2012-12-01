@@ -87,7 +87,7 @@ namespace eternal_lands
 
 		terrain.set_instances(0);
 
-		terrain.set_material(get_terrain_material());
+		terrain.set_material(get_material());
 
 		m_cd_lod_quad_tree->select_quads_for_drawing(frustum, camera,
 			terrain.get_buffer(), terrain.get_offset(),
@@ -115,13 +115,14 @@ namespace eternal_lands
 		glm::vec3 min, max;
 		float patch_scale;
 
-		set_terrain_size((glm::vec2(displacement_map->get_size())
-			- 1.0f) * get_patch_scale());
+		set_size((glm::vec2(displacement_map->get_size()) - 1.0f) *
+			get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
-		m_cd_lod_quad_tree->init(displacement_map->decompress(false,
-			true, false), patch_scale);
+		m_cd_lod_quad_tree->init(
+			displacement_map->decompress(false, true, false),
+			get_translation(), patch_scale);
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();
@@ -145,11 +146,11 @@ namespace eternal_lands
 		m_displacement_texture->set_wrap_r(twt_clamp);
 		m_displacement_texture->set_image(displacement_map);
 
-		get_terrain_material(qt_low)->set_texture(m_displacement_texture,
+		get_material(qt_low)->set_texture(m_displacement_texture,
 			spt_effect_8);
-		get_terrain_material(qt_medium)->set_texture(m_displacement_texture,
+		get_material(qt_medium)->set_texture(m_displacement_texture,
 			spt_effect_8);
-		get_terrain_material(qt_high)->set_texture(m_displacement_texture,
+		get_material(qt_high)->set_texture(m_displacement_texture,
 			spt_effect_8);
 
 		m_normal_texture = boost::make_shared<Texture>(
@@ -164,11 +165,11 @@ namespace eternal_lands
 		m_normal_texture->set_wrap_r(twt_clamp);
 		m_normal_texture->set_image(normal_tangent_map);
 
-		get_terrain_material(qt_low)->set_texture(m_normal_texture,
+		get_material(qt_low)->set_texture(m_normal_texture,
 			spt_effect_9);
-		get_terrain_material(qt_medium)->set_texture(m_normal_texture,
+		get_material(qt_medium)->set_texture(m_normal_texture,
 			spt_effect_9);
-		get_terrain_material(qt_high)->set_texture(m_normal_texture,
+		get_material(qt_high)->set_texture(m_normal_texture,
 			spt_effect_9);
 
 		m_dudv_texture = boost::make_shared<Texture>(
@@ -181,11 +182,11 @@ namespace eternal_lands
 		m_dudv_texture->set_wrap_r(twt_clamp);
 		m_dudv_texture->set_image(dudv_map);
 
-		get_terrain_material(qt_low)->set_texture(m_dudv_texture,
+		get_material(qt_low)->set_texture(m_dudv_texture,
 			spt_effect_10);
-		get_terrain_material(qt_medium)->set_texture(m_dudv_texture,
+		get_material(qt_medium)->set_texture(m_dudv_texture,
 			spt_effect_10);
-		get_terrain_material(qt_high)->set_texture(m_dudv_texture,
+		get_material(qt_high)->set_texture(m_dudv_texture,
 			spt_effect_10);
 	}
 
@@ -197,13 +198,14 @@ namespace eternal_lands
 		glm::vec3 min, max;
 		float patch_scale;
 
-		set_terrain_size((glm::vec2(displacement_map->get_size())
-			- 1.0f) * get_patch_scale());
+		set_size((glm::vec2(displacement_map->get_size()) - 1.0f) *
+			get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
-		m_cd_lod_quad_tree->init(displacement_map->decompress(false,
-			true, false), patch_scale);
+		m_cd_lod_quad_tree->init(
+			displacement_map->decompress(false, true, false),
+			get_translation(), patch_scale);
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();

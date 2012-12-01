@@ -104,6 +104,16 @@ namespace eternal_lands
 				const String &value);
 			void write_bool_property(const String &property,
 				const bool value);
+			void write_float_vector_element(const String &name,
+				const FloatVector &values);
+			void write_s16_vector_element(const String &name,
+				const Sint16Vector &values);
+			void write_s32_vector_element(const String &name,
+				const Sint32Vector &values);
+			void write_u16_vector_element(const String &name,
+				const Uint16Vector &values);
+			void write_u32_vector_element(const String &name,
+				const Uint32Vector &values);
 
 	};
 

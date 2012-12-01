@@ -54,6 +54,7 @@ namespace eternal_lands
 
 		mt_terrain_material_changed,
 		mt_terrain_scale_offset_changed,
+		mt_terrain_translation_changed,
 
 		mt_tile_texture_changed,
 		mt_scene_ground_hemisphere_changed,

@@ -12,16 +12,23 @@ namespace eternal_lands
 {
 
 	TerrainMaterialModification::TerrainMaterialModification(
-		const String &albedo_map, const String &extra_map,
-		const float blend_size, const bool use_blend_size_sampler,
-		const bool use_blend_size, const bool use_extra_map,
+		const String &albedo_map, const String &specular_map,
+		const String &gloss_map, const String &height_map,
+		const glm::vec3 &default_specular, const float default_gloss,
+		const float default_height, const float blend_size,
+		const bool use_blend_size_texture, const bool use_specular_map,
+		const bool use_gloss_map, const bool use_height_map,
 		const Uint16 index, const ModificationType type,
 		const Uint32 edit_id): Modification(edit_id, index, type),
-		m_albedo_map(albedo_map), m_extra_map(extra_map),
-		m_blend_size(blend_size),
-		m_use_blend_size_sampler(use_blend_size_sampler),
-		m_use_blend_size(use_blend_size),
-		m_use_extra_map(use_extra_map), m_index(index)
+		m_albedo_map(albedo_map), m_specular_map(specular_map),
+		m_gloss_map(gloss_map), m_height_map(height_map),
+		m_default_specular(default_specular),
+		m_default_gloss(default_gloss),
+		m_default_height(default_height), m_blend_size(blend_size),
+		m_use_blend_size_texture(use_blend_size_texture),
+		m_use_specular_map(use_specular_map),
+		m_use_gloss_map(use_gloss_map),
+		m_use_height_map(use_height_map), m_index(index)
 	{
 	}
 
@@ -70,12 +77,15 @@ namespace eternal_lands
 				break;
 			case mt_terrain_material_changed:
 				editor.set_terrain_material(m_albedo_map,
-					m_extra_map, m_blend_size,
-					m_use_blend_size_sampler,
-					m_use_blend_size, m_use_extra_map,
-					m_index);
+					m_specular_map, m_gloss_map,
+					m_height_map, m_default_specular,
+					m_default_gloss, m_default_height,
+					m_blend_size, m_use_blend_size_texture,
+					m_use_specular_map, m_use_gloss_map,
+					m_use_height_map, m_index);
 				break;
 			case mt_terrain_scale_offset_changed:
+			case mt_terrain_translation_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ground_hemisphere_changed:
 			case mt_dungeon_changed:

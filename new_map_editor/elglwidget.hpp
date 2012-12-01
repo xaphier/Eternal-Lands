@@ -6,6 +6,7 @@
 #include <QGLWidget>
 #include <QKeyEvent>
 #include <QBitArray>
+#include "terraintexturedata.hpp"
 
 using namespace eternal_lands;
 
@@ -189,16 +190,9 @@ class ELGLWidget: public QGLWidget
 		void set_ground_hemisphere(const glm::vec4 &ground_hemisphere);
 		const glm::vec4 &get_ground_hemisphere() const;
 		void set_fog(const glm::vec3 &color, const float density);
-		void set_terrain_material(const QString &albedo_map,
-			const QString &extra_map, const float blend_size,
-			const bool use_blend_size_sampler,
-			const bool use_blend_size, const bool use_extra_map,
+		void set_terrain_material(const TerrainTextureData &data,
 			const int index);
-		void get_terrain_material(QString &albedo_map,
-			QString &extra_map, float &blend_size,
-			bool &use_blend_size_sampler,
-			bool &use_blend_size, bool &use_extra_map,
-			const int index) const;
+		TerrainTextureData get_terrain_material(const int index) const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
 		QStringList get_debug_modes() const;
@@ -250,6 +244,8 @@ class ELGLWidget: public QGLWidget
 		void set_all_copies_of_object_name(const String &name);
 		void fill_terrain_blend_layer(const float strength,
 			const int effect, const int layer);
+		void set_terrain_translation(const QVector3D &translation);
+		QVector3D get_terrain_translation() const;
 
 		inline Qt::MouseButton get_press_button() const
 		{
@@ -494,27 +490,27 @@ class ELGLWidget: public QGLWidget
 		void set_random_scale_max(const double value);
 		void disable_object();
 		void disable_light();
-		void save(const QString &name) const;
+		void save(const AbstractProgressSharedPtr &progress,
+			const QString &name) const;
 		void set_draw_objects(const bool draw_objects);
 		void set_draw_terrain(const bool draw_terrain);
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
 		void set_draw_heights(const bool draw_heights);
 		void set_lights_enabled(const bool enabled);
-		void init_terrain(const QSize &size, const QString &albedo_map,
-			const QString &extra_map,
-			const bool use_blend_size_sampler,
-			const bool use_extra_map);
-		void init_terrain(const QString &height_map, const QSize &size,
-			const QString &albedo_map, const QString &extra_map,
-			const bool use_blend_size_sampler,
-			const bool use_extra_map);
+		void init_terrain(const QVector3D &translation,
+			const QSize &size, const TerrainTextureData &data);
+		void init_terrain(const QString &height_map,
+			const QVector3D &translation, const QSize &size,
+			const TerrainTextureData &data);
 		void set_object_walkable(const bool value);
 		void set_objects_walkable(const bool value);
 		void get_albedo_map_data(const QString &name,
 			const QSize &icon_size, const QSize &image_size,
-			QIcon &icon, bool &use_blend_size_sampler, bool &ok);
-		void get_extra_map_data(const QString &name,
+			QIcon &icon, bool &use_blend_size_texture, bool &ok);
+		void get_specular_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_gloss_height_map_data(const QString &name,
 			const QSize &image_size, bool &ok);
 		void get_image_data(const QString &name, QSize &size, bool &ok);
 		void update_terrain_dudv();
@@ -523,6 +519,7 @@ class ELGLWidget: public QGLWidget
 		void pick_terrain_displacement();
 		void pick_terrain_normal();
 		void set_terrain_normal_mapping(const bool enabled);
+		void set_terrain_enabled(const bool enabled);
 
 	signals:
 		void update_object(const bool select);

@@ -29,8 +29,7 @@ namespace eternal_lands
 		ubt_material,
 		ubt_animation,
 		ubt_shadow,
-		ubt_terrain,
-		ubt_terrain_instances
+		ubt_terrain
 	};
 
 	class UniformBufferUtil
