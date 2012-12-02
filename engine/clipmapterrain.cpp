@@ -48,7 +48,7 @@ namespace eternal_lands
 		m_world_size = world_size;
 		m_size = size;
 		m_slices = glm::uvec2(slices);
-//		m_slices.y = glm::min(m_slices.y, 3u);
+		m_slices.y = glm::min(m_slices.y, 2u);
 		m_dir_index = 0;
 
 		m_texture_matrices.resize(m_slices.x);

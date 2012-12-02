@@ -410,6 +410,9 @@ namespace eternal_lands
 			tmp_material_data.set_write_height(false);
 			tmp_material_data.set_write_specular_gloss(false);
 
+			effect = get_terrain_builder()->get_effect(get_name(),
+				tmp_material_data);
+
 			m_terrain->set_effect(effect, true, true);
 			m_terrain->set_effect(effect, false, true);
 			m_terrain->set_effect(effect, true, false);

@@ -64,6 +64,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_walkable_changed:
 			case mt_object_name_changed:
+			case mt_object_description_changed:
 			case mt_objects_removed:
 			case mt_objects_translation_changed:
 			case mt_objects_rotation_changed:
@@ -74,6 +75,7 @@ namespace eternal_lands
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
 			case mt_objects_name_changed:
+			case mt_objects_description_changed:
 				break;
 			case mt_terrain_material_changed:
 				editor.set_terrain_material(m_albedo_map,

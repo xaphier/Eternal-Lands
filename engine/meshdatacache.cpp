@@ -461,7 +461,7 @@ namespace eternal_lands
 
 			if (name == UTF8("tile"))
 			{
-				load_plane(name, 3.01f, 0.5f, 2, true,
+				load_plane(name, 3.0f, 0.5f, 2, true,
 					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;

@@ -132,6 +132,8 @@ namespace eternal_lands
 				const StringVector &materials);
 			void set_object_name(const Uint32 id,
 				const String &name);
+			void set_object_description(const Uint32 id,
+				const String &description);
 			void set_all_copies_of_object_name(const Uint32 id,
 				const String &name);
 			void set_objects_transparency(const Uint32Set &ids,
@@ -152,6 +154,8 @@ namespace eternal_lands
 				const StringVector &materials);
 			void set_objects_name(const Uint32Set &ids,
 				const String &name);
+			void set_objects_description(const Uint32Set &ids,
+				const String &description);
 			void remove_light(const Uint32 id);
 			void set_light_position(const Uint32 id,
 				const glm::vec3 &position);
@@ -209,6 +213,12 @@ namespace eternal_lands
 				const int mask, const int layer);
 			void set_terrain_translation(
 				const glm::vec3 &translation);
+
+			inline void export_tile_map(const String &file_name)
+				const
+			{
+				m_data.export_tile_map(file_name);
+			}
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{
@@ -621,6 +631,19 @@ namespace eternal_lands
 				return true;
 			}
 
+			inline bool set_object_description(
+				const String &description)
+			{
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
+				set_object_description(get_id(), description);
+
+				return true;
+			}
+
 			inline bool set_objects_blend(const BlendType blend)
 			{
 				if (!get_objects_selected())
@@ -719,6 +742,19 @@ namespace eternal_lands
 				}
 
 				set_objects_materials(get_ids(), materials);
+
+				return true;
+			}
+
+			inline bool set_objects_description(
+				const String &description)
+			{
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
+				set_objects_description(get_ids(), description);
 
 				return true;
 			}

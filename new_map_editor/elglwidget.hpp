@@ -520,6 +520,8 @@ class ELGLWidget: public QGLWidget
 		void pick_terrain_normal();
 		void set_terrain_normal_mapping(const bool enabled);
 		void set_terrain_enabled(const bool enabled);
+		void set_object_description(const QString &description);
+		void export_tile_map();
 
 	signals:
 		void update_object(const bool select);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>977</width>
-    <height>1589</height>
+    <height>1503</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,11 +75,14 @@
      <property name="title">
       <string>Export</string>
      </property>
+     <addaction name="action_export_tile_map"/>
     </widget>
     <widget class="QMenu" name="menu_Import">
      <property name="title">
       <string>Import</string>
      </property>
+     <addaction name="action_import_terrain_height_map"/>
+     <addaction name="action_import_terrain_blend_map"/>
     </widget>
     <addaction name="action_new"/>
     <addaction name="action_open"/>
@@ -142,9 +145,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="action_import_terrain_height_map"/>
-    <addaction name="action_import_terrain_blend_map"/>
-    <addaction name="separator"/>
     <addaction name="action_change_terrain_translation"/>
     <addaction name="action_relax_terrain_uv"/>
     <addaction name="action_clear_invisible_terrain_layers"/>
@@ -702,6 +702,12 @@
         <string>Transparency</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_20">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
         <item row="0" column="0" colspan="2">
          <widget class="QRadioButton" name="transparency_type_0">
           <property name="text">
@@ -757,6 +763,9 @@
         <string>Selection</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_8">
+        <property name="spacing">
+         <number>2</number>
+        </property>
         <property name="margin">
          <number>0</number>
         </property>
@@ -787,14 +796,17 @@
        </layout>
       </widget>
      </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QCheckBox" name="walkable">
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_21">
+       <property name="toolTip">
+        <string>Message server sends when clicked on object</string>
+       </property>
        <property name="text">
-        <string>Walkable</string>
+        <string>Name</string>
        </property>
       </widget>
      </item>
-     <item row="5" column="2">
+     <item row="6" column="0" colspan="3">
       <spacer name="verticalSpacer_6">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -806,6 +818,26 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QLineEdit" name="description">
+       <property name="toolTip">
+        <string>Message server sends when clicked on object</string>
+       </property>
+       <property name="maxLength">
+        <number>49</number>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="walkable">
+       <property name="toolTip">
+        <string>Only used for Walk map generation</string>
+       </property>
+       <property name="text">
+        <string>Walkable</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -1067,7 +1099,7 @@
      <item>
       <widget class="QTabWidget" name="paint_tool_tabs">
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <property name="iconSize">
         <size>
@@ -1615,9 +1647,6 @@
         </layout>
        </widget>
        <widget class="QWidget" name="water">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <attribute name="icon">
          <iconset resource="icons/resourcen.qrc">
           <normaloff>:/icons/water.png</normaloff>:/icons/water.png</iconset>
@@ -1652,9 +1681,6 @@
         </layout>
        </widget>
        <widget class="QWidget" name="flow">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <attribute name="icon">
          <iconset resource="icons/resourcen.qrc">
           <normaloff>:/icons/vector_field.png</normaloff>:/icons/vector_field.png</iconset>
@@ -1665,9 +1691,6 @@
         <layout class="QGridLayout" name="gridLayout_12">
          <item row="0" column="0">
           <widget class="QLabel" name="water_speed_label">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string>Speed</string>
            </property>
@@ -1675,9 +1698,6 @@
          </item>
          <item row="0" column="1">
           <widget class="QSlider" name="water_speed_slider">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="maximum">
             <number>127</number>
            </property>
@@ -1710,9 +1730,6 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="water_direction_label">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="text">
             <string>Direction</string>
            </property>
@@ -1720,9 +1737,6 @@
          </item>
          <item row="1" column="1">
           <widget class="QDial" name="water_direction">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -2708,7 +2722,7 @@
           <x>0</x>
           <y>0</y>
           <width>144</width>
-          <height>674</height>
+          <height>651</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_8">
@@ -4449,6 +4463,14 @@
    </property>
    <property name="toolTip">
     <string>Change terrain translation</string>
+   </property>
+  </action>
+  <action name="action_export_tile_map">
+   <property name="text">
+    <string>Export tile map</string>
+   </property>
+   <property name="toolTip">
+    <string>Export tile map</string>
    </property>
   </action>
  </widget>

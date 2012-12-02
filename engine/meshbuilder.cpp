@@ -72,8 +72,8 @@ namespace eternal_lands
 		if (get_global_vars()->get_opengl_3_0() ||
 			GLEW_ARB_half_float_vertex)
 		{
-			position = vet_half4;
-			position4 = vet_half4;
+			position = vet_float3;
+			position4 = vet_float4;
 			texture_coordinate = vet_half2;
 			extra_texture_coordinate = vet_half4;
 			font[vst_position] = vet_half2;

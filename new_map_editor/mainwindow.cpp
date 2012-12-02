@@ -206,6 +206,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(walkable, SIGNAL(toggled(const bool)), el_gl_widget,
 		SLOT(set_object_walkable(const bool)));
 
+	QObject::connect(description, SIGNAL(textChanged(const QString&)),
+		el_gl_widget, SLOT(set_object_description(const QString&)));
+
 	QObject::connect(transparency_value, SIGNAL(valueChanged(int)), this,
 		SLOT(set_object_transparency(const int)));
 
@@ -288,6 +291,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_object_witdgets.push_back(selection_type_1);
 	m_object_witdgets.push_back(selection_type_2);
 	m_object_witdgets.push_back(walkable);
+	m_object_witdgets.push_back(description);
 	m_object_witdgets.push_back(material_0);
 	m_object_witdgets.push_back(material_1);
 	m_object_witdgets.push_back(material_2);
@@ -501,6 +505,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	light_dock->widget()->setEnabled(false);
 	terrain_dock->widget()->setEnabled(false);
 	randomize_dock->widget()->setEnabled(false);
+
+	connect(action_export_tile_map, SIGNAL(triggered()), el_gl_widget,
+		SLOT(export_tile_map()));
 }
 
 MainWindow::~MainWindow()
@@ -767,6 +774,8 @@ void MainWindow::update_object()
 	set_blend(object_description.get_blend());
 	set_selection(object_description.get_selection());
 	walkable->setChecked(object_description.get_walkable());
+	description->setText(QString::fromUtf8(
+		object_description.get_description().get().c_str()));
 
 	mesh_name->setText(QString::fromUtf8(object_description.get_name(
 		).get().c_str()));

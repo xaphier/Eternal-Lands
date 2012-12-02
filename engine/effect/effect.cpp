@@ -117,6 +117,7 @@ namespace eternal_lands
 		m_programs[ept_default].reset();
 		m_programs[ept_shadow].reset();
 		m_programs[ept_depth].reset();
+		m_programs[ept_height_map].reset();
 
 		fragment_lights_count = get_shader_source_builder(
 			)->get_fragment_lights_count();
@@ -143,6 +144,9 @@ namespace eternal_lands
 				)->get_program(program_description);
 
 			m_programs[ept_shadow] = get_glsl_program_cache(
+				)->get_program(program_description);
+
+			m_programs[ept_height_map] = get_glsl_program_cache(
 				)->get_program(program_description);
 
 			m_programs[ept_debug] = get_glsl_program_cache(
@@ -172,6 +176,16 @@ namespace eternal_lands
 
 		m_programs[ept_depth] = get_glsl_program_cache()->get_program(
 			program_description);
+
+		/* Height map shader */
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			sbt_depth % m_description.get_name());
+
+		get_shader_source_builder()->build(m_description,
+			sbt_height_map, sot_float, 0, program_description);
+
+		m_programs[ept_height_map] = get_glsl_program_cache(
+			)->get_program(program_description);
 
 		/* Shadow shader */
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
@@ -205,6 +219,7 @@ namespace eternal_lands
 		m_programs[ept_default].reset();
 		m_programs[ept_shadow].reset();
 		m_programs[ept_depth].reset();
+		m_programs[ept_height_map].reset();
 
 		description[st_vertex] = vertex_shader;
 		description[st_fragment] = fragment_shader;
@@ -222,6 +237,9 @@ namespace eternal_lands
 
 		/* Shadow shader */
 		m_programs[ept_shadow] = m_programs[ept_depth];
+
+		/* Height map shader */
+		m_programs[ept_height_map] = m_programs[ept_depth];
 	}
 
 	void Effect::load()

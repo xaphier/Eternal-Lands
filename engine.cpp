@@ -739,7 +739,7 @@ extern "C" void engine_cull_scene()
 	for (i = 0; i < 3; i++)
 	{
 		sky_hemisphere[i] = skybox_light_ambient_color[i] * 1.1f;
-		main_light_color[i] = skybox_light_diffuse_color[i] * 2.1f;
+		main_light_color[i] = skybox_light_diffuse_color[i] * 1.1f;
 		main_light_direction[i] = sun_position[i];
 	}
 

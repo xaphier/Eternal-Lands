@@ -65,7 +65,7 @@ namespace eternal_lands
 		}
 
 		m_data.add_object(EditorObjectDescription(translation,
-			rotation_angles, scale, material_names, name,
+			rotation_angles, scale, material_names, name, String(),
 			transparency, id, new_selection, blend, walkable),
 			sct_no);
 	}

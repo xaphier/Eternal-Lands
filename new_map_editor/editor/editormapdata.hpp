@@ -239,6 +239,7 @@ namespace eternal_lands
 			void set_terrain_enabled(const bool enabled);
 			void set_terrain_translation(
 				const glm::vec3 &translation);
+			void export_tile_map(const String &file_name) const;
 
 			inline const glm::vec3 &get_terrain_translation() const
 			{

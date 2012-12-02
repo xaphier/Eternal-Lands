@@ -31,6 +31,7 @@ namespace eternal_lands
 		sbt_default = 0,
 		sbt_depth,
 		sbt_shadow,
+		sbt_height_map,
 		sbt_screen_quad,
 		sbt_debug_uv,
 		sbt_debug_depth,

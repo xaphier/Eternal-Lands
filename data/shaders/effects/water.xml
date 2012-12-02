@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>water</name>
+	<world_transformation>static</world_transformation>
+	<texture_coodrinates>static</texture_coodrinates>
+	<main>water</main>
+	<node_based>false</node_based>
+	<receives_shadows>true</receives_shadows>
+	<transparent>false</transparent>
+	<lighting>specular</lighting>
+	<output_channels>rgba</output_channels>
+</effect>
+

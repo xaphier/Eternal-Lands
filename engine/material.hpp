@@ -128,6 +128,7 @@ namespace eternal_lands
 			inline void set_effect(const EffectSharedPtr &effect)
 				noexcept
 			{
+				assert(effect.get() != nullptr);
 				m_effect = effect;
 			}
 

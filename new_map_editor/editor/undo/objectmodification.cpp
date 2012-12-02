@@ -50,6 +50,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_walkable_changed:
 			case mt_object_name_changed:
+			case mt_object_description_changed:
 				editor.modify_object(m_object_description);
 				return false;
 			case mt_objects_removed:
@@ -62,6 +63,7 @@ namespace eternal_lands
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
 			case mt_objects_name_changed:
+			case mt_objects_description_changed:
 			case mt_light_added:
 			case mt_light_removed:
 			case mt_light_position_changed:

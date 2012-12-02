@@ -1537,4 +1537,29 @@ namespace eternal_lands
 		writer->write_u32_le(0);	// reserved_17
 	}
 
+	void EditorMapData::export_tile_map(const String &file_name) const
+	{
+		ImageSharedPtr image;
+		glm::uvec4 data;
+		glm::uvec2 size;
+		Uint32 x, y;
+
+		size = get_tile_map_size();
+
+		image = boost::make_shared<Image>(String(UTF8("tile map")),
+			false, tft_l8, glm::uvec3(size, 0), 0, false);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				data.r = m_tile_map[x][y];
+
+				image->set_pixel_uint(x, y, 0, 0, 0, data);
+			}
+		}
+
+		CodecManager::save_image_as_png(image, file_name);
+	}
+
 }

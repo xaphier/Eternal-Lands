@@ -676,6 +676,24 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_object_description(const Uint32 id,
+		const String &description)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_description() != description)
+		{
+			change_object(mt_object_description_changed,
+				object_description);
+
+			object_description.set_description(description);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
 	void Editor::set_all_copies_of_object_name(const Uint32 id,
 		const String &name)
 	{
@@ -972,6 +990,40 @@ namespace eternal_lands
 				object_descriptions[i].set_material_names(
 					materials);
 			}
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_description(const Uint32Set &ids,
+		const String &description)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_description_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_description(description);
 
 			m_data.modify_object(object_descriptions[i]);
 		}

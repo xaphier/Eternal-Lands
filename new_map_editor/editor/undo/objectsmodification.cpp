@@ -43,6 +43,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_walkable_changed:
 			case mt_object_name_changed:
+			case mt_object_description_changed:
 				return false;
 			case mt_objects_removed:
 				BOOST_FOREACH(const EditorObjectDescription
@@ -64,6 +65,7 @@ namespace eternal_lands
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
 			case mt_objects_name_changed:
+			case mt_objects_description_changed:
 				BOOST_FOREACH(const EditorObjectDescription
 					&object_description,
 					m_object_descriptions)

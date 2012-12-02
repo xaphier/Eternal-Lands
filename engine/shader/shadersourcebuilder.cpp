@@ -1295,8 +1295,6 @@ namespace eternal_lands
 				}
 			}
 
-			std::cout << file_name << std::endl;
-
 			shader_source->load_xml(xml_reader->get_root_node());
 		}
 		catch (boost::exception &exception)
@@ -2774,6 +2772,7 @@ namespace eternal_lands
 		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector locals;
+		ShaderSourceParameter tmp;
 		CommonParameterType output_parameter;
 		StringArray8 output_array;
 		String output, indent;
@@ -2994,6 +2993,31 @@ namespace eternal_lands
 			case sbt_depth:
 				main << indent << output;
 				main << UTF8(".rgb = vec3(1.0);\n");
+
+				break;
+			case sbt_height_map:
+				tmp = ShaderSourceParameterBuilder::build(
+					String(UTF8("fragment")),
+					spt_effect_15, pt_sampler2D);
+
+				ShaderSourceParameterBuilder::add_parameter(
+					tmp, locals, globals, uniform_buffers);
+
+				add_parameter(String(UTF8("fragment")),
+					cpt_world_position, pqt_in, locals,
+					globals, uniform_buffers);
+
+				main << indent << UTF8("if (texelFetch(");
+				main << spt_effect_15 << UTF8(", ivec2(");
+				main << UTF8("gl_FragCoord.xy), 0).r > ");
+				main << cpt_world_position << UTF8(".z)\n");
+				main << indent << UTF8("{\n") << indent;
+				main << UTF8("\tdiscard;\n") << indent;
+				main << UTF8("}\n");
+
+				main << indent << output;
+				main << UTF8(" = ") << cpt_world_position;
+				main << UTF8(".z;\n");
 
 				break;
 			case sbt_shadow:
@@ -3875,21 +3899,29 @@ namespace eternal_lands
 				fragment_source << UTF8("layout(location = 0");
 				fragment_source << UTF8(") out ");
 
-				if (build_data.get_option(ssbot_alpha_write))
+				if (shader_build == sbt_height_map)
 				{
-					fragment_source << UTF8("vec4");
+					fragment_source << UTF8("float");
 				}
 				else
 				{
-					if (shader_build == sbt_shadow)
+					if (build_data.get_option(
+						ssbot_alpha_write))
 					{
-						fragment_source <<
-							UTF8("float");
+						fragment_source << UTF8("vec4");
 					}
 					else
 					{
-						fragment_source <<
-							UTF8("vec3");
+						if (shader_build == sbt_shadow)
+						{
+							fragment_source <<
+								UTF8("float");
+						}
+						else
+						{
+							fragment_source <<
+								UTF8("vec3");
+						}
 					}
 				}
 

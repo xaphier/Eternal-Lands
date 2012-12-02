@@ -1221,6 +1221,12 @@ void ELGLWidget::set_object_walkable(const bool value)
 	emit can_undo(m_editor->get_can_undo());
 }
 
+void ELGLWidget::set_object_description(const QString &description)
+{
+	m_editor->set_object_description(String(description.toUtf8()));
+	emit can_undo(m_editor->get_can_undo());
+}
+
 void ELGLWidget::set_object_transparency(const float value)
 {
 	m_editor->set_object_transparency(value);
@@ -2075,4 +2081,19 @@ void ELGLWidget::set_terrain_normal_mapping(const bool enabled)
 	{
 		m_global_vars->set_terrain_quality(qt_medium);
 	}
+}
+
+void ELGLWidget::export_tile_map()
+{
+	QString file_name;
+
+	file_name = QFileDialog::getSaveFileName(this, tr("Export tile map"),
+		".", tr("PNG (*.png);;All files (*)"));
+
+	if (file_name.isEmpty())
+	{
+		return;
+	}
+
+	m_editor->export_tile_map(String(file_name.toUtf8()));
 }
