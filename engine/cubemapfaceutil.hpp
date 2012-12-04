@@ -28,12 +28,12 @@ namespace eternal_lands
 	 */
 	enum CubeMapFaceType
 	{
-		cmft_negative_x = 0,
-		cmft_negative_y,
-		cmft_negative_z,
-		cmft_positive_x,
+		cmft_positive_x = 0,
+		cmft_negative_x,
 		cmft_positive_y,
-		cmft_positive_z
+		cmft_negative_y,
+		cmft_positive_z,
+		cmft_negative_z
 	};
 	/**
 	 * @}

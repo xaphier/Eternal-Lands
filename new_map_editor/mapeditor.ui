@@ -3915,7 +3915,7 @@
      <normaloff>:/icons/weather-fog.png</normaloff>:/icons/weather-fog.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Fog</string>
+    <string>Fog</string>
    </property>
   </action>
   <action name="action_undo">

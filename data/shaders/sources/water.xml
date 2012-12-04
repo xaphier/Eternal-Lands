@@ -23,7 +23,7 @@
     </parameter>
     <parameter>
      <sampler_parameter>effect_sampler_3</sampler_parameter>
-     <type>sampler2D</type>
+     <type>samplerCube</type>
     </parameter>
     <parameter>
      <common_parameter>emission</common_parameter>
@@ -63,11 +63,11 @@ vec3 normal, reflect_dir;
 vec2 normal_0, normal_1, normal_2, normal_3, normal_4, normal_5, normal_6;
 vec2 ff, ff_scale, offset, flow_dir, uv, flow_uv;
 
-uv = world_position.xy * 0.1;
-flow_uv = world_position.xy / 96.0;
+flow_uv = world_position.xy - vec2(0.5);
+uv = world_uv;
 
 // ff is the factor that blends the tiles.
-ff = abs(2.0 * fract(world_position.xy) - 1.0) - 0.5;
+ff = abs(2.0 * fract(flow_uv + 0.5) - 1.0) - 0.5;
 
 // take a third power, to make the area with more or less equal contribution
 // of more tile bigger
@@ -79,9 +79,9 @@ ff = 0.5 - 4.0 * ff * ff * ff;
 // compensates for it 
 ff_scale = sqrt(ff * ff + (1.0 - ff) * (1.0 - ff));
 
-sample = textureLod(effect_sampler_2, flow_uv + vec2(0.0, 0.0) / 96.0, 0);
-flow_dir = sample.b * (sample.xy - 0.5);
-offset = vec2(time * 0.01, 0.0);// * sample.z;
+sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(0, 0)) / textureSize(effect_sampler_2, 0).xy);
+flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
@@ -89,9 +89,9 @@ rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
 // this is the normal for tile A
 normal_0 = texture(effect_sampler_1, rotation * uv - offset).rg;
 
-sample = textureLod(effect_sampler_2, flow_uv + vec2(1.0, 0.0) / 96.0, 0);
-flow_dir = sample.b * (sample.xy - 0.5);
-offset = vec2(time * 0.01, 0.0);// * sample.z;
+sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(1, 0)) / textureSize(effect_sampler_2, 0).xy);
+flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
@@ -99,9 +99,9 @@ rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
 // this is the normal for tile B
 normal_1 = texture(effect_sampler_1, rotation * uv - offset * 1.06 + 0.62).rg;
 
-sample = textureLod(effect_sampler_2, flow_uv + vec2(0.0, 1.0) / 96.0, 0);
-flow_dir = sample.b * (sample.xy - 0.5);
-offset = vec2(time * 0.01, 0.0);// * sample.z;
+sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(0, 1)) / textureSize(effect_sampler_2, 0).xy);
+flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
@@ -109,9 +109,9 @@ rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
 // this is the normal for tile C
 normal_2 = texture(effect_sampler_1, rotation * uv - offset * 1.33 + 0.27).rg;
 
-sample = textureLod(effect_sampler_2, flow_uv + vec2(1.0, 1.0) / 96.0, 0);
-flow_dir = sample.b * (sample.xy - 0.5);
-offset = vec2(time * 0.01, 0.0);// * sample.z;
+sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(1, 1)) / textureSize(effect_sampler_2, 0).xy);
+flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
@@ -122,9 +122,10 @@ normal_3 = texture(effect_sampler_1, rotation * uv - offset * 1.24).rg;
 normal_4 = mix(normal_1, normal_0, ff.x);
 normal_5 = mix(normal_2, normal_3, ff.x);
 normal_6 = mix(normal_5, normal_4, ff.y);
-normal_6 = (normal_6 - 0.5) / (ff_scale.x * ff_scale.y);
-normal_6 *= 0.3;
 
+normal_6 = (normal_6 - 0.5) / (ff_scale.y * ff_scale.x);
+
+normal_6 *= 0.3;
 normal.xy = normal_6;
 normal.z = sqrt(1.0 - dot(normal_6, normal_6));
 
@@ -132,14 +133,15 @@ reflect_dir = reflect(world_view_direction.xyz, normal);
 
 float a = 0.95 - 0.6 * pow(dot(normal, -world_view_direction.xyz), 2.0);
 
-albedo.rgb = mix(texture(effect_sampler_0, uv).rgb, texture(effect_sampler_3, reflect_dir).rgb, a);
-albedo.a = 1.0;//a;
+albedo.rgb = texture(effect_sampler_3, reflect_dir).rgb;
+albedo.a = a;
 emission = vec3(0.0);
-specular = albedo.rgb * 0.7;
-albedo.rgb *= 0.3;
-gloss = 1.0;
+specular = albedo.rgb * 0.5;
+albedo.rgb *= 0.5;
+gloss = 1.0 - dot(fwidth(flow_uv), vec2(1.0));
 
-fragment_normal = normal;</source>
+fragment_normal = normal;
+</source>
    <version>130</version>
    <shader_types>fragment</shader_types>
   </shader_source_data>

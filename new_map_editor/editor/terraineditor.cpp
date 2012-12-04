@@ -918,17 +918,20 @@ namespace eternal_lands
 	bool TerrainEditor::get_vertex(const glm::vec3 &world_position,
 		glm::uvec2 &result) const
 	{
+		glm::vec3 position;
 		glm::ivec2 index, min, max, size;
 		Sint32 x, y;
 		float distance, min_distance;
 
+		position = world_position - get_translation();
+
 		min_distance = std::numeric_limits<float>::max();
 
-		min = glm::ivec2(glm::vec2(world_position -
+		min = glm::ivec2(glm::vec2(position -
 			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale());
 
-		max = glm::ivec2(glm::vec2(world_position +
+		max = glm::ivec2(glm::vec2(position +
 			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale()) + 1;
 
@@ -947,7 +950,7 @@ namespace eternal_lands
 				index.y = y;
 
 				distance = glm::distance(get_position(index),
-					world_position);
+					position);
 
 				if (distance < min_distance)
 				{

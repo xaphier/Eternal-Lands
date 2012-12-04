@@ -210,7 +210,8 @@ void AllTerrainTexturesDialog::remove_texture()
 
 	m_terrain_texture_datas.remove(item->data(ttr_albedo_map).toString());
 
-	terrain_textures->removeItemWidget(item);
+	terrain_textures->setCurrentItem(0);
+	update_terrain_texture_datas();
 }
 
 void AllTerrainTexturesDialog::remove_height_texture()

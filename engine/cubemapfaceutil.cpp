@@ -45,18 +45,18 @@ namespace eternal_lands
 
 		const CubeMapFaceTypeData cube_map_face_datas[] =
 		{
-			CubeMapFaceTypeData(String(UTF8("negative_x")),
-				GL_TEXTURE_CUBE_MAP_NEGATIVE_X),
-			CubeMapFaceTypeData(String(UTF8("negative_y")),
-				GL_TEXTURE_CUBE_MAP_NEGATIVE_Y),
-			CubeMapFaceTypeData(String(UTF8("negative_z")),
-				GL_TEXTURE_CUBE_MAP_NEGATIVE_Z),
 			CubeMapFaceTypeData(String(UTF8("positive_x")),
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X),
+			CubeMapFaceTypeData(String(UTF8("negative_x")),
+				GL_TEXTURE_CUBE_MAP_NEGATIVE_X),
 			CubeMapFaceTypeData(String(UTF8("positive_y")),
 				GL_TEXTURE_CUBE_MAP_POSITIVE_Y),
+			CubeMapFaceTypeData(String(UTF8("negative_y")),
+				GL_TEXTURE_CUBE_MAP_NEGATIVE_Y),
 			CubeMapFaceTypeData(String(UTF8("positive_z")),
-				GL_TEXTURE_CUBE_MAP_POSITIVE_Z)
+				GL_TEXTURE_CUBE_MAP_POSITIVE_Z),
+			CubeMapFaceTypeData(String(UTF8("negative_z")),
+				GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)
 		};
 
 		const Uint32 cube_map_face_datas_count =
