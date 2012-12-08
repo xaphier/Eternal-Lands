@@ -2407,19 +2407,19 @@ void load_channel_colors (){
 	/* if the file exists but is not a valid size, don't use it */
 	if ((file_size == 0) || (file_size != sizeof(channel_colors)))
 	{
-		LOG_ERROR("%s: Invalid format (size mismatch) \"%s\"\n", reg_error_str, fname);
+		LOG_ERROR_OLD("%s: Invalid format (size mismatch) \"%s\"\n", reg_error_str, fname);
 		return;
 	}
 
 	fp = open_file_config(fname,"rb");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
 	if (fread (channel_colors,sizeof(channel_colors),1, fp) != 1)
 	{
-		LOG_ERROR("%s() fail during read of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
+		LOG_ERROR_OLD("%s() fail during read of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
 		fclose (fp);
 		return;
 	}
@@ -2439,13 +2439,13 @@ void save_channel_colors(){
 	my_tolower(fname);
 	fp=open_file_config(fname,"wb");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
 	if (fwrite (channel_colors,sizeof(channel_colors),1, fp) != 1)
 	{
-		LOG_ERROR("%s() fail during write of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
+		LOG_ERROR_OLD("%s() fail during write of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
 	}
 
 	fclose(fp);
