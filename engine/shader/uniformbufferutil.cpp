@@ -66,7 +66,8 @@ namespace eternal_lands
 				(apt_time)
 				(apt_fog_data)
 				(apt_camera)
-				(apt_z_params),
+				(apt_z_params)
+				(apt_screen_size),
 				String(UTF8("scene")),
 				String(UTF8("Scene"))),
 			UniformBufferTypeData(boost::assign::list_of

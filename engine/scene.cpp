@@ -1229,6 +1229,8 @@ namespace eternal_lands
 			program->set_parameter(apt_projection_view_matrix,
 				get_scene_view(
 					).get_current_projection_view_matrix());
+			program->set_parameter(apt_screen_size,
+				get_state_manager().get_screen_size());
 			program->set_parameter(apt_time, m_time);
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
@@ -1707,7 +1709,8 @@ namespace eternal_lands
 
 			m_shadow_frame_buffer->bind();
 
-			m_shadow_frame_buffer->set_view_port(0);
+			get_state_manager().switch_view_port(
+				m_shadow_frame_buffer->get_view_port(0));
 
 			get_state_manager().switch_depth_clamp(true);
 
@@ -2225,7 +2228,9 @@ namespace eternal_lands
 		{
 			DEBUG_CHECK_GL_ERROR();
 
-			m_clipmap_terrain_frame_buffer->set_view_port(0);
+			get_state_manager().switch_view_port(
+				m_clipmap_terrain_frame_buffer->get_view_port(
+					0));
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -2294,7 +2299,9 @@ namespace eternal_lands
 				(get_global_vars()->get_terrain_quality() >=
 					qt_medium))
 			{
-				m_clipmap_terrain_frame_buffer->set_view_port(0);
+				get_state_manager().switch_view_port(
+					m_clipmap_terrain_frame_buffer->
+						get_view_port(0));
 
 				DEBUG_CHECK_GL_ERROR();
 
@@ -2521,7 +2528,8 @@ namespace eternal_lands
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("lights"));
 
 		m_scene_frame_buffer->bind();
-		m_scene_frame_buffer->set_view_port(0);
+		get_state_manager().switch_view_port(
+			m_scene_frame_buffer->get_view_port(0));
 		m_scene_frame_buffer->attach(m_light_index_texture,
 			fbat_color_0, 0, 0);
 		m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
@@ -2635,7 +2643,7 @@ namespace eternal_lands
 
 		if (m_scene_frame_buffer.get() == nullptr)
 		{
-			set_view_port();
+			get_state_manager().switch_view_port(get_view_port());
 		}
 		else
 		{
@@ -2644,7 +2652,8 @@ namespace eternal_lands
 				fbat_color_0, 0, 0);
 			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
 			m_scene_frame_buffer->clear(1.0f, 0);
-			m_scene_frame_buffer->set_view_port(0);
+			get_state_manager().switch_view_port(
+				m_scene_frame_buffer->get_view_port(0));
 		}
 
 		draw_depth();
@@ -2691,12 +2700,14 @@ namespace eternal_lands
 
 		if (m_scene_frame_buffer.get() == nullptr)
 		{
-			set_view_port();
+			get_state_manager().switch_view_port(
+				get_view_port());
 		}
 		else
 		{
 			m_scene_frame_buffer->bind();
-			m_scene_frame_buffer->set_view_port(0);
+			get_state_manager().switch_view_port(
+				m_scene_frame_buffer->get_view_port(0));
 			m_scene_frame_buffer->attach(m_scene_texture,
 				fbat_color_0, 0, 0);
 
@@ -3338,7 +3349,7 @@ namespace eternal_lands
 		rect.z += rect.x;
 		rect.w += rect.y;
 
-		set_view_port();
+		get_state_manager().switch_view_port(get_view_port());
 
 		m_scene_frame_buffer->blit_buffers();
 		m_scene_frame_buffer->blit_to_back_buffer(rect, 0, true,
@@ -3452,12 +3463,6 @@ namespace eternal_lands
 		build_light_index_map();
 
 		get_scene_view().set_view_port(view_port);
-	}
-
-	void Scene::set_view_port()
-	{
-		glViewport(get_view_port()[0], get_view_port()[1],
-			get_view_port()[2], get_view_port()[3]);
 	}
 
 	const glm::uvec2 &Scene::get_map_size() const

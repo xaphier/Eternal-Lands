@@ -87,6 +87,7 @@ namespace eternal_lands
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_sky_hemisphere;
 			glm::vec4 m_fog;
+			glm::vec4 m_screen_size;
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
@@ -188,7 +189,6 @@ namespace eternal_lands
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
-			void set_view_port();
 			void draw_default();
 
 			inline bool get_center_at_focus() const noexcept

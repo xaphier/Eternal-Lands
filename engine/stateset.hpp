@@ -30,6 +30,7 @@ namespace eternal_lands
 	class StateSet
 	{
 		private:
+			glm::uvec4 m_view_port;
 			glm::bvec4 m_color_mask;
 			Uint32 m_restart_index;
 			Uint16 m_texture_unit;
@@ -57,6 +58,12 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~StateSet() noexcept;
+
+			inline const glm::uvec4 &get_view_port() const
+				noexcept
+			{
+				return m_view_port;
+			}
 
 			inline const glm::bvec4 &get_color_mask() const
 				noexcept
@@ -138,6 +145,12 @@ namespace eternal_lands
 			inline bool get_framebuffer_sRGB() const noexcept
 			{
 				return m_framebuffer_sRGB;
+			}
+
+			inline void set_view_port(
+				const glm::uvec4 &view_port) noexcept
+			{
+				m_view_port = view_port;
 			}
 
 			inline void set_color_mask(

@@ -3007,10 +3007,34 @@ namespace eternal_lands
 					cpt_world_position, pqt_in, locals,
 					globals, uniform_buffers);
 
-				main << indent << UTF8("if (texelFetch(");
-				main << spt_effect_15 << UTF8(", ivec2(");
-				main << UTF8("gl_FragCoord.xy), 0).r > ");
-				main << cpt_world_position << UTF8(".z)\n");
+				main << indent;
+
+				if (build_data.get_version() > svt_120)
+				{
+					main << UTF8("if (texelFetch(");
+					main << spt_effect_15;
+					main << UTF8(", ivec2(");
+					main << UTF8("gl_FragCoord.xy), 0)");
+					main << UTF8(".r > ");
+					main << cpt_world_position;
+					main << UTF8(".z)\n");
+				}
+				else
+				{
+					add_parameter(String(UTF8("fragment")),
+						apt_screen_size, locals,
+						globals, uniform_buffers);
+
+					main << UTF8("if (texture2D(");
+					main << spt_effect_15;
+					main << UTF8(", ");
+					main << UTF8("gl_FragCoord.xy *");
+					main << apt_screen_size;
+					main << UTF8(".zw).r > ");
+					main << cpt_world_position;
+					main << UTF8(".z)\n");
+				}
+
 				main << indent << UTF8("{\n") << indent;
 				main << UTF8("\tdiscard;\n") << indent;
 				main << UTF8("}\n");

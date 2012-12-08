@@ -507,7 +507,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		set_view_port();
+		get_state_manager().switch_view_port(get_view_port());
 
 		CHECK_GL_ERROR();
 

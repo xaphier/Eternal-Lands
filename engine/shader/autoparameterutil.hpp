@@ -107,7 +107,11 @@ namespace eternal_lands
 		/**
 		 * terrain translation, vec4(x, y, z, 1.0f)
 		 */
-		apt_terrain_translation
+		apt_terrain_translation,
+		/**
+		 * screen size vec4(x, y, 1.0f/x, 1.0f/y);
+		 */
+		apt_screen_size
 	};
 	/**
 	 * @}

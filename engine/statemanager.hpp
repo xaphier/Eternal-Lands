@@ -35,6 +35,7 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_mesh;
 			GlslProgramSharedPtr m_program;
 			TextureSharedPtrArray32 m_textures;
+			glm::vec4 m_screen_size;
 			BitSet32 m_program_used_texture_units;
 			BitSet32 m_used_texture_units;
 			BitSet32 m_used_attributes;
@@ -58,6 +59,8 @@ namespace eternal_lands
 			void set_multisample(const bool multisample) noexcept;
 			void set_blend(const bool blend) noexcept;
 			void set_culling(const bool culling) noexcept;
+			void set_view_port(const glm::uvec4 &view_port)
+				noexcept;
 			void set_color_mask(const glm::bvec4 &color_mask)
 				noexcept;
 			void set_depth_mask(const bool depth_mask) noexcept;
@@ -187,6 +190,21 @@ namespace eternal_lands
 				}
 
 				set_culling(culling);
+
+				return true;
+			}
+
+			inline bool switch_view_port(
+				const glm::uvec4 &view_port)
+			{
+				if (glm::all(glm::equal(
+					m_state_set.get_view_port(),
+						view_port)))
+				{
+					return false;
+				}
+
+				set_view_port(view_port);
 
 				return true;
 			}
@@ -351,6 +369,12 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_program;
+			}
+
+			inline const glm::vec4 &get_screen_size() const
+				noexcept
+			{
+				return m_screen_size;
 			}
 
 			void init();

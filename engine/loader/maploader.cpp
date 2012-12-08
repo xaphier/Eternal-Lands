@@ -259,10 +259,10 @@ namespace eternal_lands
 		const StringVector &height_maps,
 		const TerrainMaterialData &material_data,
 		const glm::vec4 &dudv_scale_offset,
-		const glm::vec3 &offset, const glm::uvec2 &sizes)
+		const glm::vec3 &translation, const glm::uvec2 &sizes)
 	{
 		m_map->set_terrain_geometry_maps(displacement_map,
-			normal_tangent_map, dudv_map, offset);
+			normal_tangent_map, dudv_map, translation);
 		m_map->set_terrain_blend_map(blend_map);
 		m_map->set_terrain_material(albedo_maps, specular_maps,
 			gloss_maps, height_maps, material_data);

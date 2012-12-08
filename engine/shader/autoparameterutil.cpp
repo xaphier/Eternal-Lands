@@ -120,7 +120,9 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("terrain_lod_offset")), pt_vec4),
 			AutoParameterTypeData(
-				String(UTF8("terrain_translation")), pt_vec4)
+				String(UTF8("terrain_translation")), pt_vec4),
+			AutoParameterTypeData(
+				String(UTF8("screen_size")), pt_vec4),
 		};
 
 		const Uint32 auto_parameter_datas_count =

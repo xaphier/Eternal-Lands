@@ -501,10 +501,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
-	transformation_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
 	light_dock->widget()->setEnabled(false);
-	terrain_dock->widget()->setEnabled(false);
-	randomize_dock->widget()->setEnabled(false);
+	terrain_page->setEnabled(false);
+	randomize_page->setEnabled(false);
 
 	connect(action_export_tile_map, SIGNAL(triggered()), el_gl_widget,
 		SLOT(export_tile_map()));
@@ -908,20 +908,15 @@ void MainWindow::update_object(const bool select)
 
 		dock_widgets = tabifiedDockWidgets(object_dock);
 
-		if (dock_widgets.lastIndexOf(transformation_dock) == -1)
+		if (dock_widgets.lastIndexOf(transformations_dock) == -1)
 		{
-			transformation_dock->raise();
+			transformations_dock->raise();
+			transformations_stack->setCurrentWidget(
+				transformation_page);
 
 			if (dock_widgets.lastIndexOf(materials_dock) == -1)
 			{
-				dock_widgets = tabifiedDockWidgets(
-					transformation_dock);
-
-				if (dock_widgets.lastIndexOf(materials_dock) ==
-					-1)
-				{
-					materials_dock->raise();
-				}
+				materials_dock->raise();
 			}
 		}
 		else
@@ -935,10 +930,10 @@ void MainWindow::update_object(const bool select)
 
 	object_dock->widget()->setEnabled(select);
 	materials_dock->widget()->setEnabled(select);
-	transformation_dock->widget()->setEnabled(select);
+	transformation_page->setEnabled(select);
 	light_dock->widget()->setEnabled(false);
-	terrain_dock->widget()->setEnabled(false);
-	randomize_dock->widget()->setEnabled(false);
+	terrain_page->setEnabled(false);
+	randomize_page->setEnabled(false);
 
 	update_object();
 
@@ -974,10 +969,10 @@ void MainWindow::update_light(const bool select)
 
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
-	transformation_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
 	light_dock->widget()->setEnabled(select);
-	terrain_dock->widget()->setEnabled(false);
-	randomize_dock->widget()->setEnabled(false);
+	terrain_page->setEnabled(false);
+	randomize_page->setEnabled(false);
 
 	action_remove->setEnabled(select);
 	action_remove_all_copies_of_object->setEnabled(false);
@@ -1017,9 +1012,9 @@ void MainWindow::deselect()
 
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
-	transformation_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
 	light_dock->widget()->setEnabled(false);
-	terrain_dock->widget()->setEnabled(false);
+	terrain_page->setEnabled(false);
 }
 
 void MainWindow::update_translation()
@@ -1451,8 +1446,9 @@ void MainWindow::add_objects(const bool value)
 
 		set_default_mode();
 
-		randomize_dock->widget()->setEnabled(true);
-		randomize_dock->raise();
+		randomize_page->setEnabled(true);
+		transformations_dock->raise();
+		transformations_stack->setCurrentWidget(randomize_page);
 
 		return;
 	}
@@ -1466,9 +1462,9 @@ void MainWindow::set_default_mode()
 {
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
-	transformation_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
 	light_dock->widget()->setEnabled(false);
-	terrain_dock->widget()->setEnabled(false);
+	terrain_page->setEnabled(false);
 }
 
 void MainWindow::add_lights(const bool value)
@@ -1582,13 +1578,14 @@ void MainWindow::terrain_mode(const bool checked)
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
 
-	terrain_dock->widget()->setEnabled(checked);
+	terrain_page->setEnabled(checked);
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
-	transformation_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
 	light_dock->widget()->setEnabled(false);
-	randomize_dock->widget()->setEnabled(false);
-	terrain_dock->raise();
+	randomize_page->setEnabled(false);
+	transformations_dock->raise();
+	transformations_stack->setCurrentWidget(terrain_page);
 }
 
 void MainWindow::delete_mode(const bool checked)
@@ -1601,10 +1598,10 @@ void MainWindow::delete_mode(const bool checked)
 
 		object_dock->widget()->setEnabled(false);
 		materials_dock->widget()->setEnabled(false);
-		transformation_dock->widget()->setEnabled(false);
+		transformation_page->setEnabled(false);
 		light_dock->widget()->setEnabled(false);
-		terrain_dock->widget()->setEnabled(false);
-		randomize_dock->widget()->setEnabled(false);
+		terrain_page->setEnabled(false);
+		randomize_page->setEnabled(false);
 	}
 	else
 	{
@@ -2138,21 +2135,39 @@ void MainWindow::save_terrain_textures_settings(QSettings &settings)
 		settings.setArrayIndex(index);
 
 		settings.setValue("albedo_map", it->get_albedo_map());
-		settings.setValue("specular_map", it->get_specular_map());
-		settings.setValue("gloss_map", it->get_gloss_map());
-		settings.setValue("height_map", it->get_height_map());
-		settings.setValue("default_specular",
-			it->get_default_specular().name());
-		tmp = it->get_default_gloss() * 100.0f + 0.5f;
-		settings.setValue("default_gloss", tmp / 100.0);
-		tmp = it->get_default_height() * 100.0f + 0.5f;
-		settings.setValue("default_height", tmp / 100.0);
+
+		if (it->get_use_specular_map())
+		{
+			settings.setValue("specular_map", it->get_specular_map());
+		}
+		else
+		{
+			settings.setValue("default_specular",
+				it->get_default_specular().name());
+		}
+
+		if (it->get_use_gloss_map())
+		{
+			settings.setValue("gloss_map", it->get_gloss_map());
+		}
+		else
+		{
+			tmp = it->get_default_gloss() * 100.0f + 0.5f;
+			settings.setValue("default_gloss", tmp / 100.0);
+		}
+
+		if (it->get_use_height_map())
+		{
+			settings.setValue("height_map", it->get_height_map());
+		}
+		else
+		{
+			tmp = it->get_default_height() * 100.0f + 0.5f;
+			settings.setValue("default_height", tmp / 100.0);
+		}
+
 		tmp = it->get_blend_size() * 100.0f + 0.5f;
 		settings.setValue("blend_size", tmp / 100.0);
-		settings.setValue("use_specular_map",
-			it->get_use_specular_map());
-		settings.setValue("use_gloss_map", it->get_use_gloss_map());
-		settings.setValue("use_height_map", it->get_use_height_map());
 
 		index++;
 	}
@@ -2179,17 +2194,25 @@ void MainWindow::load_terrain_textures_settings(QSettings &settings)
 		settings.setArrayIndex(i);
 
 		albedo_map = settings.value("albedo_map").toString();
+
+		if (albedo_map.isEmpty())
+		{
+			continue;
+		}
+
 		specular_map = settings.value("specular_map").toString();
 		gloss_map = settings.value("gloss_map").toString();
 		height_map = settings.value("height_map").toString();
-		default_specular = settings.value("default_specular"
-			).value<QColor>();
-		default_gloss = settings.value("default_gloss").toFloat();
-		default_height = settings.value("default_height").toFloat();
-		blend_size = settings.value("blend_size").toFloat();
-		use_specular_map = settings.value("use_specular_map").toBool();
-		use_gloss_map = settings.value("use_gloss_map").toBool();
-		use_height_map = settings.value("use_height_map").toBool();
+		default_specular = settings.value("default_specular", 
+			QColor(0, 0, 0, 0)).value<QColor>();
+		default_gloss = settings.value("default_gloss",
+			0.0f).toFloat();
+		default_height = settings.value("default_height",
+			0.0f).toFloat();
+		blend_size = settings.value("blend_size", 0.05f).toFloat();
+		use_specular_map = !specular_map.isEmpty();
+		use_gloss_map = !gloss_map.isEmpty();
+		use_height_map = !height_map.isEmpty();
 
 		m_terrain_texture_datas[albedo_map] = TerrainTextureData(
 			QIcon(), albedo_map, specular_map, gloss_map,

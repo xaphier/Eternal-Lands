@@ -85,9 +85,10 @@ namespace eternal_lands
 				return m_attachments[attachment];
 			}
 
-			inline void set_view_port(const Uint16 mipmap) noexcept
+			inline glm::uvec4 get_view_port(const Uint16 mipmap)
+				noexcept
 			{
-				glViewport(0, 0, get_width(mipmap),
+				return glm::uvec4(0, 0, get_width(mipmap),
 					get_height(mipmap));
 			}
 

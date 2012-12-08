@@ -28,6 +28,7 @@ namespace eternal_lands
 
 	void StateManager::set_state_set(const StateSet &state_set)
 	{
+		switch_view_port(state_set.get_view_port());
 		switch_color_mask(state_set.get_color_mask());
 		switch_restart_index(state_set.get_restart_index());
 		switch_texture_unit(state_set.get_texture_unit());
@@ -63,6 +64,7 @@ namespace eternal_lands
 
 		set_restart_index(std::numeric_limits<Uint32>::max());
 		set_use_restart_index(true);
+		set_view_port(m_state_set.get_view_port());
 	}
 
 	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)
@@ -189,6 +191,19 @@ namespace eternal_lands
 		{
 			glDisable(GL_SCISSOR_TEST);
 		}
+	}
+
+	void StateManager::set_view_port(const glm::uvec4 &view_port) noexcept
+	{
+		m_state_set.set_view_port(view_port);
+
+		m_screen_size.x = view_port.z;
+		m_screen_size.y = view_port.w;
+		m_screen_size.z = 1.0f / view_port.z;
+		m_screen_size.x = 1.0f / view_port.w;
+
+		glViewport(view_port.x, view_port.y, view_port.z,
+			view_port.w);
 	}
 
 	void StateManager::set_color_mask(const glm::bvec4 &color_mask) noexcept

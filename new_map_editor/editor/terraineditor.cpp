@@ -1140,6 +1140,7 @@ namespace eternal_lands
 		m_gloss_maps.resize(get_layer_count(), m_gloss_maps[0]);
 		m_height_maps.resize(get_layer_count(), m_height_maps[0]);
 		m_material_data.resize(get_layer_count());
+		m_translation = translation;
 
 		m_enabled = true;
 	}
