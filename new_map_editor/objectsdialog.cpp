@@ -279,12 +279,16 @@ void ObjectsDialog::set_dirs(const QStringList &dirs)
 	}
 	catch (const boost::exception &exception)
 	{
-		QMessageBox::critical(0, "Error",
-			boost::diagnostic_information(exception).c_str());
+//		LOG_EXCEPTION(exception);
+		QMessageBox::critical(0, "boost::exception",
+			boost::diagnostic_information(
+				exception).c_str());
 	}
 	catch (const std::exception &exception)
 	{
-		QMessageBox::critical(0, "Error", exception.what());
+//		LOG_EXCEPTION(exception);
+		QMessageBox::critical(0, "std::exception",
+			exception.what());
 	}
 }
 

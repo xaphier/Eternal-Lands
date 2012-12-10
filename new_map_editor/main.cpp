@@ -23,12 +23,14 @@ class ElApplication: public QApplication
 			}
 			catch (const boost::exception &exception)
 			{
+//				LOG_EXCEPTION(exception);
 				QMessageBox::critical(0, "boost::exception",
 					boost::diagnostic_information(
 						exception).c_str());
 			}
 			catch (const std::exception &exception)
 			{
+//				LOG_EXCEPTION(exception);
 				QMessageBox::critical(0, "std::exception",
 					exception.what());
 			}

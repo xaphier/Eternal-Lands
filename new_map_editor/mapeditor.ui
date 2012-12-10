@@ -1154,7 +1154,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>220</width>
+          <width>221</width>
           <height>416</height>
          </rect>
         </property>
@@ -2233,7 +2233,7 @@
                </widget>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="2" column="0" colspan="2">
               <spacer name="verticalSpacer_26">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -4525,6 +4525,22 @@
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>displacement_effect</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>vector_brush_effect</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>208</x>
+     <y>551</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>140</x>
+     <y>657</y>
     </hint>
    </hints>
   </connection>
