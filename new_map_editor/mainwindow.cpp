@@ -358,7 +358,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	vector_brush_add_x->setMaximum(max.x());
 	vector_brush_add_y->setMinimum(min.y());
 	vector_brush_add_y->setMaximum(max.y());
-	vector_brush_add_z->setMinimum(min.z());
+	vector_brush_add_z->setMinimum(-max.z());
 	vector_brush_add_z->setMaximum(max.z());
 
 	vector_brush_set_x->setMinimum(min.x());
@@ -2089,11 +2089,41 @@ void MainWindow::save_dirs_settings(QSettings &settings)
 
 void MainWindow::load_dirs_settings(QSettings &settings)
 {
+	bool do_close;
+
 	settings.beginGroup("dirs");
 
-	m_el_data_dir = settings.value("el_data_dir", "/usr/share/games/EternalLands").toString();
+	m_el_data_dir = settings.value("el_data_dir").toString();
+
+	do_close = false;
+
+	while ((m_el_data_dir.isEmpty()) && !do_close)
+	{
+		if (m_el_data_dir.isEmpty())
+		{
+			do_close = QMessageBox::question(this, tr("Question"),
+				tr("No el data dir selected. Select one now?"),
+				QMessageBox::Yes | QMessageBox::No) !=
+				QMessageBox::Yes;
+		}
+
+		m_el_data_dir = QFileDialog::getExistingDirectory(this,
+			tr("Select el data dir"), QString());;
+	}
+
 	m_el_extra_data_dir = settings.value("el_extra_data_dir",
-		"/home/daniel/Develop/el-opengl2/Eternal-Lands/data").toString();
+		"").toString();
+
+	if (m_el_extra_data_dir.isEmpty())
+	{
+		if (QMessageBox::question(this, tr("Question"),
+			tr("No el2 data dir selected. Select one now?"),
+			QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+		{
+			m_el_extra_data_dir = QFileDialog::getExistingDirectory(
+				this, tr("Select el2 data dir"), QString());;
+		}
+	}
 
 	settings.endGroup();
 

@@ -183,6 +183,7 @@
    <addaction name="action_add_objects"/>
    <addaction name="action_add_lights"/>
    <addaction name="action_terrain_mode"/>
+   <addaction name="action_grid_mode"/>
    <addaction name="action_delete_mode"/>
    <addaction name="separator"/>
    <addaction name="action_objects"/>
@@ -1557,7 +1558,7 @@
      <item>
       <widget class="QStackedWidget" name="transformations_stack">
        <property name="currentIndex">
-        <number>2</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="terrain_page">
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -3124,6 +3125,56 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="grid_page">
+        <layout class="QGridLayout" name="gridLayout_12">
+         <item row="0" column="0">
+          <widget class="QRadioButton" name="radioButton">
+           <property name="text">
+            <string>Layer 0</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QRadioButton" name="radioButton_2">
+           <property name="text">
+            <string>Layer 1</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QRadioButton" name="radioButton_3">
+           <property name="text">
+            <string>Layer 2</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QRadioButton" name="radioButton_4">
+           <property name="text">
+            <string>Layer 3</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QListWidget" name="listWidget"/>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="randomize_page">
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <property name="spacing">
@@ -4417,6 +4468,18 @@
    </property>
    <property name="toolTip">
     <string>Export tile map</string>
+   </property>
+  </action>
+  <action name="action_grid_mode">
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/grid.png</normaloff>:/icons/grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Grid mode</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid mode</string>
    </property>
   </action>
  </widget>

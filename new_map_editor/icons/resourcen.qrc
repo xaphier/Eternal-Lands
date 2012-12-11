@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>grid.png</file>
     <file>tranlate_terrain.png</file>
     <file>remove_terrain.png</file>
     <file>terrain_nm.png</file>
