@@ -3083,7 +3083,15 @@ namespace eternal_lands
 
 				main << indent << output;
 				main << UTF8(" = ") << cpt_world_position;
-				main << UTF8(".z;\n");
+
+				if (build_data.get_version() > svt_120)
+				{
+					main << UTF8(".z;\n");
+				}
+				else
+				{
+					main << UTF8(".zzzz;\n");
+				}
 
 				break;
 			case sbt_shadow:
