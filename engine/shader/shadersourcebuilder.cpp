@@ -3084,7 +3084,7 @@ namespace eternal_lands
 				main << indent << output;
 				main << UTF8(" = ") << cpt_world_position;
 
-				if (build_data.get_version() > svt_120)
+				if (build_data.get_version() > svt_150)
 				{
 					main << UTF8(".z;\n");
 				}
