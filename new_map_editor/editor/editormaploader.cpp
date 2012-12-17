@@ -51,9 +51,10 @@ namespace eternal_lands
 
 	void EditorMapLoader::add_object(const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
-		const String &name, const float transparency, const Uint32 id,
+		const String &name, const BitSet64 blend_mask,
+		const float transparency, const float glow, const Uint32 id,
 		const SelectionType selection, const BlendType blend,
-		const bool walkable, const StringVector &material_names)
+		const StringVector &material_names)
 	{
 		SelectionType new_selection;
 
@@ -65,9 +66,9 @@ namespace eternal_lands
 		}
 
 		m_data.add_object(EditorObjectDescription(translation,
-			rotation_angles, scale, material_names, name, String(),
-			transparency, id, new_selection, blend, walkable),
-			sct_no);
+			rotation_angles, scale, material_names, name,
+			blend_mask, String(), transparency, glow, id,
+			new_selection, blend), sct_no);
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,
@@ -92,12 +93,6 @@ namespace eternal_lands
 //			rotation_angel, scale, texture, id));
 	}
 
-	void EditorMapLoader::set_tile(const Uint16 x, const Uint16 y,
-		const Uint16 tile)
-	{
-		m_data.set_tile(x, y, tile);
-	}
-
 	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,
 		const Uint16 height)
 	{
@@ -113,6 +108,7 @@ namespace eternal_lands
 	void EditorMapLoader::set_map_size(const glm::uvec2 &size)
 	{
 		m_data.set_map_size(size);
+		m_data.set_tile_map_size(size);
 	}
 
 	void EditorMapLoader::set_height_map_size(const glm::uvec2 &size)
@@ -122,9 +118,19 @@ namespace eternal_lands
 
 	void EditorMapLoader::set_tile_map_size(const glm::uvec2 &size)
 	{
-		m_data.set_tile_map_size(size);
 	}
-		
+
+	void EditorMapLoader::set_tile_layer_heights(const glm::vec4 &heights)
+	{
+		m_data.set_tile_layer_heights(heights);
+	}
+
+	void EditorMapLoader::set_tile_layer(const Uint8MultiArray2 &tile_map,
+		const float z_position, const Uint16 layer)
+	{
+		m_data.set_tile_layer(tile_map, layer);
+	}
+
 	void EditorMapLoader::set_dungeon(const bool dungeon)
 	{
 		m_data.set_dungeon(dungeon);

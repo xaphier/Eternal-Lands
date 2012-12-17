@@ -32,7 +32,7 @@ namespace eternal_lands
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
-			boost::array<GlslProgramSharedPtr, 5> m_programs;
+			boost::array<GlslProgramSharedPtr, 6> m_programs;
 			ShaderBuildType m_debug_shader;
 
 			void error_load();

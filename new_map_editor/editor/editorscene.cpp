@@ -256,6 +256,7 @@ namespace eternal_lands
 		const bool shadow, ObjectVisitor &visitor) const
 	{
 		Uint32ObjectSharedPtrMap::const_iterator it, begin, end;
+		BitSet64 blend_mask;
 		float transparency;
 		BlendType blend;
 
@@ -282,18 +283,20 @@ namespace eternal_lands
 			return;
 		}
 
+		blend = bt_alpha_transparency_value;
+
 		if (get_draw_light_spheres())
 		{
 			end = m_light_sphere_objects.end();
 			begin = m_light_sphere_objects.begin();
-			blend = bt_alpha_transparency_value;
+			blend_mask.set(true);
 			transparency = 0.5f;
 		}
 		else
 		{
 			end = m_light_objects.end();
 			begin = m_light_objects.begin();
-			blend = bt_disabled;
+			blend_mask.set(false);
 			transparency = 1.0f;
 		}
 
@@ -302,8 +305,8 @@ namespace eternal_lands
 			if (frustum.intersect(it->second->get_bounding_box())
 				!= it_outside)
 			{
-				visitor.add(it->second, transparency, blend,
-					false);
+				visitor.add(it->second, blend_mask,
+					transparency, blend, false);
 			}
 		}
 	}
@@ -542,7 +545,8 @@ namespace eternal_lands
 			m_top_down_objects.get_objects())
 		{
 			draw_object_old_lights(object.get_object(),
-				object.get_visibility_mask(), type, 1,
+				object.get_visibility_mask(),
+				object.get_blend_mask(), type, 1,
 				object.get_distance(), false);
 		}
 

@@ -48,6 +48,7 @@ namespace eternal_lands
 			HardwareBufferMapperSharedPtr m_hardware_buffer_mapper;
 			ThreadPoolSharedPtr m_thread_pool;
 			FilterSharedPtr m_filter;
+			TileBuilderSharedPtr m_tile_builder;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -175,6 +176,12 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_filter;
+			}
+
+			inline const TileBuilderSharedPtr &get_tile_builder()
+				const noexcept
+			{
+				return m_tile_builder;
 			}
 
 	};

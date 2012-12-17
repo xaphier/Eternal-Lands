@@ -18,13 +18,13 @@ namespace eternal_lands
 		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
 		const StringVector &material_names, const String &name,
-		const String &description, const float transparency,
-		const Uint32 id, const SelectionType selection,
-		const BlendType blend, const bool walkable):
+		const BitSet64 blend_mask, const String &description,
+		const float transparency, const float glow, const Uint32 id,
+		const SelectionType selection, const BlendType blend):
 		ObjectDescription(Transformation(), material_names, name,
-			transparency, id, selection, blend),
+			blend_mask, transparency, glow, id, selection, blend),
 			m_rotation_angles(rotation_angles),
-			m_description(description), m_walkable(walkable)
+			m_description(description)
 	{
 		Transformation m_world_transformation;
 

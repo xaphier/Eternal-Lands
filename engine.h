@@ -52,7 +52,7 @@ void engine_remove_object(const Uint32 id);
 void engine_get_object_position(const Uint32 id, float* x, float* y, float* z);
 void engine_remove_light(const Uint32 id);
 Uint32 engine_get_next_free_dynamic_object_id();
-void engine_set_window_size(const Uint32 widht, const Uint32 height,
+void engine_set_window_size(const Uint32 width, const Uint32 height,
 	const Uint32 hud_x, const Uint32 hud_y);
 
 void engine_build_buffers(actor_types* a);

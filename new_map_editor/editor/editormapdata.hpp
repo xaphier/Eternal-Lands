@@ -16,6 +16,7 @@
 #include "textureformatutil.hpp"
 #include "editorobjectdescription.hpp"
 #include "imagevalue.hpp"
+#include "imagevalues.hpp"
 #include "displacementvalue.hpp"
 #include "height.hpp"
 #include "terraineditor.hpp"
@@ -68,7 +69,8 @@ namespace eternal_lands
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
 			Uint16MultiArray2 m_height_map;
-			Uint8MultiArray2 m_tile_map;
+			boost::multi_array<Uint8Array4, 2> m_tile_maps;
+			glm::vec4 m_tile_layer_heights;
 			Uint32Set m_ids;
 			Uint32 m_id;
 			RenderableType m_renderable;
@@ -79,6 +81,12 @@ namespace eternal_lands
 			void change_selection(const Uint32 id,
 				const RenderableType renderable,
 				const SelectionChangeType selection);
+			void update_tile_page(const glm::uvec2 &offset,
+				const Uint16 layer);
+			void clear_tile_layers();
+			void set_tile_page(const Uint16MultiArray2 &tiles,
+				const glm::uvec2 &offset,
+				const float z_position, const Uint16 layer);
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
@@ -112,9 +120,14 @@ namespace eternal_lands
 			const glm::vec4 &get_ground_hemisphere() const;
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
-			void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile);
-			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
+			void set_tile_values(
+				const ImageValueVector &tile_values,
+				const Uint16 layer);
+			void get_tile_values(const glm::uvec3 &offset,
+				const Uint16 size,
+				ImageValueVector &tile_values);
+			Uint16 get_tile(const Uint16 x, const Uint16 y,
+				const Uint16 layer) const;
 			glm::uvec2 get_tile_offset(const glm::vec2 &point)
 				const; 
 			Uint16 get_height(const Uint16 x, const Uint16 y) const;
@@ -125,7 +138,10 @@ namespace eternal_lands
 				const DisplacementValueVector
 					&displacement_values);
 			void set_terrain_blend_values(
-				const ImageValueVector &blend_values);
+				const ImageValuesVector &blend_values);
+			void set_terrain_blend_values(
+				const ImageValueVector &blend_values,
+				const Uint16 layer);
 			void set_terrain_material(const String &albedo_map,
 				const String &specular_map,
 				const String &gloss_map,
@@ -240,6 +256,46 @@ namespace eternal_lands
 			void set_terrain_translation(
 				const glm::vec3 &translation);
 			void export_tile_map(const String &file_name) const;
+			void set_tile_layer(const Uint8MultiArray2 &tile_map,
+				const Uint16 layer);
+			void update_tile_layer(const Uint16 layer);
+			void set_tile_map_size(const glm::uvec2 &size);
+
+			inline void update_tile_layers()
+			{
+				update_tile_layer(0);
+				update_tile_layer(1);
+				update_tile_layer(2);
+				update_tile_layer(3);
+			}
+
+			inline const glm::vec4 &get_tile_layer_heights() const
+			{
+				return m_tile_layer_heights;
+			}
+
+			inline void set_tile_layer_heights(
+				const glm::vec4 &tile_layer_heights)
+			{
+				m_tile_layer_heights = tile_layer_heights;
+
+				update_tile_layers();
+			}
+
+			inline float get_tile_layer_height(const Uint16 index)
+				const
+			{
+				return m_tile_layer_heights[index];
+			}
+
+			inline void set_tile_layer_height(
+				const float tile_layer_height,
+				const Uint16 layer)
+			{
+				m_tile_layer_heights[layer] =
+					tile_layer_height;
+				update_tile_layer(layer);
+			}
 
 			inline const glm::vec3 &get_terrain_translation() const
 			{
@@ -352,11 +408,12 @@ namespace eternal_lands
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
+				const Uint16 layer,
 				ImageValueVector &blend_values) const
 			{
 				m_terrain_editor.get_blend_values(vertex,
 					size, attenuation_size, attenuation,
-					shape, blend_values);
+					shape, layer, blend_values);
 			}
 
 			inline void change_terrain_blend_values(
@@ -410,17 +467,10 @@ namespace eternal_lands
 					boost::extents[size.x][size.y]);
 			}
 
-			inline void set_tile_map_size(const glm::uvec2 &size)
-				noexcept
-			{
-				m_tile_map.resize(
-					boost::extents[size.x][size.y]);
-			}
-
 			inline glm::uvec2 get_tile_map_size() const noexcept
 			{
-				return glm::uvec2(m_tile_map.shape()[0],
-					m_tile_map.shape()[1]);
+				return glm::uvec2(m_tile_maps.shape()[0],
+					m_tile_maps.shape()[1]);
 			}
 
 			inline Uint32 get_id() const noexcept
@@ -447,9 +497,17 @@ namespace eternal_lands
 			}
 
 			inline void get_all_terrain_blend_values(
-				ImageValueVector &blend_values) const
+				ImageValuesVector &blend_values) const
 			{
 				m_terrain_editor.get_all_blend_values(
+					blend_values);
+			}
+
+			inline void get_all_terrain_blend_values(
+				const Uint16 layer,
+				ImageValueVector &blend_values) const
+			{
+				m_terrain_editor.get_all_blend_values(layer,
 					blend_values);
 			}
 

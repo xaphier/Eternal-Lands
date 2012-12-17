@@ -33,7 +33,6 @@ namespace eternal_lands
 		private:
 			glm::vec3 m_rotation_angles;
 			String m_description;
-			bool m_walkable;
 
 		public:
 			/**
@@ -48,10 +47,11 @@ namespace eternal_lands
 				const glm::vec3 &rotation_angles,
 				const glm::vec3 &scale,
 				const StringVector &material_names,
-				const String &name, const String &description,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
-				const BlendType blend, const bool walkable);
+				const String &name, const BitSet64 blend_mask,
+				const String &description,
+				const float transparency, const float glow,
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend);
 
 			/**
 			 * Default destructor.
@@ -68,16 +68,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_rotation_angles;
-			}
-
-			inline void set_walkable(const bool walkable) noexcept
-			{
-				m_walkable = walkable;
-			}
-
-			inline bool get_walkable() const noexcept
-			{
-				return m_walkable;
 			}
 
 			inline void set_description(const String description)

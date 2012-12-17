@@ -26,6 +26,7 @@
 #include "hardwarebuffer/hardwarebuffermapper.hpp"
 #include "terrainbuilder.hpp"
 #include "thread/threadpool.hpp"
+#include "tilebuilder.hpp"
 
 namespace eternal_lands
 {
@@ -82,9 +83,10 @@ namespace eternal_lands
 			get_material_builder(), get_material_cache(),
 			get_mesh_builder(), get_mesh_cache(),
 			get_mesh_data_cache(), get_texture_cache());
-		m_filter = boost::make_shared<Filter>(
-			global_vars, get_glsl_program_cache(),
-			get_mesh_cache());
+		m_filter = boost::make_shared<Filter>(global_vars,
+			get_glsl_program_cache(), get_mesh_cache());
+		m_tile_builder = boost::make_shared<TileBuilder>(global_vars,
+			get_mesh_builder(), get_material_cache());
 	}
 
 	SceneResources::~SceneResources() noexcept

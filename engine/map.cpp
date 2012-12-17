@@ -203,6 +203,24 @@ namespace eternal_lands
 		m_object_tree->add(object);
 	}
 
+	void Map::add_object(const ObjectData &object_data,
+		const AbstractMeshSharedPtr &mesh,
+		const MaterialSharedPtrVector &materials)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		ObjectSharedPtr object;
+
+		object = boost::make_shared<Object>(object_data, mesh,
+			materials);
+
+		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
+			object_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_object_tree->add(object);
+	}
+
 	void Map::remove_object(const Uint32 id)
 	{
 		Uint32ObjectSharedPtrMap::iterator found;

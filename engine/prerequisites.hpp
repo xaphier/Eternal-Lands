@@ -305,6 +305,7 @@ namespace eternal_lands
 	class TextureGlyphe;
 	class TextureFont;
 	class TextureFontCache;
+	class TileBuilder;
 	class ThreadPool;
 	class Transformation;
 	class UniformBuffer;
@@ -349,6 +350,7 @@ namespace eternal_lands
 	typedef EffectNode* EffectNodePtr;
 	typedef EffectNodePort* EffectNodePortPtr;
 
+	typedef std::pair<Uint16, Uint16> Uint16Uint16Pair;
 	typedef std::pair<Sint16, Sint16> Sint16Sint16Pair;
 	typedef std::map<Uint32, Uint32> Uint32Uint32Map;
 	typedef std::map<String, Uint16> StringUint16Map;
@@ -426,6 +428,7 @@ namespace eternal_lands
 	SHARED_PTR(TerrainBuilder);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
+	SHARED_PTR(TileBuilder);
 	SHARED_PTR(ThreadPool);
 	SHARED_PTR(UniformBuffer);
 	SHARED_PTR(UniformBufferDescription);
@@ -456,6 +459,7 @@ namespace eternal_lands
 	WEAK_PTR(ShaderSourceBuilder);
 	WEAK_PTR(TerrainBuilder);
 	WEAK_PTR(TextureCache);
+	WEAK_PTR(TileBuilder);
 	WEAK_PTR(UniformBufferDescriptionCache);
 
 	VECTOR(AbstractReadWriteMemorySharedPtr);

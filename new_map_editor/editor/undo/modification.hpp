@@ -26,9 +26,9 @@ namespace eternal_lands
 		mt_object_scale_changed,
 		mt_object_blend_changed,
 		mt_object_transparency_changed,
+		mt_object_glow_changed,
 		mt_object_selection_changed,
 		mt_object_materials_changed,
-		mt_object_walkable_changed,
 		mt_object_name_changed,
 		mt_object_description_changed,
 
@@ -38,9 +38,9 @@ namespace eternal_lands
 		mt_objects_scale_changed,
 		mt_objects_blend_changed,
 		mt_objects_transparency_changed,
+		mt_objects_glow_changed,
 		mt_objects_selection_changed,
 		mt_objects_materials_changed,
-		mt_objects_walkable_changed,
 		mt_objects_name_changed,
 		mt_objects_description_changed,
 
@@ -58,11 +58,13 @@ namespace eternal_lands
 		mt_terrain_scale_offset_changed,
 		mt_terrain_translation_changed,
 
-		mt_tile_texture_changed,
+		mt_tile_value_changed,
+		mt_tile_layer_height_changed,
 		mt_scene_ground_hemisphere_changed,
 		mt_dungeon_changed,
 		mt_displacement_value_changed,
 		mt_height_changed,
+		mt_blend_value_changed,
 		mt_blend_values_changed,
 	};
 

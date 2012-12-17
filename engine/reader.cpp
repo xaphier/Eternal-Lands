@@ -310,6 +310,28 @@ namespace eternal_lands
 		return SDL_SwapBE64(result);
 	}
 
+	float Reader::read_half_le()
+	{
+		Uint16 tmp;
+
+		read(&tmp, sizeof(tmp));
+
+		tmp = SDL_SwapLE16(tmp);
+
+		return glm::detail::toFloat32(tmp);
+	}
+
+	float Reader::read_half_be()
+	{
+		Uint16 tmp;
+
+		read(&tmp, sizeof(tmp));
+
+		tmp = SDL_SwapBE16(tmp);
+
+		return glm::detail::toFloat32(tmp);
+	}
+
 	float Reader::read_float_le()
 	{
 		union

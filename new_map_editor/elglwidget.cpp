@@ -21,11 +21,12 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_select_depth = false;
 	m_zoom = 10.0f;
 	m_terrain_editing = false;
+	m_tile_editing = false;
 	m_terrain_type_index = 0;
 	m_terrain_layer_index = 0;
 	m_object_adding = false;
 	m_light_adding = false;
-	m_blend = bt_disabled;
+	m_blend = bt_alpha_transparency_source_value;
 	m_camera_roll = 45.0f;
 	m_camera_yaw = 0.0f;
 
@@ -229,8 +230,9 @@ void ELGLWidget::get_gloss_height_map_data(const QString &name,
 			TextureFormatUtil::get_str(tft_r_rgtc1).get(
 				).c_str());
 
-		if ((size.x != image_size.width()) ||
-			(size.y != image_size.height()) || (size.z != 0))
+		if ((static_cast<int>(size.x) != image_size.width()) ||
+			(static_cast<int>(size.y) != image_size.height()) ||
+			(size.z != 0))
 		{
 			QMessageBox::critical(this, tr("Error"), QString(tr(
 				"File '%1' has wrong size of <%2, %3, %4> "
@@ -325,8 +327,9 @@ void ELGLWidget::get_specular_map_data(const QString &name,
 				).c_str());
 		valid_formats_str += "}";
 
-		if ((size.x != image_size.width()) ||
-			(size.y != image_size.height()) || (size.z != 0))
+		if ((static_cast<int>(size.x) != image_size.width()) ||
+			(static_cast<int>(size.y) != image_size.height()) ||
+			(size.z != 0))
 		{
 			QMessageBox::critical(this, tr("Error"), QString(tr(
 				"File '%1' has wrong size of <%2, %3, %4> "
@@ -385,6 +388,89 @@ void ELGLWidget::get_specular_map_data(const QString &name,
 			"Error reading file '%1'")).arg(name));
 		ok = false;
 	}
+}
+
+bool ELGLWidget::get_texture_icon(const QString &name, const QSize &icon_size,
+	QIcon &icon)
+{
+	ImageSharedPtr image;
+	QImage tmp;
+	QString message;
+	TextureFormatType format;
+	glm::vec4 color;
+	Sint32 x, y, height, width, depth, mipmap, i, count;
+
+	try
+	{
+		image = m_editor->get_image(String(name.toUtf8()), format);
+
+		width = image->get_width();
+		height = image->get_height();
+		depth = image->get_depth();
+		count = image->get_mipmap_count() + 1;
+		mipmap = 0;
+
+		for (i = 0; i < count; ++i)
+		{
+			if ((width <= icon_size.width()) &&
+				(height <= icon_size.height()))
+			{
+				break;
+			}
+
+			width = std::max(width / 2, 1);
+			height = std::max(height / 2, 1);
+			mipmap++;
+		}
+
+		tmp = QImage(width, height, QImage::Format_ARGB32);
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				color = image->get_pixel(x, y, 0, 0, mipmap);
+
+				tmp.setPixel(x, y, QColor::fromRgbF(color[0],
+					color[1], color[2], color[3]).rgba());
+			}
+		}
+
+		icon = QIcon(QPixmap::fromImage(tmp.scaled(icon_size.width(),
+			icon_size.height(), Qt::KeepAspectRatio,
+			Qt::SmoothTransformation)));
+	}
+	catch (const boost::exception &exception)
+	{
+		message = "";
+
+		if (boost::get_error_info<errinfo_message>(exception) != 0)
+		{
+			message = QString::fromUtf8(boost::get_error_info<
+				errinfo_message>(exception)->c_str());
+		}
+
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(message).arg(
+			name));
+
+		return false;
+	}
+	catch (const std::exception &exception)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(
+				exception.what()).arg(name));
+		return false;
+	}
+	catch (...)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error reading file '%1'")).arg(name));
+		return false;
+	}
+
+	return true;
 }
 
 void ELGLWidget::get_image_data(const QString &name, QSize &size, bool &ok)
@@ -472,6 +558,13 @@ void ELGLWidget::mouse_click_action()
 		};
 
 		m_terrain_picking = tpt_nothing;
+
+		return;
+	}
+
+	if (get_tile_editing())
+	{
+		emit tile_edit();
 
 		return;
 	}
@@ -566,6 +659,13 @@ void ELGLWidget::mouse_move_action()
 	if (get_terrain_editing())
 	{
 		emit terrain_edit();
+
+		return;
+	}
+
+	if (get_tile_editing())
+	{
+		emit tile_edit();
 
 		return;
 	}
@@ -747,7 +847,8 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
 
-	m_select = !(get_terrain_editing() || get_object_adding() || get_light_adding());
+	m_select = !(get_terrain_editing() || get_tile_editing() ||
+		get_object_adding() || get_light_adding());
 	m_select_depth = true;
 	m_mouse_click_action = true;
 	m_grab_world_position_valid = false;
@@ -866,16 +967,45 @@ void ELGLWidget::change_terrain_blend_values(const QVector2D &size,
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::ground_tile_edit(const int tile)
+void ELGLWidget::set_tile(const int layer, const int size, const int tile)
 {
-	m_editor->ground_tile_edit(m_world_position, tile);
+	glm::uvec3 offset;
+
+	if (!m_editor->get_tile_edit(m_min_position, m_max_position,
+		layer, offset))
+	{
+		return;
+	}
+
+	m_editor->set_tile(offset, size, tile);
 
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::water_tile_edit(const int water)
+void ELGLWidget::set_tile_layer_height_0(const double value)
 {
-	m_editor->water_tile_edit(m_start_position, m_world_position, water);
+	m_editor->set_tile_layer_height(value, 0);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_tile_layer_height_1(const double value)
+{
+	m_editor->set_tile_layer_height(value, 1);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_tile_layer_height_2(const double value)
+{
+	m_editor->set_tile_layer_height(value, 2);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_tile_layer_height_3(const double value)
+{
+	m_editor->set_tile_layer_height(value, 3);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -891,11 +1021,13 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 {
 	if (event->modifiers().testFlag(m_wheel_zoom_x10))
 	{
-		m_zoom += event->delta() / 5.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
+		m_zoom += event->delta() / 5.0f *
+			(m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 	else
 	{
-		m_zoom += event->delta() / 50.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
+		m_zoom += event->delta() / 50.0f *
+			(m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 
 	m_zoom = std::max(1.0f, std::min(75.0f, m_zoom));
@@ -1059,7 +1191,8 @@ void ELGLWidget::paintGL()
 
 	if (m_select)
 	{
-		assert(!(get_terrain_editing() || get_object_adding() || get_light_adding()));
+		assert(!(get_terrain_editing() || get_tile_editing() ||
+			get_object_adding() || get_light_adding()));
 
 		m_select = false;
 
@@ -1106,8 +1239,13 @@ void ELGLWidget::paintGL()
 			glm::dmat4(m_editor->get_projection_matrix()),
 			view_port);
 
-		m_start_position = glm::unProject(glm::dvec3(m_select_pos,
+		m_min_position = glm::unProject(glm::dvec3(m_select_pos,
 			0.0), glm::dmat4(view),
+			glm::dmat4(m_editor->get_projection_matrix()),
+			view_port);
+
+		m_max_position = glm::unProject(glm::dvec3(m_select_pos,
+			1.0), glm::dmat4(view),
 			glm::dmat4(m_editor->get_projection_matrix()),
 			view_port);
 	}
@@ -1211,13 +1349,13 @@ void ELGLWidget::remove_all_copies_of_object()
 
 void ELGLWidget::set_object_blend(const BlendType value)
 {
-	m_editor->set_object_blend(value);
+	m_editor->set_object_blend(value, all_bits_set);
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_object_walkable(const bool value)
+void ELGLWidget::set_object_disable_blend()
 {
-	m_editor->set_object_walkable(value);
+	m_editor->set_object_blend_mask(0);
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -1230,6 +1368,12 @@ void ELGLWidget::set_object_description(const QString &description)
 void ELGLWidget::set_object_transparency(const float value)
 {
 	m_editor->set_object_transparency(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_object_glow(const double value)
+{
+	m_editor->set_object_glow(value);
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -1303,15 +1447,15 @@ void ELGLWidget::set_objects_blend(const BlendType value)
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_objects_walkable(const bool value)
-{
-	m_editor->set_objects_walkable(value);
-	emit can_undo(m_editor->get_can_undo());
-}
-
 void ELGLWidget::set_objects_transparency(const float value)
 {
 	m_editor->set_objects_transparency(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_glow(const double glow)
+{
+	m_editor->set_objects_glow(glow);
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -1550,6 +1694,19 @@ void ELGLWidget::set_terrain_editing(const bool enabled)
 	{
 		m_light_adding = false;
 		m_object_adding = false;
+		m_tile_editing = false;
+	}
+}
+
+void ELGLWidget::set_tile_editing(const bool enabled)
+{
+	m_tile_editing = enabled;
+
+	if (enabled)
+	{
+		m_light_adding = false;
+		m_object_adding = false;
+		m_terrain_editing = false;
 	}
 }
 
@@ -1568,7 +1725,7 @@ void ELGLWidget::load_map(const QString &file_name,
 	const bool load_lights, const bool load_particles,
 	const bool load_materials, const bool load_height_map,
 	const bool load_tile_map, const bool load_walk_map,
-	const bool load_terrain, const bool load_water)
+	const bool load_terrain)
 {
 	if (!file_name.isEmpty())
 	{
@@ -1577,10 +1734,18 @@ void ELGLWidget::load_map(const QString &file_name,
 		m_editor->load_map(String(file_name.toUtf8()),
 			load_2d_objects, load_3d_objects, load_lights,
 			load_particles, load_materials, load_height_map,
-			load_tile_map, load_walk_map, load_terrain,
-			load_water);
+			load_tile_map, load_walk_map, load_terrain);
 
 		emit update_terrain(m_editor->get_terrain());
+
+		emit tile_layer_height_0_changed(
+			m_editor->get_tile_layer_height(0));
+		emit tile_layer_height_1_changed(
+			m_editor->get_tile_layer_height(1));
+		emit tile_layer_height_2_changed(
+			m_editor->get_tile_layer_height(2));
+		emit tile_layer_height_3_changed(
+			m_editor->get_tile_layer_height(3));
 
 		emit can_undo(m_editor->get_can_undo());
 

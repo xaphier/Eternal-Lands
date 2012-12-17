@@ -21,7 +21,7 @@
 #include "exceptions.hpp"
 #include "freeidsmanager.hpp"
 #include "glmutil.hpp"
-#include "simplexnoise.hpp"
+#include "tilebuilder.hpp"
 
 namespace eternal_lands
 {
@@ -37,6 +37,7 @@ namespace eternal_lands
 			&material_description_cache,
 		const TerrainBuilderWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
+		const TileBuilderWeakPtr &tile_builder,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids, global_vars),
 		m_effect_cache(effect_cache),m_mesh_builder(mesh_builder),
@@ -44,7 +45,7 @@ namespace eternal_lands
 		m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache),
 		m_terrain_builder(terrain_builder),
-		m_texture_cache(texture_cache)
+		m_texture_cache(texture_cache), m_tile_builder(tile_builder)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_mesh_builder.expired());
@@ -54,6 +55,7 @@ namespace eternal_lands
 		assert(!m_material_description_cache.expired());
 		assert(!m_terrain_builder.expired());
 		assert(!m_texture_cache.expired());
+		assert(!m_tile_builder.expired());
 	}
 
 	MapLoader::~MapLoader() noexcept
@@ -103,21 +105,24 @@ namespace eternal_lands
 
 	void MapLoader::add_object(const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
-		const String &name, const float transparency, const Uint32 id,
+		const String &name, const BitSet64 blend_mask,
+		const float transparency, const float glow, const Uint32 id,
 		const SelectionType selection, const BlendType blend,
-		const bool walkable, const StringVector &material_names)
+		const StringVector &material_names)
 	{
-		if (blend != bt_disabled)
+		if (blend_mask.any() || (glow != 0.0f))
 		{
 			m_map->add_object(get_object_description(translation,
 				rotation_angles, scale, material_names,
-				name, id, selection, blend));
+				name, blend_mask, transparency, glow, id,
+				selection, blend));
 		}
 		else
 		{
 			m_instances_builder->add(get_object_description(
 				translation, rotation_angles, scale,
-				material_names, name, id, selection, blend));
+				material_names, name, blend_mask, transparency,
+				glow, id, selection, blend));
 		}
 	}
 
@@ -147,74 +152,52 @@ namespace eternal_lands
 //		m_map->add_decal(DecalDescription(matrix, texture));
 	}
 
-	void MapLoader::set_tile(const Uint16 x, const Uint16 y,
-		const Uint16 tile)
+	void MapLoader::set_tile_page(const Uint16MultiArray2 &tile_page,
+		const glm::uvec2 &offset, const float z_position,
+		const Uint16 layer)
 	{
-		StringVector materials;
-		StringStream str;
-		String file_name;
 		Transformation transformation;
-		glm::vec3 offset;
-		Uint32 id;
+		AbstractMeshSharedPtr mesh;
+		MaterialSharedPtrVector materials;
+		StringStream str;
+		BitSet64 blend_mask;
+		Uint32 x, y, id, tile, tile_size;
+		bool use_tiles;
 
-		m_map->set_tile(x, y, 255);
+		id = get_free_ids().get_tile_id(offset.x, offset.y, layer);
+		tile_size = TileBuilder::get_tile_size();
+		use_tiles = false;
 
-		if (tile == 255)
+		for (y = 0; y < tile_size; y++)
+		{
+			for (x = 0; x < tile_size; x++)
+			{
+				tile = tile_page[x][y];
+				use_tiles |= tile !=
+					std::numeric_limits<Uint16>::max();
+			}
+		}
+
+		if (!use_tiles)
 		{
 			return;
 		}
 
-		offset.x = x * get_tile_size();
-		offset.y = y * get_tile_size();
+		get_free_ids().use_object_id(id);
 
-		if ((tile == 0) || (tile > 230))
-		{
-			offset.z = -0.2501f;
-		}
-		else
-		{
-			offset.z = -0.0011f;
-		}
+		str << UTF8("tile_") << offset.x << UTF8("x") << offset.y;
+		str << UTF8("x") << layer;
 
-		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
-			glm::vec3(1e7f))));
+		get_tile_builder()->get_tile(tile_page, mesh, materials,
+			blend_mask);
 
-		transformation.set_translation(offset);
-		transformation.set_scale(glm::vec3(1.0f));
+		transformation.set_translation(glm::vec3(glm::vec2(offset *
+			tile_size) * TileBuilder::get_tile_world_scale(),
+			z_position));
 
-		switch (tile)
-		{
-			case 0:
-				str << UTF8("water");
-				break;
-			case 240:
-				str << UTF8("lava");
-				break;
-			default:
-				str << UTF8("tile") <<
-					static_cast<Uint16>(tile);
-				break;
-		}
-
-		materials.push_back(String(str.str()));
-
-		id = get_free_ids().use_typeless_object_id(x + (y << 10),
-			it_tile_object);
-
-		if (tile == 0)
-		{
-		m_map->add_object(ObjectDescription(transformation,
-			materials, String(UTF8("tile")), 0.0f, id, st_none,
-			bt_alpha_transparency_source_value));
-		}
-		else
-		{
-		m_instances_builder->add(ObjectDescription(transformation,
-			materials, String(UTF8("tile")), 0.0f, id, st_none,
-			bt_disabled));
-		}
-
-		m_map->set_tile(x, y, tile);
+		m_map->add_object(ObjectData(transformation, String(str.str()),
+			blend_mask, 0.0f, 0.0f, id, st_none,
+			bt_alpha_transparency_source_value), mesh, materials);
 	}
 
 	void MapLoader::set_height(const Uint16 x, const Uint16 y,
@@ -242,6 +225,85 @@ namespace eternal_lands
 	void MapLoader::set_tile_map_size(const glm::uvec2 &size)
 	{
 		m_map->set_tile_map_size(size);
+	}
+
+	void MapLoader::set_tile_layer_heights(const glm::vec4 &heights)
+	{
+	}
+
+	void MapLoader::set_tile_layer(const Uint8MultiArray2 &tile_map,
+		const float z_position, const Uint16 layer)
+	{
+		Uint16MultiArray2 tile_page;
+		glm::uvec2 offset;
+		Uint32 x, y, height, width, tile_size;
+
+		width = tile_map.shape()[0];
+		height = tile_map.shape()[1];
+
+		tile_size = TileBuilder::get_tile_size();
+
+		width = (width + tile_size - 1) / tile_size;
+		height = (height + tile_size - 1) / tile_size;
+
+		tile_page.resize(boost::extents[tile_size][tile_size]);
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				offset.x = x;
+				offset.y = y;
+
+				get_tile_layer_page(tile_map, offset,
+					tile_page);
+
+				LOG_DEBUG(lt_map_loader, UTF8("Set tile page "
+					"<%1%, %2%, %3%>, %4%."), x % y % layer
+					% z_position);
+
+				set_tile_page(tile_page, offset, z_position,
+					layer);
+			}
+		}
+	}
+
+	void MapLoader::get_tile_layer_page(const Uint8MultiArray2 &tile_map,
+		const glm::uvec2 &offset, Uint16MultiArray2 &tile_page)
+	{
+		Uint32 x, y, xx, yy, height, width, tile_size, tile;
+
+		width = tile_map.shape()[0];
+		height = tile_map.shape()[1];
+
+		tile_size = TileBuilder::get_tile_size();
+
+		for (y = 0; y < tile_size; y++)
+		{
+			for (x = 0; x < tile_size; x++)
+			{
+				xx = x + offset.x * tile_size;
+				yy = y + offset.y * tile_size;
+
+				if ((xx < width) && (yy < height))
+				{
+					tile = tile_map[xx][yy];
+
+					if (tile == 0xFF)
+					{
+						tile = std::numeric_limits<
+							Uint16>::max();
+					}
+				}
+				else
+				{
+					tile = std::numeric_limits<
+						Uint16>::max();
+				}
+
+				tile_page[x][y] = tile;
+			}
+		}
 	}
 
 	void MapLoader::set_dungeon(const bool dungeon)

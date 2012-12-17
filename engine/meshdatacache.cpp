@@ -484,7 +484,7 @@ namespace eternal_lands
 
 			for (i = 1; i < 128; i += i)
 			{
-				StringStream plane, terrain;
+				StringStream plane, terrain, tile;
 
 				plane << UTF8("plane_") << i;
 

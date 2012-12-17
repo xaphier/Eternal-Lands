@@ -163,6 +163,20 @@ namespace eternal_lands
 			Sint64 read_s64_be();
 
 			/**
+			 * Reads a half float, swap it to to current endian
+			 * from little endian and returns it.
+			 * @return The read float.
+			 */
+			float read_half_le();
+
+			/**
+			 * Reads an half float, swap it to to current endian
+			 * from big endian and returns it.
+			 * @return The read float.
+			 */
+			float read_half_be();
+
+			/**
 			 * Reads a float, swap it to to current endian from
 			 * little endian and returns it.
 			 * @return The read float.

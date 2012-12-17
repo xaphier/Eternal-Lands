@@ -107,6 +107,12 @@ namespace eternal_lands
 				m_object_data.set_selection(selection);
 			}
 
+			inline void set_blend_mask(
+				const BitSet64 blend_mask) noexcept
+			{
+				m_object_data.set_blend_mask(blend_mask);
+			}
+
 			inline const Transformation &get_world_transformation()
 				const noexcept
 			{
@@ -164,6 +170,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_sub_objects;
+			}
+
+			inline const BitSet64 get_blend_mask() const noexcept
+			{
+				return m_object_data.get_blend_mask();
 			}
 
 	};

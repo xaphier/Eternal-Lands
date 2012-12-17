@@ -24,6 +24,7 @@
 #include "rstartree.hpp"
 #include "filesystem.hpp"
 #include "imageupdate.hpp"
+#include "tilebuilder.hpp"
 
 namespace eternal_lands
 {
@@ -109,6 +110,7 @@ namespace eternal_lands
 		m_scene->set_main_light_color(glm::vec3(0.8f));
 		m_scene->set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		m_scene->set_lights(false);
+		clear_tile_layers();
 	}
 
 	EditorMapData::~EditorMapData() throw()
@@ -425,93 +427,273 @@ namespace eternal_lands
 		return true;
 	}
 
-	void EditorMapData::set_tile(const Uint16 x, const Uint16 y,
-		const Uint16 tile)
+	void EditorMapData::set_tile_values(const ImageValueVector &tile_values,
+		const Uint16 layer)
 	{
-		StringVector materials;
-		StringStream str;
-		String file_name;
+		std::set<Uint16Uint16Pair> values;
+		glm::uvec2 offset;
+		Uint32 x, y, tile_size;
+
+		RANGE_CECK_MAX(layer, 3, UTF8("layer value too big"));
+
+		tile_size = TileBuilder::get_tile_size();
+
+		BOOST_FOREACH(const ImageValue &tile_value, tile_values)
+		{
+			x = tile_value.get_x();
+			y = tile_value.get_y();
+
+			RANGE_CECK_MAX(x, m_tile_maps.shape()[0] - 1,
+				UTF8("x value too big"));
+			RANGE_CECK_MAX(y, m_tile_maps.shape()[1] - 1,
+				UTF8("y value too big"));
+
+			m_tile_maps[x][y][layer] = tile_value.get_value();
+
+			x = x / tile_size;
+			y = y / tile_size;
+
+			values.insert(std::pair<Uint16, Uint16>(x, y));
+		}
+
+		BOOST_FOREACH(const Uint16Uint16Pair &value, values)
+		{
+			offset.x = value.first;
+			offset.y = value.second;
+
+			update_tile_page(offset, layer);
+		}
+	}
+
+	void EditorMapData::update_tile_layer(const Uint16 layer)
+	{
+		glm::uvec2 offset;
+		Uint32 x, y, width, height, tile_size;
+
+		RANGE_CECK_MAX(layer, 3, UTF8("layer value too big"));
+
+		width = m_tile_maps.shape()[0];
+		height = m_tile_maps.shape()[1];
+
+		tile_size = TileBuilder::get_tile_size();
+
+		width = (width + tile_size - 1) / tile_size;
+		height = (height + tile_size - 1) / tile_size;
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				offset.x = x;
+				offset.y = y;
+
+				update_tile_page(offset, layer);
+			}
+		}
+	}
+
+	void EditorMapData::get_tile_values(const glm::uvec3 &offset,
+		const Uint16 size, ImageValueVector &tile_values)
+	{
+		Uint32 x, y, min_x, min_y, max_x, max_y, width, height;
+
+		RANGE_CECK_MAX(offset.z, 3, UTF8("layer value too big"));
+
+		tile_values.clear();
+
+		width = m_tile_maps.shape()[0];
+		height = m_tile_maps.shape()[1];
+
+		min_x = 0;
+		max_x = std::min(offset.x + size, width - 1);
+		min_y = 0;
+		max_y = std::min(offset.y + size, height - 1);
+
+		if (offset.x > size)
+		{
+			min_x = offset.x - size;
+		}
+
+		if (offset.y > size)
+		{
+			min_y = offset.y - size;
+		}
+
+		for (y = min_y; y <= max_y; ++y)
+		{
+			for (x = min_x; x <= max_x; ++x)
+			{
+				ImageValue tile_value(x, y);
+
+				tile_value.set_value(
+					m_tile_maps[x][y][offset.z]);
+
+				tile_values.push_back(tile_value);
+			}
+		}
+	}
+
+	void EditorMapData::update_tile_page(const glm::uvec2 &offset,
+		const Uint16 layer)
+	{
+		Uint16MultiArray2 tile_page;
+		Uint32 x, y, xx, yy, width, height, tile_size, tile;
+
+		width = m_tile_maps.shape()[0];
+		height = m_tile_maps.shape()[1];
+
+		tile_size = TileBuilder::get_tile_size();
+
+		tile_page.resize(boost::extents[tile_size][tile_size]);
+
+		std::set<Uint16> tiles;
+
+		for (y = 0; y < tile_size; y++)
+		{
+			for (x = 0; x < tile_size; x++)
+			{
+				xx = x + offset.x * tile_size;
+				yy = y + offset.y * tile_size;
+
+				if ((xx < width) && (yy < height))
+				{
+					tile = m_tile_maps[xx][yy][layer];
+
+					if (tile == 0xFF)
+					{
+						tile = std::numeric_limits<
+							Uint16>::max();
+					}
+				}
+				else
+				{
+					tile = std::numeric_limits<
+						Uint16>::max();
+				}
+
+				tile_page[x][y] = tile;
+				tiles.insert(tile);
+			}
+		}
+
+		set_tile_page(tile_page, offset, get_tile_layer_height(layer),
+			layer);
+	}
+
+	void EditorMapData::set_tile_page(const Uint16MultiArray2 &tile_page,
+		const glm::uvec2 &offset, const float z_position,
+		const Uint16 layer)
+	{
 		Transformation transformation;
-		glm::vec3 offset;
-		Uint32 id;
+		AbstractMeshSharedPtr mesh;
+		MaterialSharedPtrVector materials;
+		StringStream str;
+		BitSet64 blend_mask;
+		Uint32 x, y, id, tile, tile_size;
+		bool use_tiles;
 
-		RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
-			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
-			UTF8("index value too big"));
+		id = m_scene->get_free_ids()->get_tile_id(
+			offset.x, offset.y, layer);
+		tile_size = TileBuilder::get_tile_size();
+		use_tiles = false;
 
-		id = m_scene->get_free_ids()->get_object_id(x + (y << 10),
-			it_tile_object);
+		for (y = 0; y < tile_size; y++)
+		{
+			for (x = 0; x < tile_size; x++)
+			{
+				tile = tile_page[x][y];
+				use_tiles |= tile !=
+					std::numeric_limits<Uint16>::max();
+			}
+		}
 
 		if (!m_scene->get_free_ids()->get_is_object_id_free(id))
 		{
 			m_scene->remove_object(id);
 		}
 
-		m_tile_map[x][y] = tile;
-
-		if (tile == 255)
+		if (!use_tiles)
 		{
 			return;
 		}
 
 		m_scene->get_free_ids()->use_object_id(id);
 
-		offset.x = x * AbstractMapLoader::get_tile_size();
-		offset.y = y * AbstractMapLoader::get_tile_size();
+		str << UTF8("tile_") << offset.x << UTF8("x") << offset.y;
+		str << UTF8("x") << layer;
 
-		if ((tile == 0) || (tile > 230))
-		{
-			offset.z = -0.2501f;
-		}
-		else
-		{
-			offset.z = -0.0011f;
-		}
+		m_scene->get_scene_resources().get_tile_builder()->get_tile(
+			tile_page, mesh, materials, blend_mask);
 
-		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
-			glm::vec3(1e7f))));
+		transformation.set_translation(glm::vec3(glm::vec2(offset *
+			tile_size) * TileBuilder::get_tile_world_scale(),
+			z_position));
 
-		transformation.set_translation(offset);
-		transformation.set_scale(glm::vec3(3.0f));
-
-		if ((tile != 0) && (tile != 240))
-		{
-			str << UTF8("tile") << static_cast<Uint16>(tile);
-		}
-		else
-		{
-			if (tile == 240)
-			{
-				str << UTF8("lava");
-			}
-			else
-			{
-				str << UTF8("water");
-			}
-		}
-
-		materials.push_back(String(str.str()));
-
-		m_scene->add_object(ObjectDescription(transformation, materials,
-			String(UTF8("plane_4")), 0.0f, id, st_none,
-			bt_disabled));
+		m_scene->add_object(ObjectData(transformation,
+			String(str.str()), blend_mask, 0.0f, 0.0f, id, st_none,
+			bt_alpha_transparency_source_value), mesh, materials);
 	}
 
-	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y) const
+	void EditorMapData::set_tile_layer(const Uint8MultiArray2 &tile_map,
+		const Uint16 layer)
 	{
-		RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
-			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
-			UTF8("index value too big"));
+		Uint32 x, y, height, width;
 
-		return m_tile_map[x][y];
+		RANGE_CECK_MAX(layer, 3, UTF8("layer value too big"));
+
+		assert(m_tile_maps.shape()[0] == tile_map.shape()[0]);
+		assert(m_tile_maps.shape()[1] == tile_map.shape()[1]);
+
+		width = m_tile_maps.shape()[0];
+		height = m_tile_maps.shape()[1];
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				m_tile_maps[x][y][layer] = tile_map[x][y];
+			}
+		}
+
+		update_tile_layer(layer);
+	}
+
+	void EditorMapData::clear_tile_layers()
+	{
+		Uint32 x, y, height, width;
+
+		width = m_tile_maps.shape()[0];
+		height = m_tile_maps.shape()[1];
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				m_tile_maps[x][y][0] = 0xFF;
+				m_tile_maps[x][y][1] = 0xFF;
+				m_tile_maps[x][y][2] = 0xFF;
+				m_tile_maps[x][y][3] = 0xFF;
+			}
+		}
+	}
+
+	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y,
+		const Uint16 layer) const
+	{
+		RANGE_CECK_MAX(x, m_tile_maps.shape()[0] - 1,
+			UTF8("x value too big"));
+		RANGE_CECK_MAX(y, m_tile_maps.shape()[1] - 1,
+			UTF8("y value too big"));
+		RANGE_CECK_MAX(layer, 3, UTF8("layer value too big"));
+
+		return m_tile_maps[x][y][layer];
 	}
 
 	glm::uvec2 EditorMapData::get_tile_offset(const glm::vec2 &point)
 		const
 	{
-		return glm::uvec2(glm::clamp(point / 3.0f, glm::vec2(0.0f),
+		return glm::uvec2(glm::clamp(point /
+			TileBuilder::get_tile_world_scale(), glm::vec2(0.0f),
 			glm::vec2(get_tile_map_size())));
 	}
 
@@ -560,7 +742,16 @@ namespace eternal_lands
 	}
 
 	void EditorMapData::set_terrain_blend_values(
-		const ImageValueVector &blend_values)
+		const ImageValueVector &blend_values, const Uint16 layer)
+	{
+		m_terrain_editor.set_blend_values(blend_values, layer);
+
+		m_scene->update_terrain_blend_map(
+			m_terrain_editor.get_blend_map());
+	}
+
+	void EditorMapData::set_terrain_blend_values(
+		const ImageValuesVector &blend_values)
 	{
 		m_terrain_editor.set_blend_values(blend_values);
 
@@ -677,8 +868,10 @@ namespace eternal_lands
 				m_scene->set_selected_object(m_id);
 				m_renderable = rt_object;
 				break;
-			case it_tile_object:
-			case it_water_object:
+			case it_tile_layer_0_object:
+			case it_tile_layer_1_object:
+			case it_tile_layer_2_object:
+			case it_tile_layer_3_object:
 			case it_dynamic_object:
 				break;
 			case it_light_object:
@@ -996,6 +1189,7 @@ namespace eternal_lands
 		m_objects.clear();
 		m_lights.clear();
 		m_particles.clear();
+		clear_tile_layers();
 	}
 
 	void EditorMapData::fill_terrain_blend_layer(const float strength,
@@ -1024,7 +1218,8 @@ namespace eternal_lands
 		glm::vec4 ground_hemisphere;
 		glm::uvec2 size;
 		BitSet64 mask;
-		Uint32 x, y, i, id, count;
+		BitSet8 options;
+		Uint32 x, y, i, id, count, position;
 		Uint32 material_count, material_index;
 		Uint32 tile_map_offset;
 		Uint32 height_map_offset;
@@ -1046,7 +1241,6 @@ namespace eternal_lands
 		Uint32 tile_map_width;
 		Uint32 tile_map_height;
 		Uint32 terrain_offset;
-		Uint32 water_offset;
 		Uint16 dungeon;
 		IdType type;
 
@@ -1126,15 +1320,26 @@ namespace eternal_lands
 
 		tile_map_offset = writer->get_position();
 
-		for (y = 0; y < size.y; ++y)
+		count = 4;
+
+		writer->write_u16_le(count);
+
+		for (i = 0; i < count; ++i)
 		{
-			for (x = 0; x < size.x; ++x)
+			writer->write_half_le(get_tile_layer_height(i));
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			for (y = 0; y < size.y; ++y)
 			{
-				writer->write_u8(get_tile(x, y));
+				for (x = 0; x < size.x; ++x)
+				{
+					writer->write_u8(get_tile(x, y, i));
+				}
 			}
 		}
 
-		size *= 6u;
 		height_map_offset = writer->get_position();
 
 		for (y = 0; y < size.y; ++y)
@@ -1181,6 +1386,8 @@ namespace eternal_lands
 
 			obj_3d_count++;
 
+			position = writer->get_position();
+
 			writer->write_utf8_string(
 				object_it->second.get_name(), 80);
 
@@ -1202,8 +1409,7 @@ namespace eternal_lands
 			{
 				writer->write_u8(0);
 
-				if (object_it->second.get_blend() ==
-					bt_disabled)
+				if (object_it->second.get_blend_mask().none())
 				{
 					writer->write_u8(0);
 				}
@@ -1217,7 +1423,10 @@ namespace eternal_lands
 			}
 			else
 			{
-				writer->write_u8(0);
+				options[0] = object_it->second.get_blend_mask(
+					).any();
+
+				writer->write_u8(options.to_ulong());
 				writer->write_u8(
 					object_it->second.get_blend());
 				writer->write_u8(
@@ -1227,10 +1436,6 @@ namespace eternal_lands
 					255.5f);
 			}
 
-			writer->write_float_le(object_it->second.get_scale().x);
-			writer->write_float_le(object_it->second.get_scale().y);
-			writer->write_float_le(object_it->second.get_scale().z);
-
 			update_names_list(
 				object_it->second.get_material_names(),
 				names, index_map, material_index,
@@ -1239,13 +1444,19 @@ namespace eternal_lands
 			writer->write_u32_le(material_index);
 			writer->write_u32_le(material_count);
 			writer->write_u32_le(id);
-			writer->write_u32_le(0);
-			writer->write_u8(object_it->second.get_walkable());
 
-			for (i = 0; i < 7; ++i)
-			{
-				writer->write_u8(0);
-			}
+			writer->write_half_le(object_it->second.get_scale().x);
+			writer->write_half_le(object_it->second.get_scale().y);
+			writer->write_half_le(object_it->second.get_scale().z);
+			writer->write_half_le(object_it->second.get_glow());
+
+			writer->write_u32_le(0);
+			writer->write_u32_le(0);
+			writer->write_u32_le(0);
+			writer->write_u32_le(0);
+
+			assert(writer->get_position() ==
+				(position + obj_3d_size));
 		}
 
 		obj_2d_size = AbstractMapLoader::get_2d_object_size();
@@ -1270,6 +1481,8 @@ namespace eternal_lands
 
 			obj_2d_count++;
 
+			position = writer->get_position();
+
 			writer->write_utf8_string(
 				object_it->second.get_name(), 80);
 
@@ -1291,6 +1504,9 @@ namespace eternal_lands
 			{
 				writer->write_u8(0);
 			}
+
+			assert(writer->get_position() ==
+				(position + obj_2d_size));
 		}
 
 		light_size = AbstractMapLoader::get_light_size();
@@ -1304,6 +1520,8 @@ namespace eternal_lands
 		{
 			light_count++;
 
+			position = writer->get_position();
+
 			writer->write_float_le(
 				light_it->second.get_position().x);
 			writer->write_float_le(
@@ -1315,12 +1533,15 @@ namespace eternal_lands
 			writer->write_float_le(light_it->second.get_color().g);
 			writer->write_float_le(light_it->second.get_color().b);
 
-			writer->write_float_le(light_it->second.get_radius());
+			writer->write_half_le(light_it->second.get_radius());
 
-			for (i = 0; i < 12; ++i)
+			for (i = 0; i < 14; ++i)
 			{
 				writer->write_u8(0);
 			}
+
+			assert(writer->get_position() ==
+				(position + light_size));
 		}
 
 		particle_size = AbstractMapLoader::get_particle_size();
@@ -1333,6 +1554,8 @@ namespace eternal_lands
 			particle_it != particle_end; ++particle_it)
 		{
 			particle_count++;
+
+			position = writer->get_position();
 
 			writer->write_utf8_string(
 				particle_it->second.get_name(), 80);
@@ -1347,6 +1570,9 @@ namespace eternal_lands
 			{
 				writer->write_u8(0);
 			}
+
+			assert(writer->get_position() ==
+				(position + particle_size));
 		}
 
 		name_count = 0;
@@ -1471,20 +1697,6 @@ namespace eternal_lands
 			}
 		}
 
-		water_offset = 0;
-/*
-		if (water)
-		{
-			writer->write_utf8_string(flow_map, 128);
-
-			writer->write_uint8(water_layer);
-
-			{
-				writer->write_utf8_string(name, 128);
-				writer->write_float_le(height);
-			}
-		}
-*/
 		writer->set_position(0);
 
 		writer->write_s8('e');
@@ -1528,8 +1740,8 @@ namespace eternal_lands
 		writer->write_u32_le(name_offset);
 
 		writer->write_u32_le(terrain_offset);
-		writer->write_u32_le(water_offset);
 
+		writer->write_u32_le(0);	// reserved_12
 		writer->write_u32_le(0);	// reserved_13
 		writer->write_u32_le(0);	// reserved_14
 		writer->write_u32_le(0);	// reserved_15
@@ -1547,19 +1759,53 @@ namespace eternal_lands
 		size = get_tile_map_size();
 
 		image = boost::make_shared<Image>(String(UTF8("tile map")),
-			false, tft_l8, glm::uvec3(size, 0), 0, false);
+			false, tft_rgba8, glm::uvec3(size, 0), 0, false);
 
 		for (y = 0; y < size.y; ++y)
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				data.r = m_tile_map[x][y];
+				data.r = m_tile_maps[x][y][0];
+				data.g = m_tile_maps[x][y][1];
+				data.b = m_tile_maps[x][y][2];
+				data.a = m_tile_maps[x][y][3];
 
 				image->set_pixel_uint(x, y, 0, 0, 0, data);
 			}
 		}
 
 		CodecManager::save_image_as_png(image, file_name);
+	}
+
+	void EditorMapData::set_tile_map_size(const glm::uvec2 &size)
+	{
+		glm::uvec2 min, max;
+		Uint32 x, y, start_x;
+
+		min = glm::min(get_tile_map_size(), size);
+		max = glm::max(get_tile_map_size(), size);
+
+		m_tile_maps.resize(boost::extents[size.x][size.y]);
+
+		for (y = 0; y < max.y; ++y)
+		{
+			if (min.y < y)
+			{
+				start_x = 0;
+			}
+			else
+			{
+				start_x = min.x;
+			}
+
+			for (x = start_x; x < max.x; ++x)
+			{
+				m_tile_maps[x][y][0] = 0xFF;
+				m_tile_maps[x][y][1] = 0xFF;
+				m_tile_maps[x][y][2] = 0xFF;
+				m_tile_maps[x][y][3] = 0xFF;
+			}
+		}
 	}
 
 }

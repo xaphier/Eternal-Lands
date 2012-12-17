@@ -25,6 +25,7 @@
 #include "codec/codecmanager.hpp"
 #include "terrain/terrainmaterialdata.hpp"
 #include "image.hpp"
+#include "tilebuilder.hpp"
 
 namespace eternal_lands
 {
@@ -148,12 +149,12 @@ namespace eternal_lands
 	{
 		glm::vec3 translation, rotation_angles, scale;
 		String name;
-		float transparency;
+		BitSet64 blend_mask;
+		BitSet8 options;
+		float transparency, glow;
 		Uint32 id, blended, material_index, material_count;
-		Uint32 instance_id;
 		SelectionType selection;
 		BlendType blend;
-		bool self_lit, walkable;
 
 		get_reader()->set_position(offset);
 
@@ -167,22 +168,31 @@ namespace eternal_lands
 		rotation_angles.y = get_reader()->read_float_le();
 		rotation_angles.z = get_reader()->read_float_le();
 
-		self_lit = get_reader()->read_u8() != 0;
+		options = get_reader()->read_u8();
 		blended = get_reader()->read_u8();
+
 		blend = static_cast<BlendType>(blended);
 		selection = static_cast<SelectionType>(
 			get_reader()->read_u8());
 		transparency = get_reader()->read_u8() / 255.0f;
 
-		scale.x = get_reader()->read_float_le();
-		scale.y = get_reader()->read_float_le();
-		scale.z = get_reader()->read_float_le();
-
 		material_index = get_reader()->read_u32_le();
 		material_count = get_reader()->read_u32_le();
 		id = get_reader()->read_u32_le();
-		instance_id = get_reader()->read_u32_le();
-		walkable = get_reader()->read_u8() != 0;
+
+		scale.x = get_reader()->read_half_le();
+		scale.y = get_reader()->read_half_le();
+		scale.z = get_reader()->read_half_le();
+		glow = get_reader()->read_half_le();
+
+		if (options[0])
+		{
+			blend_mask.set();
+		}
+		else
+		{
+			blend_mask.reset();
+		}
 
 		if (version == mvt_1_0)
 		{
@@ -191,31 +201,32 @@ namespace eternal_lands
 				return;
 			}
 
-			if (blended == 1)
-			{
-				transparency = 0.7f;
-				blend = bt_alpha_transparency_source_value;
-			}
-			else
-			{
-				transparency = 1.0f;
-				blend = bt_disabled;
-			}
-
-			walkable = false;
+			blend = bt_alpha_transparency_source_value;
+			transparency = 0.7f;
 			scale = glm::vec3(1.0f);
 			material_count = 0;
 			material_index = 0;
 			name = FileSystem::get_strip_relative_path(name);
 			selection = get_selection(name);
 			id = index;
+			glow = 0.0f;
+
+			if (blended != 0)
+			{
+				blend_mask.set();
+			}
+			else
+			{
+				blend_mask.reset();
+			}
 		}
 
 		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
-			" %3% with rotation %4%, scale %5%, blended %6%."),
-			index % name % glm::to_string(translation) %
+			" %3% with rotation %4%, scale %5%, blend mask %6%, "
+			"blended %7%."), index % name %
+			glm::to_string(translation) %
 			glm::to_string(rotation_angles) % glm::to_string(scale)
-			% blended);
+			% blend_mask % blended);
 
 		if ((material_index + material_count) > m_names.size())
 		{
@@ -232,7 +243,7 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_object_id(id, it_3d_object);
 
 		add_object(translation, rotation_angles, scale, name,
-			transparency, id, selection, blend, walkable,
+			blend_mask, transparency, glow, id, selection, blend,
 			get_names(material_index, material_count));
 	}
 
@@ -263,7 +274,8 @@ namespace eternal_lands
 			glm::to_string(rotation_angles));
 
 		add_object(translation, rotation_angles, glm::vec3(1.0f), name,
-			0.0f, id, st_none, bt_disabled, false, StringVector());
+			0, 0.0f, 0.0f, id, st_none,
+			bt_alpha_transparency_source_value, StringVector());
 	}
 
 	void AbstractMapLoader::read_light(const Uint32 index,
@@ -282,7 +294,7 @@ namespace eternal_lands
 		color.g = get_reader()->read_float_le();
 		color.b = get_reader()->read_float_le();
 
-		radius = get_reader()->read_float_le();
+		radius = get_reader()->read_half_le();
 
 		if (version == mvt_1_0)
 		{
@@ -350,18 +362,6 @@ namespace eternal_lands
 		get_free_ids().use_decal_id(index);
 
 		add_decal(position, scale, rotation, texture, index);
-	}
-
-	void AbstractMapLoader::read_water_layer(const Uint32 index,
-		const Uint32 offset, const MapVersionType version)
-	{
-		String name;
-		float height;
-
-		name = get_reader()->read_utf8_string(128);
-		height = get_reader()->read_float_le();
-
-//		add_water_layer(name, height, index);
 	}
 
 	void AbstractMapLoader::read_terrain(const Uint32 offset,
@@ -590,45 +590,6 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_water(const Uint32 offset,
-		const MapVersionType version)
-	{
-		String name, material, flow_map;
-		float height;
-		Uint32 i, count;
-
-		if (version == mvt_1_0)
-		{
-			return;
-		}
-
-		try
-		{
-			get_reader()->set_position(offset);
-
-			flow_map = get_reader()->read_utf8_string(128);
-			count = get_reader()->read_u8();
-
-			for (i = 0; i < count; ++i)
-			{
-				name = get_reader()->read_utf8_string(128);
-				material = get_reader(
-					)->read_dynamic_utf8_string();
-				height = get_reader()->read_float_le();
-			}
-
-//			add_water(water_layers, flow_map, water);
-		}
-		catch (boost::exception &exception)
-		{
-			LOG_EXCEPTION(exception);
-		}
-		catch (const std::exception &exception)
-		{
-			LOG_EXCEPTION(exception);
-		}
-	}
-
 	void AbstractMapLoader::read_name(const Uint32 index,
 		const MapVersionType version)
 	{
@@ -809,16 +770,67 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_tile_map(const Uint32 tile_map_width,
+	void AbstractMapLoader::read_tile_map(const Uint32 width,
+		const Uint32 height, const Uint32 index, const Uint32 offset,
+		const float z_position, const MapVersionType version)
+	{
+		Uint8MultiArray2 tile_map;
+		Uint32 x, y, tile;
+
+		LOG_DEBUG(lt_map_loader, UTF8("Tile layer %1% size <%2%, "
+			"%3%>, %4%."), index % width % height % z_position);
+
+		get_reader()->set_position(offset);
+
+		tile_map.resize(boost::extents[width][height]);
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				try
+				{
+					tile = get_reader()->read_u8();
+
+					tile_map[x][y] = tile;
+				}
+				catch (boost::exception &exception)
+				{
+					exception << errinfo_array_index_0(x);
+					exception << errinfo_array_index_1(y);
+					exception << errinfo_array_index_2(
+						index);
+					LOG_EXCEPTION(exception);
+				}
+				catch (const std::exception &exception)
+				{
+					LOG_EXCEPTION(exception);
+				}
+			}
+		}
+
+		set_tile_layer(tile_map, z_position, index);
+	}
+
+	void AbstractMapLoader::read_old_tile_map(const Uint32 tile_map_width,
 		const Uint32 tile_map_height, const Uint32 tile_map_offset,
 		const MapVersionType version)
 	{
-		Uint32 x, y;
+		Uint8MultiArray2 tile_map, water_map;
+		Uint32 i, j, x, y, tile, water, data, no_tile;
+		bool tile_used, water_used;
 
-		LOG_DEBUG(lt_map_loader, UTF8("Tile size <%1%, %2%>."),
+		LOG_DEBUG(lt_map_loader, UTF8("Tile map size <%1%, %2%>."),
 			tile_map_width % tile_map_height);
 
 		get_reader()->set_position(tile_map_offset);
+
+		no_tile = std::numeric_limits<Uint16>::max();
+
+		tile_map.resize(boost::extents[tile_map_width * 6]
+			[tile_map_height * 6]);
+		water_map.resize(boost::extents[tile_map_width * 6]
+			[tile_map_height * 6]);
 
 		for (y = 0; y < tile_map_height; y++)
 		{
@@ -826,7 +838,40 @@ namespace eternal_lands
 			{
 				try
 				{
-					set_tile(x, y, get_reader()->read_u8());
+					data = get_reader()->read_u8();
+
+					tile = no_tile;
+					water = no_tile;
+
+					if (data != 0xFF)
+					{
+						if ((data == 0) || (data > 230))
+						{
+							water = data;
+							tile = no_tile;
+						}
+						else
+						{
+							water = no_tile;
+							tile = data;
+						}
+					}
+
+					tile_used |= tile != no_tile;
+					water_used |= water != no_tile;
+
+					for (j = 0; j < 6; ++j)
+					{
+						for (i = 0; i < 6; ++i)
+						{
+							tile_map[x * 6 + i]
+								[y * 6 + j] =
+									tile;
+							water_map[x * 6 + i]
+								[y * 6 + j] =
+									water;
+						}
+					}
 				}
 				catch (boost::exception &exception)
 				{
@@ -839,6 +884,46 @@ namespace eternal_lands
 					LOG_EXCEPTION(exception);
 				}
 			}
+		}
+
+		set_tile_layer_heights(glm::vec4(-0.001f, -0.25f, 0.0f, 0.0f));
+
+		set_tile_layer(tile_map, -0.001f, 0);
+		set_tile_layer(water_map, -0.25f, 1);
+	}
+
+	void AbstractMapLoader::read_tile_maps(const Uint32 tile_map_width,
+		const Uint32 tile_map_height, const Uint32 tile_map_offset,
+		const MapVersionType version)
+	{
+		glm::vec4 tile_layer_heights;
+		Uint32 i, count, size;
+
+		LOG_DEBUG(lt_map_loader, UTF8("Tile size <%1%, %2%>."),
+			tile_map_width % tile_map_height);
+
+		get_reader()->set_position(tile_map_offset);
+
+		count = get_reader()->read_u16_le();
+		count = std::min(count, 4u);
+
+		for (i = 0; i < count; ++i)
+		{
+			tile_layer_heights[i] = get_reader()->read_half_le();
+		}
+
+		LOG_DEBUG(lt_map_loader, UTF8("Tile maps %1%, heights %2%."),
+			count % glm::to_string(tile_layer_heights));
+
+		set_tile_layer_heights(tile_layer_heights);
+
+		size = tile_map_width * tile_map_height;
+
+		for (i = 0; i < count; ++i)
+		{
+			read_tile_map(tile_map_width, tile_map_height, i,
+				tile_map_offset + 2 + 2 * count + size * i,
+				tile_layer_heights[i], version);
 		}
 	}
 
@@ -891,7 +976,6 @@ namespace eternal_lands
 		Uint32 particle_offset;
 		Uint32 clusters_offset;
 		Uint32 terrain_offset;
-		Uint32 water_offset;
 		Uint32 name_count;
 		Uint32 name_offset; 
 		Sint8Array4 magic_number;
@@ -932,12 +1016,6 @@ namespace eternal_lands
 		light_count = get_reader()->read_u32_le();
 		light_offset = get_reader()->read_u32_le();
 
-		height_map_size = tile_map_size * 2u * get_tile_size();
-		map_size = tile_map_size * get_tile_size();
-
-		LOG_DEBUG(lt_map_loader, UTF8("map size <%1%, %2%>."),
-			map_size.x % map_size.y);
-
 		dungeon = get_reader()->read_u8() != 0;
 
 		LOG_DEBUG(lt_map_loader, UTF8("dungeon %1%."), dungeon);
@@ -970,7 +1048,6 @@ namespace eternal_lands
 		name_count = get_reader()->read_u32_le();
 		name_offset = get_reader()->read_u32_le();
 		terrain_offset = get_reader()->read_u32_le();
-		water_offset = get_reader()->read_u32_le();
 
 		switch (version_number)
 		{
@@ -1000,10 +1077,20 @@ namespace eternal_lands
 		if (version == 0)
 		{
 			terrain_offset = 0;
-			water_offset = 0;
 			name_count = 0;
 			name_offset = 0;
+
+			map_size = tile_map_size * 6u;
+			height_map_size = tile_map_size * 6u;
 		}
+		else
+		{
+			map_size = tile_map_size;
+			height_map_size = tile_map_size;
+		}
+
+		LOG_DEBUG(lt_map_loader, UTF8("map size <%1%, %2%>."),
+			map_size.x % map_size.y);
 
 		set_map_size(map_size);
 		set_tile_map_size(tile_map_size);
@@ -1062,11 +1149,6 @@ namespace eternal_lands
 			skip_items.insert(mit_terrain);
 		}
 
-		if (water_offset == 0)
-		{
-			skip_items.insert(mit_water);
-		}
-
 		read_names(name_count, name_offset, version);
 
 		if (skip_items.count(mit_3d_objects) == 0)
@@ -1101,18 +1183,22 @@ namespace eternal_lands
 
 		if (skip_items.count(mit_tile_map) == 0)
 		{
-			read_tile_map(tile_map_size.x, tile_map_size.y,
-				tile_map_offset, version);
+			if (version == mvt_1_0)
+			{
+				read_old_tile_map(tile_map_size.x,
+					tile_map_size.y, tile_map_offset,
+					version);
+			}
+			else
+			{
+				read_tile_maps(tile_map_size.x, tile_map_size.y,
+					tile_map_offset, version);
+			}
 		}
 
 		if (skip_items.count(mit_terrain) == 0)
 		{
 			read_terrain(terrain_offset, version);
-		}
-
-		if (skip_items.count(mit_water) == 0)
-		{
-			read_water(water_offset, version);
 		}
 
 		LOG_DEBUG(lt_map_loader, UTF8("Done loading map '%1%'."),
@@ -1129,30 +1215,21 @@ namespace eternal_lands
 		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles,
 		const glm::vec3 &scale, const StringVector &material_names,
-		const String &name, const Uint32 id,
+		const String &name, const BitSet64 blend_mask,
+		const float transparency, const float glow, const Uint32 id,
 		const SelectionType selection, const BlendType blend)
 	{
 		Transformation transformation;
-		float transparency;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(translation),
 			glm::vec3(1e7f))));
-
-		if (blend != bt_disabled)
-		{
-			transparency = 0.7f;
-		}
-		else
-		{
-			transparency = 1.0f;
-		}
 
 		transformation.set_translation(translation);
 		transformation.set_rotation_angles(rotation_angles);
 		transformation.set_scale(scale);
 
 		return ObjectDescription(transformation, material_names, name,
-			transparency, id, selection, blend);
+			blend_mask, 0.7f, 0.0f, id, selection, blend);
 	}
 
 	StringVector AbstractMapLoader::get_names(const Uint32 index,

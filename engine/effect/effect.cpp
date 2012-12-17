@@ -187,6 +187,17 @@ namespace eternal_lands
 		m_programs[ept_height_map] = get_glsl_program_cache(
 			)->get_program(program_description);
 
+		/* Glow shader */
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			sbt_depth % m_description.get_name());
+
+		get_shader_source_builder()->build(m_description,
+			sbt_default, get_description().get_output(), 0,
+			program_description);
+
+		m_programs[ept_glow] = get_glsl_program_cache(
+			)->get_program(program_description);
+
 		/* Shadow shader */
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
 			sbt_shadow % m_description.get_name());
@@ -237,6 +248,9 @@ namespace eternal_lands
 
 		/* Shadow shader */
 		m_programs[ept_shadow] = m_programs[ept_depth];
+
+		/* Glow shader */
+		m_programs[ept_glow] = m_programs[ept_default];
 
 		/* Height map shader */
 		m_programs[ept_height_map] = m_programs[ept_depth];

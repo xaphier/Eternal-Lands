@@ -43,12 +43,13 @@ namespace eternal_lands
 			inline ObjectDescription(
 				const Transformation &world_transformation,
 				const StringVector &material_names,
-				const String &name, const float transparency,
+				const String &name, const BitSet64 blend_mask,
+				const float transparency, const float glow,
 				const Uint32 id, const SelectionType selection,
 				const BlendType blend): ObjectData(
-					world_transformation, name,
-					transparency, id, selection, blend),
-				m_material_names(material_names)
+					world_transformation, name, blend_mask,
+					transparency, glow, id, selection,
+					blend),	m_material_names(material_names)
 			{
 			}
 

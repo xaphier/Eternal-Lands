@@ -58,9 +58,6 @@ namespace eternal_lands
 				const LightDataVector &light_datas);
 			bool do_set_terrain_albedo_map(const String &str,
 				const Uint16 index, const Uint16 id);
-			void remove_ground_tile(const Uint32 id);
-			static StringVector get_ground_tile_materials(
-				const Uint8 index);
 			bool add_needed(const Uint32 id,
 				const ModificationType type);
 
@@ -81,24 +78,21 @@ namespace eternal_lands
 				const bool use_gloss_map,
 				const bool use_height_map,
 				const Uint16 index);
-			void set_ground_tile(const glm::vec2 &point,
-				const Uint16 tile);
+			void set_tile(const glm::uvec3 &offset,
+				const Uint16 size, const Uint16 tile);
 			void add_3d_object(const glm::vec3 &position,
 				const String &name,
 				const SelectionType selection);
 			void add_light(const glm::vec3 &position,
 				const float radius);
-			void add_ground_tile(const Uint32 x, const Uint32 y,
-				const Uint8 texture);
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
 			void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere);
 			const glm::vec4 &get_ground_hemisphere() const;
-			void ground_tile_edit(const glm::vec3 &point,
-				const Uint8 tile);
-			void water_tile_edit(const glm::vec3 &start,
-				const glm::vec3 &point, const Uint16 water);
+			bool get_tile_edit(const glm::vec3 &min_position,
+				const glm::vec3 &max_position,
+				const Uint16 layer, glm::uvec3 &offset) const;
 			void height_edit(const glm::vec3 &point,
 				const Uint8 height);
 			void remove_object(const Uint32 id);
@@ -112,10 +106,11 @@ namespace eternal_lands
 				const bool load_height_map,
 				const bool load_tile_map,
 				const bool load_walk_map,
-				const bool load_terrain,
-				const bool load_water);
+				const bool load_terrain);
 			void set_object_transparency(const Uint32 id,
 				const float transparency);
+			void set_object_glow(const Uint32 id,
+				const float glow);
 			void set_object_translation(const Uint32 id,
 				const glm::vec3 &translation);
 			void set_object_rotation(const Uint32 id,
@@ -123,11 +118,12 @@ namespace eternal_lands
 			void set_object_scale(const Uint32 id,
 				const glm::vec3 &scale);
 			void set_object_blend(const Uint32 id,
-				const BlendType blend);
+				const BlendType blend,
+				const BitSet64 blend_mask);
+			void set_object_blend_mask(const Uint32 id,
+				const BitSet64 blend_mask);
 			void set_object_selection(const Uint32 id,
 				const SelectionType selection);
-			void set_object_walkable(const Uint32 id,
-				const bool walkable);
 			void set_object_materials(const Uint32 id,
 				const StringVector &materials);
 			void set_object_name(const Uint32 id,
@@ -138,6 +134,8 @@ namespace eternal_lands
 				const String &name);
 			void set_objects_transparency(const Uint32Set &ids,
 				const float transparency);
+			void set_objects_glow(const Uint32Set &ids,
+				const float glow);
 			void set_objects_translation(const Uint32Set &ids,
 				const glm::vec3 &translation);
 			void set_objects_rotation(const Uint32Set &ids,
@@ -148,8 +146,6 @@ namespace eternal_lands
 				const BlendType blend);
 			void set_objects_selection(const Uint32Set &ids,
 				const SelectionType selection);
-			void set_objects_walkable(const Uint32Set &ids,
-				const bool walkable);
 			void set_objects_materials(const Uint32Set &ids,
 				const StringVector &materials);
 			void set_objects_name(const Uint32Set &ids,
@@ -213,6 +209,9 @@ namespace eternal_lands
 				const int mask, const int layer);
 			void set_terrain_translation(
 				const glm::vec3 &translation);
+			float get_tile_layer_height(const Uint16 index) const;
+			void set_tile_layer_height(const float value,
+				const Uint16 layer);
 
 			inline void export_tile_map(const String &file_name)
 				const
@@ -529,26 +528,28 @@ namespace eternal_lands
 				return true;
 			}
 
-			inline bool set_object_blend(const BlendType blend)
+			inline bool set_object_blend(const BlendType blend,
+				const BitSet64 blend_mask)
 			{
 				if (!get_object_selected())
 				{
 					return false;
 				}
 
-				set_object_blend(get_id(), blend);
+				set_object_blend(get_id(), blend, blend_mask);
 
 				return true;
 			}
 
-			inline bool set_object_walkable(const bool walkable)
+			inline bool set_object_blend_mask(
+				const BitSet64 blend_mask)
 			{
 				if (!get_object_selected())
 				{
 					return false;
 				}
 
-				set_object_walkable(get_id(), walkable);
+				set_object_blend_mask(get_id(), blend_mask);
 
 				return true;
 			}
@@ -563,6 +564,18 @@ namespace eternal_lands
 
 				set_object_transparency(get_id(),
 					transparency);
+
+				return true;
+			}
+
+			inline bool set_object_glow(const float glow)
+			{
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
+				set_object_glow(get_id(), glow);
 
 				return true;
 			}
@@ -656,18 +669,6 @@ namespace eternal_lands
 				return true;
 			}
 
-			inline bool set_objects_walkable(const bool walkable)
-			{
-				if (!get_objects_selected())
-				{
-					return false;
-				}
-
-				set_objects_walkable(get_ids(), walkable);
-
-				return true;
-			}
-
 			inline bool set_objects_transparency(
 				const float transparency)
 			{
@@ -678,6 +679,18 @@ namespace eternal_lands
 
 				set_objects_transparency(get_ids(),
 					transparency);
+
+				return true;
+			}
+
+			inline bool set_objects_glow(const float glow)
+			{
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
+				set_objects_glow(get_ids(), glow);
 
 				return true;
 			}

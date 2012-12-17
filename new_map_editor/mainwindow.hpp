@@ -62,6 +62,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QAction* action_move_d;
 		QAction* action_zoom_in;
 		QAction* action_zoom_out;
+		QButtonGroup* m_grid_layers;
 		QProgressBar* m_progress_bar;
 		boost::shared_ptr<QProgress> m_progress;
 		QProgressDialog* m_progress_dialog;
@@ -96,7 +97,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void load_mouse_settings(QSettings &settings);
 		void save_terrain_textures_settings(QSettings &settings);
 		void load_terrain_textures_settings(QSettings &settings);
-		void set_blend(const BlendType value);
+		void set_blend(const BlendType value,
+			const BitSet64 blend_mask);
 		void set_selection(const SelectionType value);
 		void save_dirs_settings(QSettings &settings);
 		void load_dirs_settings(QSettings &settings);
@@ -112,6 +114,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		bool get_terrain_texture_data(const QString &name,
 			TerrainTextureData &terrain_texture_data) const;
 		QColor get_light_color() const;
+		void update_tile_materials();
 
 	private slots:
 		void update_object();
@@ -138,6 +141,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_objects(const bool value);
 		void add_lights(const bool value);
 		void terrain_mode(const bool checked);
+		void tile_mode(const bool checked);
 		void delete_mode(const bool checked);
 		void remove();
 		void set_fog();
@@ -188,6 +192,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_light_power();
 		void change_terrain_translation();
 		void remove_terrain();
+		void tile_edit();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -519,9 +519,10 @@ namespace eternal_lands
 		transformation.set_translation(center);
 
 		m_instance_data.reset(new InstanceData(ObjectDescription(
-			transformation, material_names, String(str.str()),
-			1.0f, get_id(), selection, bt_disabled),
-			mesh_data_tool, instanced_objects));
+			transformation, material_names, String(str.str()), 0,
+			1.0f, 0.0f, get_id(), selection,
+			bt_alpha_transparency_source_value), mesh_data_tool,
+			instanced_objects));
 	}
 
 	void InstanceBuilder::set_instance(InstanceDataVector &instances)

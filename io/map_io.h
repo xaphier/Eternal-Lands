@@ -67,26 +67,23 @@ typedef struct
 	float z_rot;
     /** @} */
 
-	char self_lit; /**< indicator if this object3d is self lit or not */
-	char blended;  /**< indicates whether this object3d is blended with some other objects or not */
+//	char self_lit; /**< indicator if this object3d is self lit or not */
+	char options;
+	char blended;		/**< indicates whether this object3d is blended with some other objects or not */
 	char selection;		/**< the selection mode used for the object */
 	char transparency;	/**< the transparency used for the object */
-	
 //	float r,g,b;   /**< red, green and blue color values of the object */
-    /** @name Scaling of the object3d 
-     *  Will be used in the future
-     * @{ */
-	float x_scale;
-	float y_scale;
-	float z_scale;
-    /** @} */
-
 	int material_index;
 	int material_count;
 	int id;
-	int instance_id;
-	char walkable;		/**< inidcator if the object is walkable or not. Used in the map editor for automated walkmap generation. */
-	char reserved[7];	/**< reserved for future expansions. */
+    /** @name Scaling of the object3d as half floats
+     * @{ */
+	short x_scale;
+	short y_scale;
+	short z_scale;
+    /** @} */
+	short glow;	/**< glow as half float */
+	int pad[4];
 }object3d_io;
 
 /**
@@ -132,13 +129,9 @@ typedef struct
 	float b;
     /** @} */
 
-    /** @name Quadric attenuation of the light
-     *  Will be used in the future
-     * @{ */
-	float radius;
-    /** @} */
+	short radius;	/**< light radius as half float */
     
-	char reserved[12]; /**< reserved for future expansions */
+	char reserved[14]; /**< reserved for future expansions */
 }light_io;
 
 /**
@@ -228,10 +221,10 @@ typedef struct
 	int names_offset; /**< Offset to the material names data. */
 	int names_no; /**< Offset to the material names data. */
 	int terrain_offset; /**< Offset to the terrain datas. */
-	int water_offset; /**< Offset to the water data. */
     /** @} */
     /** @name Reserved for future expansions 
      * @{ */
+	int reserved_12;
 	int reserved_13;
 	int reserved_14;
 	int reserved_15;

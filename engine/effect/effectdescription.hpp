@@ -48,6 +48,7 @@ namespace eternal_lands
 			Uint8Array4 m_output_channels;
 			bool m_receives_shadows;
 			bool m_transparent;
+			bool m_transparency;
 
 		public:
 			/**
@@ -121,6 +122,12 @@ namespace eternal_lands
 				m_transparent = transparent;
 			}
 
+			inline void set_transparency(const bool transparency)
+				noexcept
+			{
+				m_transparency = transparency;
+			}
+
 			inline void set_output_channel_count(const Uint16 value,
 				const Uint16 render_target)
 			{
@@ -179,6 +186,11 @@ namespace eternal_lands
 			inline bool get_transparent() const noexcept
 			{
 				return m_transparent;
+			}
+
+			inline bool get_transparency() const noexcept
+			{
+				return m_transparency;
 			}
 
 			inline glm::bvec4 get_output_channels(

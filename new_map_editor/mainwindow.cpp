@@ -126,12 +126,18 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
 		SLOT(terrain_edit()));
 
+	QObject::connect(el_gl_widget, SIGNAL(tile_edit()), this,
+		SLOT(tile_edit()));
+
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(action_undo, SIGNAL(triggered()), this, SLOT(update_terrain_layers()));
 	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
 
 	QObject::connect(action_terrain_mode, SIGNAL(toggled(bool)), this, SLOT(terrain_mode(bool)));
 	QObject::connect(action_terrain_mode, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
+
+	QObject::connect(action_tile_mode, SIGNAL(toggled(bool)), this, SLOT(tile_mode(bool)));
+	QObject::connect(action_tile_mode, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_tile_editing(bool)));
 
 	QObject::connect(action_delete_mode, SIGNAL(toggled(bool)), this, SLOT(delete_mode(bool)));
 
@@ -203,14 +209,14 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SIGNAL(mapped(const int)), this,
 		SLOT(set_object_blend(const int)));
 
-	QObject::connect(walkable, SIGNAL(toggled(const bool)), el_gl_widget,
-		SLOT(set_object_walkable(const bool)));
-
 	QObject::connect(description, SIGNAL(textChanged(const QString&)),
 		el_gl_widget, SLOT(set_object_description(const QString&)));
 
 	QObject::connect(transparency_value, SIGNAL(valueChanged(int)), this,
 		SLOT(set_object_transparency(const int)));
+
+	QObject::connect(glow_value, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_object_glow(const double)));
 
 	QObject::connect(material_0, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(update_materials()));
@@ -287,10 +293,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_object_witdgets.push_back(transparency_type_1);
 	m_object_witdgets.push_back(transparency_type_2);
 	m_object_witdgets.push_back(transparency_value);
+	m_object_witdgets.push_back(glow_value);
 	m_object_witdgets.push_back(selection_type_0);
 	m_object_witdgets.push_back(selection_type_1);
 	m_object_witdgets.push_back(selection_type_2);
-	m_object_witdgets.push_back(walkable);
 	m_object_witdgets.push_back(description);
 	m_object_witdgets.push_back(material_0);
 	m_object_witdgets.push_back(material_1);
@@ -508,6 +514,24 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	connect(action_export_tile_map, SIGNAL(triggered()), el_gl_widget,
 		SLOT(export_tile_map()));
+
+	connect(el_gl_widget, SIGNAL(tile_layer_height_0_changed(double)),
+		tile_layer_height_0, SLOT(setValue(double)));
+	connect(el_gl_widget, SIGNAL(tile_layer_height_1_changed(double)),
+		tile_layer_height_1, SLOT(setValue(double)));
+	connect(el_gl_widget, SIGNAL(tile_layer_height_2_changed(double)),
+		tile_layer_height_2, SLOT(setValue(double)));
+	connect(el_gl_widget, SIGNAL(tile_layer_height_3_changed(double)),
+		tile_layer_height_3, SLOT(setValue(double)));
+
+	connect(tile_layer_height_0, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_tile_layer_height_0(double)));
+	connect(tile_layer_height_1, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_tile_layer_height_1(double)));
+	connect(tile_layer_height_2, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_tile_layer_height_2(double)));
+	connect(tile_layer_height_3, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_tile_layer_height_3(double)));
 }
 
 MainWindow::~MainWindow()
@@ -550,6 +574,8 @@ void MainWindow::initialized()
 	}
 
 	progress.setValue(count);
+
+	update_tile_materials();
 }
 
 bool MainWindow::get_terrain_texture_data(const QString &name,
@@ -617,6 +643,11 @@ void MainWindow::update_terrain_layers()
 	QString name;
 	Uint32 i, count;
 
+	if (!el_gl_widget->get_terrain())
+	{
+		return;
+	}
+
 	count = el_gl_widget->get_terrain_layer_count();
 
 	terrain_layers->clear();
@@ -647,6 +678,95 @@ void MainWindow::update_terrain_layers()
 
 		terrain_layers->insertItem(i, item);
 	}
+}
+
+void MainWindow::update_tile_materials()
+{
+	QListWidgetItem* item;
+	QImage image;
+	QIcon icon;
+	QString name, image_name;
+	Uint32 i, index;
+
+	tile_materials->clear();
+	index = 0;
+
+	for (i = 0; i < 51; ++i)
+	{
+		name = QString(tr("tile")) + QString::number(i);
+
+		image_name = QString("3dobjects/") + name;
+
+		if (!el_gl_widget->get_texture_icon(image_name,
+			m_preview_icons_size, icon))
+		{
+			continue;
+		}
+
+		item = new QListWidgetItem(name);
+
+		item->setData(Qt::UserRole, i);
+		item->setToolTip(name);
+		item->setIcon(icon);
+		tile_materials->insertItem(index, item);
+		index++;
+	}
+
+	for (i = 231; i < 234; ++i)
+	{
+		name = QString(tr("tile")) + QString::number(i);
+
+		image_name = QString("3dobjects/") + name;
+
+		if (!el_gl_widget->get_texture_icon(image_name,
+			m_preview_icons_size, icon))
+		{
+			continue;
+		}
+
+		item = new QListWidgetItem(name);
+
+		item->setData(Qt::UserRole, i);
+		item->setToolTip(name);
+		item->setIcon(icon);
+		tile_materials->insertItem(index, item);
+		index++;
+	}
+
+	for (i = 240; i < 243; ++i)
+	{
+		name = QString(tr("tile")) + QString::number(i);
+
+		image_name = QString("3dobjects/") + name;
+
+		if (!el_gl_widget->get_texture_icon(image_name,
+			m_preview_icons_size, icon))
+		{
+			continue;
+		}
+
+		item = new QListWidgetItem(name);
+
+		item->setData(Qt::UserRole, i);
+		item->setToolTip(name);
+		item->setIcon(icon);
+		tile_materials->insertItem(index, item);
+		index++;
+	}
+
+	image = QImage(":/icons/gtk-cancel.png");
+	icon = QIcon(QPixmap::fromImage(image.scaled(
+		m_preview_icons_size.width(), m_preview_icons_size.height(),
+		Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+
+	name = QString(tr("clear"));
+
+	item = new QListWidgetItem(name);
+
+	item->setData(Qt::UserRole, 255);
+	item->setToolTip(name);
+	item->setIcon(icon);
+	tile_materials->insertItem(index, item);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -691,6 +811,7 @@ void MainWindow::load_settings()
 	m_terrain_texture_size = settings.value("terrain preview size",
 		QSize(512, 512)).value<QSize>();
 	terrain_layers->setIconSize(m_preview_icons_size);
+	tile_materials->setIconSize(m_preview_icons_size);
 	m_terrain_textures->set_icon_size(m_preview_icons_size);
 	m_all_terrain_textures->set_icon_size(m_preview_icons_size);
 	m_all_terrain_textures->set_image_size(m_terrain_texture_size);
@@ -771,9 +892,11 @@ void MainWindow::update_object()
 	transparency_value->setValue(object_description.get_transparency() *
 		100.0f);
 
-	set_blend(object_description.get_blend());
+	glow_value->setValue(object_description.get_glow());
+
+	set_blend(object_description.get_blend(),
+		object_description.get_blend_mask());
 	set_selection(object_description.get_selection());
-	walkable->setChecked(object_description.get_walkable());
 	description->setText(QString::fromUtf8(
 		object_description.get_description().get().c_str()));
 
@@ -1443,6 +1566,7 @@ void MainWindow::add_objects(const bool value)
 		action_add_lights->setChecked(false);
 		action_delete_mode->setChecked(false);
 		action_terrain_mode->setChecked(false);
+		action_tile_mode->setChecked(false);
 
 		set_default_mode();
 
@@ -1489,6 +1613,7 @@ void MainWindow::add_lights(const bool value)
 		action_add_objects->setChecked(false);
 		action_delete_mode->setChecked(false);
 		action_terrain_mode->setChecked(false);
+		action_tile_mode->setChecked(false);
 
 		return;
 	}
@@ -1577,6 +1702,7 @@ void MainWindow::terrain_mode(const bool checked)
 	action_add_objects->setChecked(false);
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
+	action_tile_mode->setChecked(false);
 
 	terrain_page->setEnabled(checked);
 	object_dock->widget()->setEnabled(false);
@@ -1588,6 +1714,34 @@ void MainWindow::terrain_mode(const bool checked)
 	transformations_stack->setCurrentWidget(terrain_page);
 }
 
+void MainWindow::tile_mode(const bool checked)
+{
+	if (!checked)
+	{
+		set_default_mode();
+
+		return;
+	}
+
+	action_remove->setEnabled(false);
+	action_remove_all_copies_of_object->setEnabled(false);
+	action_replace_all_copies_of_object->setEnabled(false);
+
+	action_add_objects->setChecked(false);
+	action_add_lights->setChecked(false);
+	action_delete_mode->setChecked(false);
+	action_terrain_mode->setChecked(false);
+
+	tile_page->setEnabled(checked);
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	randomize_page->setEnabled(false);
+	transformations_dock->raise();
+	transformations_stack->setCurrentWidget(tile_page);
+}
+
 void MainWindow::delete_mode(const bool checked)
 {
 	if (checked)
@@ -1595,6 +1749,7 @@ void MainWindow::delete_mode(const bool checked)
 		action_add_objects->setChecked(false);
 		action_add_lights->setChecked(false);
 		action_terrain_mode->setChecked(false);
+		action_tile_mode->setChecked(false);
 
 		object_dock->widget()->setEnabled(false);
 		materials_dock->widget()->setEnabled(false);
@@ -1640,13 +1795,13 @@ void MainWindow::open_map()
 		m_load_map->get_load_height_map(),
 		m_load_map->get_load_tile_map(),
 		m_load_map->get_load_walk_map(),
-		m_load_map->get_load_terrain(),
-		m_load_map->get_load_water());
+		m_load_map->get_load_terrain());
 
 	action_add_objects->setChecked(false);
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
 	action_terrain_mode->setChecked(false);
+	action_tile_mode->setChecked(false);
 
 	action_dungeon->blockSignals(true);
 	action_dungeon->setChecked(el_gl_widget->get_dungeon());
@@ -1818,6 +1973,7 @@ void MainWindow::change_preferences()
 		m_preview_icons_size =
 			m_preferences->get_texture_preview_size();
 		terrain_layers->setIconSize(m_preview_icons_size);
+		tile_materials->setIconSize(m_preview_icons_size);
 		m_terrain_textures->set_icon_size(m_preview_icons_size);
 		m_all_terrain_textures->set_icon_size(m_preview_icons_size);
 		m_el_data_dir = m_preferences->get_el_data_dir();
@@ -2407,17 +2563,73 @@ void MainWindow::terrain_edit()
 		case 1:
 			terrain_blend_edit();
 			break;
-		case 2:
-			el_gl_widget->water_tile_edit(0);
-			break;
-		case 3:
-//			el_gl_widget->ground_tile_edit(
-//				ground_tile->currentText().toInt());
-			break;
-		case 4:
-			el_gl_widget->height_edit(0);
-			break;
 	}
+}
+
+void MainWindow::tile_edit()
+{
+	QListWidgetItem* item;
+	int layer, size, tile;
+
+	layer = -1;
+
+	if (tile_layer_0->isChecked())
+	{
+		layer = 0;
+	}
+
+	if (tile_layer_1->isChecked())
+	{
+		layer = 1;
+	}
+
+	if (tile_layer_2->isChecked())
+	{
+		layer = 2;
+	}
+
+	if (tile_layer_3->isChecked())
+	{
+		layer = 3;
+	}
+
+	if (layer == -1)
+	{
+		return;
+	}
+
+	size = -1;
+
+	if (tile_size_0->isChecked())
+	{
+		size = 0;
+	}
+
+	if (tile_size_1->isChecked())
+	{
+		size = 1;
+	}
+
+	if (tile_size_2->isChecked())
+	{
+		size = 2;
+	}
+
+	if (size == -1)
+	{
+		return;
+	}
+
+	item = tile_materials->currentItem();
+
+	if (item == nullptr)
+	{
+		return;
+	}
+
+	tile = item->data(Qt::UserRole).toInt();
+
+	el_gl_widget->set_tile(layer, size, tile);
 }
 
 void MainWindow::about_el()
@@ -2435,7 +2647,7 @@ void MainWindow::set_object_blend(const int value)
 	switch (value)
 	{
 		case 0:
-			el_gl_widget->set_object_blend(bt_disabled);
+			el_gl_widget->set_object_disable_blend();
 			break;
 		case 1:
 			el_gl_widget->set_object_blend(
@@ -2464,8 +2676,14 @@ void MainWindow::set_object_selection(const int value)
 	}
 }
 
-void MainWindow::set_blend(const BlendType value)
+void MainWindow::set_blend(const BlendType value, const BitSet64 blend_mask)
 {
+	if (blend_mask.none())
+	{
+		transparency_type_0->setChecked(true);
+		return;
+	}
+
 	switch (value)
 	{
 		case bt_alpha_transparency_value:
@@ -3007,6 +3225,7 @@ void MainWindow::add_parameter()
 
 void MainWindow::add_texture()
 {
+#if	0
 	TextureNode* node;
 	el::String name;
 	el::EffectSamplerType sampler;
@@ -3117,6 +3336,7 @@ void MainWindow::add_texture()
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 
 	changed_nodes();
+#endif
 }
 
 void MainWindow::add_output()

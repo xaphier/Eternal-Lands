@@ -219,10 +219,8 @@ namespace eternal_lands
 
 			if (get_half_uv(format))
 			{
-				uv[0] = glm::detail::toFloat32(
-					m_reader->read_u16_le());
-				uv[1] = glm::detail::toFloat32(
-					m_reader->read_u16_le());
+				uv[0] = m_reader->read_half_le();
+				uv[1] = m_reader->read_half_le();
 			}
 			else
 			{
@@ -234,10 +232,8 @@ namespace eternal_lands
 			{
 				if (get_half_extra_uv(format))
 				{
-					uv[2] = glm::detail::toFloat32(
-						m_reader->read_u16_le());
-					uv[3] = glm::detail::toFloat32(
-						m_reader->read_u16_le());
+					uv[2] = m_reader->read_half_le();
+					uv[3] = m_reader->read_half_le();
 				}
 				else
 				{
@@ -280,12 +276,9 @@ namespace eternal_lands
 
 			if (get_half_position(format))
 			{
-				position[0] = glm::detail::toFloat32(
-					m_reader->read_u16_le());
-				position[1] = glm::detail::toFloat32(
-					m_reader->read_u16_le());
-				position[2] = glm::detail::toFloat32(
-					m_reader->read_u16_le());
+				position[0] = m_reader->read_half_le();
+				position[1] = m_reader->read_half_le();
+				position[2] = m_reader->read_half_le();
 			}
 			else
 			{

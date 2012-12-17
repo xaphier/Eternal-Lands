@@ -24,24 +24,20 @@ namespace eternal_lands
 	enum BlendType
 	{
 		/**
-		 * Uses no blending.
-		 */
-		bt_disabled = 0,
-		/**
 		 * Make the object transparent based on the final alpha value
 		 * of the object.
 		 */
-		bt_alpha_transparency_source_value = 1,
+		bt_alpha_transparency_source_value = 0,
 		/**
 		 * Make the object transparent based on the transparency value
 		 * of the object.
 		 */
-		bt_alpha_transparency_value = 2,
+		bt_alpha_transparency_value,
 		/**
 		 * Uses additive blending based on the final alpha values in
 		 * the object.
 		 */
-		bt_additive = 3
+		bt_additive
 	};
 	/**
 	 * @}

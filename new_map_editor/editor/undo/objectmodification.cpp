@@ -46,9 +46,9 @@ namespace eternal_lands
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
 			case mt_object_transparency_changed:
+			case mt_object_glow_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
-			case mt_object_walkable_changed:
 			case mt_object_name_changed:
 			case mt_object_description_changed:
 				editor.modify_object(m_object_description);
@@ -59,9 +59,9 @@ namespace eternal_lands
 			case mt_objects_scale_changed:
 			case mt_objects_blend_changed:
 			case mt_objects_transparency_changed:
+			case mt_objects_glow_changed:
 			case mt_objects_selection_changed:
 			case mt_objects_materials_changed:
-			case mt_objects_walkable_changed:
 			case mt_objects_name_changed:
 			case mt_objects_description_changed:
 			case mt_light_added:
@@ -75,11 +75,13 @@ namespace eternal_lands
 			case mt_terrain_material_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_terrain_translation_changed:
-			case mt_tile_texture_changed:
 			case mt_scene_ground_hemisphere_changed:
 			case mt_dungeon_changed:
 			case mt_displacement_value_changed:
 			case mt_height_changed:
+			case mt_tile_value_changed:
+			case mt_tile_layer_height_changed:
+			case mt_blend_value_changed:
 			case mt_blend_values_changed:
 				return false;
 		}

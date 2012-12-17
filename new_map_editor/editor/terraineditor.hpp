@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "imagevalue.hpp"
+#include "imagevalues.hpp"
 #include "displacementvalue.hpp"
 #include "height.hpp"
 #include "shader/shadersourceterrain.hpp"
@@ -137,7 +138,10 @@ namespace eternal_lands
 				const Uint32 y,
 				DisplacementValueVector &terrain_values) const;
 			void get_blend_values(const Uint32 x, const Uint32 y,
+				const Uint16 layer,
 				ImageValueVector &blend_values) const;
+			void get_blend_values(const Uint32 x, const Uint32 y,
+				ImageValuesVector &blend_values) const;
 			void init(const glm::uvec2 &size);
 			BitSet64 get_used_layers() const;
 			float get_blend_slope(const glm::ivec2 &index) const;
@@ -154,7 +158,10 @@ namespace eternal_lands
 				const DisplacementValueVector
 					&displacement_values);
 			void set_blend_values(
-				const ImageValueVector &blend_values);
+				const ImageValueVector &blend_values,
+				const Uint16 layer);
+			void set_blend_values(
+				const ImageValuesVector &blend_values);
 			void init(const glm::vec3 &translation,
 				const glm::uvec2 &size,
 				const String &albedo_map,
@@ -195,7 +202,7 @@ namespace eternal_lands
 				const glm::vec2 &size,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
-				const BrushShapeType shape,
+				const BrushShapeType shape, const Uint16 layer,
 				ImageValueVector &blend_values) const;
 			static const glm::vec3 &get_terrain_offset_min();
 			static const glm::vec3 &get_terrain_offset_max();
@@ -284,6 +291,8 @@ namespace eternal_lands
 				DisplacementValueVector
 					&displacement_values) const;
 			void get_all_blend_values(
+				ImageValuesVector &blend_values) const;
+			void get_all_blend_values(const Uint16 layer,
 				ImageValueVector &blend_values) const;
 			void set(const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_tangent_map,

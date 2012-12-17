@@ -103,11 +103,13 @@ namespace eternal_lands
 			void do_draw_object_old_lights(
 				const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
@@ -180,12 +182,14 @@ namespace eternal_lands
 				const bool lights);
 			void draw_object(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
 			void draw_object_old_lights(
 				const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
@@ -268,6 +272,9 @@ namespace eternal_lands
 			void add_object(
 				const ObjectDescription &object_description);
 			void add_object(const ObjectData &object_data,
+				const MaterialSharedPtrVector &materials);
+			void add_object(const ObjectData &object_data,
+				const AbstractMeshSharedPtr &mesh,
 				const MaterialSharedPtrVector &materials);
 			void add_object(const InstanceData &instance_data);
 			void remove_object(const Uint32 id);

@@ -47,6 +47,7 @@ namespace eternal_lands
 			void sort(const glm::vec3 &position);
 			void add(const ObjectSharedPtr &object);
 			void add(const ObjectSharedPtr &object,
+				const BitSet64 blend_mask,
 				const float transparency, const BlendType blend,
 				const bool depth_read = true);
 			void next_frame();

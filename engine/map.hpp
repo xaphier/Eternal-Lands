@@ -143,6 +143,9 @@ namespace eternal_lands
 				const ObjectDescription &object_description);
 			void add_object(const ObjectData &object_data,
 				const MaterialSharedPtrVector &materials);
+			void add_object(const ObjectData &object_data,
+				const AbstractMeshSharedPtr &mesh,
+				const MaterialSharedPtrVector &materials);
 			void add_object(const InstanceData &instance_data);
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,

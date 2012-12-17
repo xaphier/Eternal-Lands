@@ -169,7 +169,7 @@ void ELPreviewWidget::update_object()
 		float max;
 		Uint32 id;
 
-		id = m_scene->get_free_ids()->get_object_id(0, it_tile_object);
+		id = m_scene->get_free_ids()->get_object_id(0, it_3d_object);
 
 		if (!m_scene->get_free_ids()->get_is_object_id_free(id))
 		{
@@ -202,8 +202,9 @@ void ELPreviewWidget::update_object()
 			m_scene->get_free_ids()->use_object_id(id);
 
 			m_scene->add_object(ObjectDescription(
-				world_transformation, StringVector(),
-				name, 1.0f, id, st_select, bt_disabled));
+				world_transformation, StringVector(), name, 0,
+				1.0f, 0.0f, id, st_select,
+				bt_alpha_transparency_source_value));
 		}
 	}
 	catch (...)

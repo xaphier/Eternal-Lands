@@ -152,9 +152,10 @@ namespace eternal_lands
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
 				const glm::vec3 &scale, const String &name,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
-				const BlendType blend, const bool walkable,
+				const BitSet64 blend_mask,
+				const float transparency, const float glow,
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend,
 				const StringVector &material_names) override;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
@@ -165,17 +166,21 @@ namespace eternal_lands
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id)
 				override;
-			virtual void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile) override;
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) override;
 			virtual void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere) override;
 			virtual void set_map_size(const glm::uvec2 &size)
 				override;
+			virtual void set_tile_layer_heights(
+				const glm::vec4 &heights) override;
 			virtual void set_height_map_size(
 				const glm::uvec2 &size) override;
 			virtual void set_tile_map_size(const glm::uvec2 &size)
+				override;
+			virtual void set_tile_layer(
+				const Uint8MultiArray2 &tile_map,
+				const float z_position, const Uint16 layer)
 				override;
 			virtual void set_dungeon(const bool dungeon) override;
 			virtual void set_terrain(

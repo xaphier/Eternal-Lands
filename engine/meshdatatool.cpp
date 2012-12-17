@@ -1462,17 +1462,14 @@ namespace eternal_lands
 	}
 
 	void MeshDataTool::build_quad_map(const Uint16MultiArray2 &types,
-		const FloatVector &heights, const Uint16Vector &materials,
-		const Vec4Vector &colors, const glm::vec4 &uv_scale_offset,
-		const glm::vec2 &quad_size, Uint16Vector &material_sub_meshs)
+		const glm::vec2 &uv_scale, const glm::vec2 &quad_size)
 	{
-		std::multimap<Uint16, Uint16>::const_iterator it, end;
-		std::multimap<Uint16, Uint16> material_indices;
+		std::set<Uint16>::const_iterator it, end;
+		std::set<Uint16> material_indices;
 		BoolMultiArray2 vertexes;
 		Uint16MultiArray2 indices;
 		glm::vec4 normal, position, uv;
-		std::pair<Uint16, Uint16> idx;
-		Uint32 vertex_count, x, y, width, height, index, last_material;
+		Uint32 vertex_count, x, y, width, height, index;
 		Uint32 sub_meshs, restart, offset, count, index_count;
 		Uint32 min_vertex, max_vertex;
 		bool value, start;
@@ -1496,13 +1493,9 @@ namespace eternal_lands
 					continue;
 				}
 
-				idx.first = materials[index];
-				idx.second = index;
-				material_indices.insert(idx);
+				material_indices.insert(index);
 			}
 		}
-
-		material_sub_meshs.clear();
 
 		if (material_indices.size() == 0)
 		{
@@ -1514,27 +1507,16 @@ namespace eternal_lands
 		min_vertex = 0;
 		index_count = 0;
 		vertex_count = 0;
-		last_material = material_indices.begin()->first;
 		restart = std::numeric_limits<Uint32>::max();
-
-		material_sub_meshs.push_back(sub_meshs);
 
 		for (it = material_indices.begin(); it != end; ++it)
 		{
-			if (last_material != it->first)
-			{
-				sub_meshs++;
+			sub_meshs++;
+			start = true;
+			offset = index_count;
+			min_vertex = vertex_count;
 
-				start = true;
-
-				offset = index_count;
-
-				min_vertex = vertex_count;
-
-				material_sub_meshs.push_back(sub_meshs);
-			}
-
-			index = it->second;
+			index = *it;
 
 			for (y = 0; y < height; ++y)
 			{
@@ -1548,8 +1530,6 @@ namespace eternal_lands
 				}
 			}
 
-			position.z = heights[index];
-
 			for (y = 0; y < (height + 1); ++y)
 			{
 				for (x = 0; x < (width + 1); ++x)
@@ -1562,19 +1542,14 @@ namespace eternal_lands
 					position.x = x * quad_size.x;
 					position.y = y * quad_size.y;
 
-					uv.x = x * uv_scale_offset.x;
-					uv.y = y * uv_scale_offset.y;
-					uv.x += uv_scale_offset.z;
-					uv.y += uv_scale_offset.w;
+					uv.x = x * uv_scale.x;
+					uv.y = y * uv_scale.y;
 
 					set_vertex_data(vst_position,
 						vertex_count, position);
 
 					set_vertex_data(vst_normal,
 						vertex_count, normal);
-
-					set_vertex_data(vst_color,
-						vertex_count, colors[index]);
 
 					set_vertex_data(vst_texture_coordinate,
 						vertex_count, uv);

@@ -16,18 +16,17 @@ namespace el = eternal_lands;
 BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ObjectData object_data(el::Transformation(),
-		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
-		el::bt_disabled);
+		el::String(UTF8("3sfd23")), 0, 0.54f, 2.1f, 543549564,
+		el::st_player, el::bt_alpha_transparency_source_value);
 
 	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("3sfd23"));
-
 	BOOST_CHECK_CLOSE(object_data.get_transparency(), 0.54f, 0.001);
-
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 2.1f, 0.001);
 	BOOST_CHECK_EQUAL(object_data.get_id(), 543549564);
-
 	BOOST_CHECK_EQUAL(object_data.get_selection(), el::st_player);
-
-	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_disabled);
+	BOOST_CHECK_EQUAL(object_data.get_blend(),
+		el::bt_alpha_transparency_source_value);
+	BOOST_CHECK_EQUAL(object_data.get_blend_mask(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(name)
@@ -64,12 +63,35 @@ BOOST_AUTO_TEST_CASE(transparency)
 	BOOST_CHECK_CLOSE(object_data.get_transparency(), 0.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(state_blend)
+BOOST_AUTO_TEST_CASE(glow)
 {
 	el::ObjectData object_data;
 
-	object_data.set_blend(el::bt_disabled);
-	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_disabled);
+	object_data.set_glow(10.01f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 10.01f, 0.001);
+
+	object_data.set_glow(4.04f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 4.04f, 0.001);
+
+	object_data.set_glow(1.0f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 1.0f, 0.001);
+
+	object_data.set_glow(0.75f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 0.75f, 0.001);
+
+	object_data.set_glow(0.5f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 0.5f, 0.001);
+
+	object_data.set_glow(0.25f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 0.25f, 0.001);
+
+	object_data.set_glow(0.0f);
+	BOOST_CHECK_CLOSE(object_data.get_glow(), 0.0f, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(state_blend)
+{
+	el::ObjectData object_data;
 
 	object_data.set_blend(el::bt_alpha_transparency_source_value);
 	BOOST_CHECK_EQUAL(object_data.get_blend(),
@@ -81,6 +103,17 @@ BOOST_AUTO_TEST_CASE(state_blend)
 
 	object_data.set_blend(el::bt_additive);
 	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_additive);
+}
+
+BOOST_AUTO_TEST_CASE(state_blend_mask)
+{
+	el::ObjectData object_data;
+
+	object_data.set_blend_mask(el::all_bits_set);
+	BOOST_CHECK_EQUAL(object_data.get_blend_mask(), el::all_bits_set);
+
+	object_data.set_blend_mask(0);
+	BOOST_CHECK_EQUAL(object_data.get_blend_mask(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(selection)

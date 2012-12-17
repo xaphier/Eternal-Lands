@@ -40,6 +40,7 @@ namespace eternal_lands
 				m_material_description_cache;
 			const TerrainBuilderWeakPtr m_terrain_builder;
 			const TextureCacheWeakPtr m_texture_cache;
+			const TileBuilderWeakPtr m_tile_builder;
 			ReaderSharedPtr m_reader;
 			MapSharedPtr m_map;
 			boost::scoped_ptr<InstancesBuilder> m_instances_builder;
@@ -142,6 +143,18 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline TileBuilderSharedPtr get_tile_builder()
+				const noexcept
+			{
+				TileBuilderSharedPtr result;
+
+				result = m_tile_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 			inline const ReaderSharedPtr &get_reader() const
 				noexcept
 			{
@@ -151,9 +164,10 @@ namespace eternal_lands
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
 				const glm::vec3 &scale,	const String &name,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
-				const BlendType blend, const bool walkable,
+				const BitSet64 blend_mask,
+				const float transparency, const float glow,
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend,
 				const StringVector &material_names) override;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
@@ -164,12 +178,16 @@ namespace eternal_lands
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id)
 				override;
-			virtual void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile) override;
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) override;
 			virtual void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere) override;
+			virtual void set_tile_layer(
+				const Uint8MultiArray2 &tile_map,
+				const float z_position, const Uint16 layer)
+				override;
+			virtual void set_tile_layer_heights(
+				const glm::vec4 &heights) override;
 			virtual void set_map_size(const glm::uvec2 &size)
 				override;
 			virtual void set_height_map_size(
@@ -191,6 +209,13 @@ namespace eternal_lands
 				const glm::vec3 &offset,
 				const glm::uvec2 &sizes) override;
 			virtual void instance() override;
+			void set_tile_page(const Uint16MultiArray2 &tile_page,
+				const glm::uvec2 &offset,
+				const float z_position, const Uint16 layer);
+			void get_tile_layer_page(
+				const Uint8MultiArray2 &tile_map,
+				const glm::uvec2 &offset,
+				Uint16MultiArray2 &tile_page);
 
 		public:
 			/**
@@ -207,6 +232,7 @@ namespace eternal_lands
 					&material_description_cache,
 				const TerrainBuilderWeakPtr &terrain_builder,
 				const TextureCacheWeakPtr &texture_cache,
+				const TileBuilderWeakPtr &tile_builder,
 				const FreeIdsManagerSharedPtr &free_ids);
 
 			/**

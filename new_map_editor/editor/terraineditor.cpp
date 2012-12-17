@@ -81,7 +81,27 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::set_blend_values(
-		const ImageValueVector &blend_values)
+		const ImageValueVector &blend_values, const Uint16 layer)
+	{
+		glm::uvec4 value;
+
+		assert(get_blend_map()->get_depth() <= 4);
+
+		assert(layer < (get_blend_map()->get_depth() * 4));
+
+		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
+		{
+			value = m_blend_map->get_pixel_uint(blend_value.get_x(),
+				blend_value.get_y(), layer / 4, 0, 0);
+			value[layer % 4] = blend_value.get_value();
+
+			m_blend_map->set_pixel_uint(blend_value.get_x(),
+				blend_value.get_y(), layer / 4, 0, 0, value);
+		}
+	}
+
+	void TerrainEditor::set_blend_values(
+		const ImageValuesVector &blend_values)
 	{
 		Uint16 i, count;
 
@@ -89,7 +109,7 @@ namespace eternal_lands
 
 		count = get_blend_map()->get_depth();
 
-		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
+		BOOST_FOREACH(const ImageValues &blend_value, blend_values)
 		{
 			for (i = 0; i < count; ++i)
 			{
@@ -170,9 +190,22 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::get_blend_values(const Uint32 x, const Uint32 y,
-		ImageValueVector &blend_values) const
+		const Uint16 layer, ImageValueVector &blend_values) const
 	{
 		ImageValue value(x, y);
+
+		assert(layer < (get_blend_map()->get_depth() * 4));
+
+		value.set_value(m_blend_map->get_pixel_uint(x, y, layer / 4, 0,
+			0)[layer % 4]);
+
+		blend_values.push_back(value);
+	}
+
+	void TerrainEditor::get_blend_values(const Uint32 x, const Uint32 y,
+		ImageValuesVector &blend_values) const
+	{
+		ImageValues value(x, y);
 		Uint16 i, count;
 
 		assert(get_blend_map()->get_depth() <= 4);
@@ -192,8 +225,8 @@ namespace eternal_lands
 	void TerrainEditor::get_blend_values(const glm::uvec2 &vertex,
 		const glm::vec2 &size, const float attenuation_size,
 		const BrushAttenuationType attenuation,
-		const BrushShapeType shape, ImageValueVector &blend_values)
-		const
+		const BrushShapeType shape, const Uint16 layer,
+		ImageValueVector &blend_values) const
 	{
 		glm::vec2 center, position, max_size;
 		Sint64 temp;
@@ -237,7 +270,8 @@ namespace eternal_lands
 				if (calc_attenuation(distance,
 					attenuation_size, attenuation) > 0.0f)
 				{
-					get_blend_values(x, y, blend_values);
+					get_blend_values(x, y, layer,
+						blend_values);
 				}
 			}
 		}
@@ -388,11 +422,10 @@ namespace eternal_lands
 		const BrushShapeType shape, const BlendEffectType effect,
 		const Uint16 layer, ImageValueVector &blend_values) const
 	{
-		glm::vec4 value;
 		glm::vec2 center, position;
 		glm::ivec2 index;
 		float tmp, slope;
-		Uint16 idx0, idx1;
+		Uint16 idx0, idx1, value;
 
 		if (blend_values.size() < 1)
 		{
@@ -408,9 +441,9 @@ namespace eternal_lands
 
 		BOOST_FOREACH(ImageValue &blend_value, blend_values)
 		{
-			value = blend_value.get_normalized_value(idx0);
+			value = blend_value.get_value();
 
-			tmp = value[idx1];
+			tmp = value / 15.0f;
 
 			index.x = blend_value.get_x();
 			index.y = blend_value.get_y();
@@ -422,9 +455,9 @@ namespace eternal_lands
 				attenuation_size, strength, slope, attenuation,
 				shape, effect);
 
-			value[idx1] = glm::clamp(tmp, 0.0f, 1.0f);
+			value = glm::clamp(tmp, 0.0f, 1.0f) * 15.0f + 0.5f;
 
-			blend_value.set_normalized_value(value, idx0);
+			blend_value.set_value(value);
 		}
 	}
 
@@ -1068,8 +1101,24 @@ namespace eternal_lands
 		}
 	}
 
-	void TerrainEditor::get_all_blend_values(
+	void TerrainEditor::get_all_blend_values(const Uint16 layer,
 		ImageValueVector &blend_values) const
+	{
+		Uint32 x, y;
+
+		blend_values.clear();
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				get_blend_values(x, y, layer, blend_values);
+			}
+		}
+	}
+
+	void TerrainEditor::get_all_blend_values(
+		ImageValuesVector &blend_values) const
 	{
 		Uint32 x, y;
 
@@ -1573,7 +1622,6 @@ namespace eternal_lands
 	{
 		return get_normal(glm::ivec2(vertex));
 	}
-
 
 	void TerrainEditor::fill_blend_layer(const float strength,
 		const BlendEffectType effect, const Uint16 layer)

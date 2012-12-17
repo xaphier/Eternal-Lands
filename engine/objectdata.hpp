@@ -35,7 +35,9 @@ namespace eternal_lands
 		private:
 			Transformation m_world_transformation;
 			String m_name;
+			BitSet64 m_blend_mask;
 			float m_transparency;
+			float m_glow;
 			Uint32 m_id;
 			SelectionType m_selection;
 			BlendType m_blend;
@@ -44,8 +46,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			inline ObjectData(): m_transparency(1.0f), m_id(0),
-				m_selection(st_none), m_blend(bt_disabled)
+			inline ObjectData(): m_transparency(1.0f),
+				m_glow(1.0f), m_id(0), m_selection(st_none),
+				m_blend(bt_alpha_transparency_source_value)
 			{
 			}
 
@@ -54,12 +57,15 @@ namespace eternal_lands
 			 */
 			inline ObjectData(
 				const Transformation &world_transformation,
-				const String &name, const float transparency,
+				const String &name, const BitSet64 blend_mask,
+				const float transparency, const float glow,
 				const Uint32 id, const SelectionType selection,
 				const BlendType blend):
 				m_world_transformation(world_transformation),
-				m_name(name), m_transparency(transparency),
-				m_id(id), m_selection(selection), m_blend(blend)
+				m_name(name), m_blend_mask(blend_mask),
+				m_transparency(transparency), m_glow(glow),
+				m_id(id), m_selection(selection),
+				m_blend(blend)
 			{
 			}
 
@@ -82,10 +88,21 @@ namespace eternal_lands
 				m_name = name;
 			}
 
+			inline void set_blend_mask(
+				const BitSet64 blend_mask) noexcept
+			{
+				m_blend_mask = blend_mask;
+			}
+
 			inline void set_transparency(const float transparency)
 				noexcept
 			{
 				m_transparency = transparency;
+			}
+
+			inline void set_glow(const float glow) noexcept
+			{
+				m_glow = glow;
 			}
 
 			inline void set_blend(const BlendType blend) noexcept
@@ -115,9 +132,20 @@ namespace eternal_lands
 				return m_name;
 			}
 
+			inline const BitSet64 get_blend_mask() const
+				noexcept
+			{
+				return m_blend_mask;
+			}
+
 			inline float get_transparency() const noexcept
 			{
 				return m_transparency;
+			}
+
+			inline float get_glow() const noexcept
+			{
+				return m_glow;
 			}
 
 			inline Uint32 get_id() const noexcept

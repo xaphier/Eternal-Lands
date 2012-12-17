@@ -347,12 +347,12 @@ namespace eternal_lands
 			const glm::uvec2 &offset, const Uint16 mipmap,
 			ImageSharedPtr image)
 		{
-			Uint32 x, y, widht, height, offset_x, offset_y;
+			Uint32 x, y, width, height, offset_x, offset_y;
 			Uint32 memory_size;
 
 			assert((scale % 4) == 0);
 
-			widht = size[0] * scale / 4;
+			width = size[0] * scale / 4;
 			height = size[1] * scale / 4;
 			offset_x = offset[0] * scale / 4;
 			offset_y = offset[1] * scale / 4;
@@ -361,7 +361,7 @@ namespace eternal_lands
 
 			for (y = 0; y < height; y++)
 			{
-				for (x = 0; x < widht; x++)
+				for (x = 0; x < width; x++)
 				{
 					memset(image->get_block_data(
 						x + offset_x, y + offset_y, 0,

@@ -181,6 +181,7 @@ namespace eternal_lands
 
 		write(&tmp, sizeof(value));
 	}
+
 	void Writer::write_u16_be(const Uint16 value)
 	{
 		Uint16 tmp;
@@ -267,6 +268,28 @@ namespace eternal_lands
 		tmp = SDL_SwapBE64(value);
 
 		write(&tmp, sizeof(value));
+	}
+
+	void Writer::write_half_le(const float value)
+	{
+		Uint16 tmp;
+
+		tmp = glm::detail::toFloat16(value);
+
+		tmp = SDL_SwapLE16(tmp);
+
+		write(&tmp, sizeof(tmp));
+	}
+
+	void Writer::write_half_be(const float value)
+	{
+		Uint16 tmp;
+
+		tmp = glm::detail::toFloat16(value);
+
+		tmp = SDL_SwapBE16(tmp);
+
+		write(&tmp, sizeof(tmp));
 	}
 
 	void Writer::write_float_le(const float value)

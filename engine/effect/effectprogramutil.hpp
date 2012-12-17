@@ -26,6 +26,7 @@ namespace eternal_lands
 		ept_default = 0,
 		ept_shadow,
 		ept_depth,
+		ept_glow,
 		ept_height_map,
 		ept_debug
 	};

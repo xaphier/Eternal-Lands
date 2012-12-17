@@ -36,8 +36,7 @@ namespace eternal_lands
 		mit_tile_map,
 		mit_walk_map,
 		mit_options,
-		mit_terrain,
-		mit_water
+		mit_terrain
 	};
 
 	typedef std::set<MapItemsType> MapItemsTypeSet;
@@ -104,8 +103,9 @@ namespace eternal_lands
 				const MapVersionType version);
 			void read_name(const Uint32 index,
 				const MapVersionType version);
-			void read_water_layer(const Uint32 index,
-				const Uint32 offset,
+			void read_tile_map(const Uint32 widht,
+				const Uint32 height, const Uint32 index,
+				const Uint32 offset, const float z_position,
 				const MapVersionType version);
 
 			void read_3d_objects(const Uint32 obj_3d_size,
@@ -130,8 +130,6 @@ namespace eternal_lands
 				const MapVersionType version);
 			void read_terrain(const Uint32 terrain_offset,
 				const MapVersionType version);
-			void read_water(const Uint32 terrain_offset,
-				const MapVersionType version);
 			void read_names(const Uint32 name_count,
 				const Uint32 name_offset,
 				const MapVersionType version);
@@ -139,7 +137,11 @@ namespace eternal_lands
 				const Uint32 height_map_height,
 				const Uint32 height_map_offset,
 				const MapVersionType version);
-			void read_tile_map(const Uint32 tile_map_widht,
+			void read_old_tile_map(const Uint32 tile_map_width,
+				const Uint32 tile_map_height,
+				const Uint32 tile_map_offset,
+				const MapVersionType version);
+			void read_tile_maps(const Uint32 tile_map_width,
 				const Uint32 tile_map_height,
 				const Uint32 tile_map_offset,
 				const MapVersionType version);
@@ -150,8 +152,9 @@ namespace eternal_lands
 				const glm::vec3 &rotation_angles,
 				const glm::vec3 &scale, 
 				const StringVector &material_names,
-				const String &name, const Uint32 id,
-				const SelectionType selection,
+				const String &name, const BitSet64 blend_mask,
+				const float transparency, const float glow,
+				const Uint32 id, const SelectionType selection,
 				const BlendType blend);
 			SelectionType get_selection(const String &name) const
 				noexcept;
@@ -161,9 +164,10 @@ namespace eternal_lands
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
 				const glm::vec3 &scale, const String &name,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
-				const BlendType blend, const bool walkable,
+				const BitSet64 blend_mask,
+				const float transparency, const float glow,
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend,
 				const StringVector &material_names) = 0;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
@@ -173,20 +177,20 @@ namespace eternal_lands
 			virtual void add_decal(const glm::vec2 &position,
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id) = 0;
-/*			virtual void add_water_layer(const String &name,
-				const float height, const Uint32 index);
-*/
-			virtual void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) = 0;
 			virtual void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere) = 0;
+			virtual void set_tile_layer_heights(
+				const glm::vec4 &heights) = 0;
 			virtual void set_map_size(const glm::uvec2 &size) = 0;
 			virtual void set_height_map_size(
 				const glm::uvec2 &size) = 0;
 			virtual void set_tile_map_size(const glm::uvec2 &size)
 				= 0;
+			virtual void set_tile_layer(
+				const Uint8MultiArray2 &tile_map,
+				const float z_position, const Uint16 layer) = 0;
 			virtual void set_dungeon(const bool dungeon) = 0;
 			virtual void instance() = 0;
 			virtual void set_terrain(
@@ -266,7 +270,7 @@ namespace eternal_lands
 				return 128;
 			}
 
-			static inline Uint32 get_tile_size() noexcept
+			static inline Uint32 get_old_tile_size() noexcept
 			{
 				return 3;
 			}

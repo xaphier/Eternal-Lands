@@ -66,7 +66,6 @@ namespace eternal_lands
 			StringVector get_material_names() const;
 			const MaterialSharedPtr &get_material(
 				const String &name);
-			bool get_has_material(const String &name) const;
 
 	};
 

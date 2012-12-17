@@ -46,9 +46,9 @@ namespace eternal_lands
 			distance0 = rod0.get_distance();
 			distance1 = rod1.get_distance();
 
-			if (rod0.get_blend())
+			if (rod0.get_blend_mask().any())
 			{
-				if (!rod1.get_blend())
+				if (!rod1.get_blend_mask().any())
 				{
 					return false;
 				}
@@ -56,7 +56,7 @@ namespace eternal_lands
 				return distance0 > distance1;
 			}
 
-			if (rod1.get_blend())
+			if (rod1.get_blend_mask().any())
 			{
 				return true;
 			}
@@ -117,8 +117,8 @@ namespace eternal_lands
 	}
 
 	void ObjectVisitor::add(const ObjectSharedPtr &object,
-		const float transparency, const BlendType blend,
-		const bool depth_read)
+		const BitSet64 blend_mask, const float transparency,
+		const BlendType blend, const bool depth_read)
 	{
 		BitSet64 visibility_mask;
 
@@ -127,8 +127,8 @@ namespace eternal_lands
 		if (visibility_mask.any())
 		{
 			m_objects.push_back(RenderObjectData(object,
-				visibility_mask, transparency, blend,
-				depth_read));
+				visibility_mask, blend_mask, transparency,
+				blend, depth_read));
 		}
 	}
 

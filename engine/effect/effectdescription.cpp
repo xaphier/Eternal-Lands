@@ -15,7 +15,7 @@ namespace eternal_lands
 
 	EffectDescription::EffectDescription(): m_description(edt_default),
 		m_output(sot_float), m_receives_shadows(true),
-		m_transparent(false)
+		m_transparent(false), m_transparency(false)
 	{
 		BOOST_FOREACH(Uint8 &output_channel, m_output_channels)
 		{
@@ -115,6 +115,12 @@ namespace eternal_lands
 				set_transparent(XmlUtil::get_bool_value(it));
 			}
 
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("transparency"))
+				== 0)
+			{
+				set_transparency(XmlUtil::get_bool_value(it));
+			}
+
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("output_channels")) == 0)
 			{
@@ -144,6 +150,8 @@ namespace eternal_lands
 			get_receives_shadows());
 		writer->write_bool_element(String(UTF8("transparent")),
 			get_transparent());
+		writer->write_bool_element(String(UTF8("transparency")),
+			get_transparency());
 		writer->write_element(String(UTF8("output_channels")),
 			get_output_channels_str());
 		writer->end_element();
@@ -190,7 +198,12 @@ namespace eternal_lands
 			}
 		}
 
-		return get_transparent() == effect.get_transparent();
+		if (get_transparent() != effect.get_transparent())
+		{
+			return false;
+		}
+
+		return get_transparency() == effect.get_transparency();
 	}
 
 	bool EffectDescription::operator!=(const EffectDescription &effect)
@@ -248,7 +261,12 @@ namespace eternal_lands
 			}
 		}
 
-		return get_transparent() < effect.get_transparent();
+		if (get_transparent() != effect.get_transparent())
+		{
+			return get_transparent() < effect.get_transparent();
+		}
+
+		return get_transparency() < effect.get_transparency();
 	}
 
 	OutStream &operator<<(OutStream &str, const EffectDescription &value)
@@ -262,6 +280,7 @@ namespace eternal_lands
 		str << " lighting: " << value.get_lighting();
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
+		str << " transparency: " << value.get_transparency();
 		str << " output_channels 0: " << value.get_output_channels(0);
 		str << " output_channels 1: " << value.get_output_channels(1);
 		str << " output_channels 2: " << value.get_output_channels(2);

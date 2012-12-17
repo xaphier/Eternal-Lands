@@ -1,11 +1,11 @@
 /****************************************************************************
- *            blendmodification.cpp
+ *            blendvaluemodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "blendmodification.hpp"
+#include "blendvaluemodification.hpp"
 #include "../editormapdata.hpp"
 #include "image.hpp"
 
@@ -30,28 +30,34 @@ namespace eternal_lands
 
 	}
 
-	BlendModification::BlendModification(
-		const ImageValueVector &blend_values, const Uint32 edit_id):
-		Modification(edit_id, 0, mt_blend_values_changed),
-		m_blend_values(blend_values)
+	BlendValueModification::BlendValueModification(
+		const ImageValueVector &blend_values, const Uint16 layer,
+		const Uint32 edit_id):
+		Modification(edit_id, layer, mt_blend_value_changed),
+		m_blend_values(blend_values), m_layer(layer)
 	{
 	}
 
-	BlendModification::~BlendModification() throw()
+	BlendValueModification::~BlendValueModification() throw()
 	{
 	}
 
-	bool BlendModification::do_merge(Modification* modification)
+	bool BlendValueModification::do_merge(Modification* modification)
 	{
-		BlendModification* blend_modification;
+		BlendValueModification* blend_value_modification;
 		ImageValueVector::iterator begin, end;
 		Uint32 size;
 		bool found;
 
-		blend_modification = boost::polymorphic_downcast<
-			BlendModification*>(modification);
+		blend_value_modification = boost::polymorphic_downcast<
+			BlendValueModification*>(modification);
 
-		assert(blend_modification != 0);
+		assert(blend_value_modification != 0);
+
+		if (blend_value_modification->m_layer != m_layer)
+		{
+			return false;
+		}
 
 		size = m_blend_values.size();
 		begin = m_blend_values.begin();
@@ -60,7 +66,7 @@ namespace eternal_lands
 		std::sort(begin, end, CompareImageValueIndex());
 
 		BOOST_FOREACH(const ImageValue &image_value,
-			blend_modification->m_blend_values)
+			blend_value_modification->m_blend_values)
 		{
 			found = std::binary_search(begin, end, image_value,
 				CompareImageValueIndex());
@@ -76,7 +82,7 @@ namespace eternal_lands
 		return true;
 	}
 
-	bool BlendModification::undo(EditorMapData &editor)
+	bool BlendValueModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
@@ -95,9 +101,9 @@ namespace eternal_lands
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
 			case mt_object_transparency_changed:
+			case mt_object_glow_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
-			case mt_object_walkable_changed:
 			case mt_object_name_changed:
 			case mt_object_description_changed:
 			case mt_objects_removed:
@@ -106,22 +112,25 @@ namespace eternal_lands
 			case mt_objects_scale_changed:
 			case mt_objects_blend_changed:
 			case mt_objects_transparency_changed:
+			case mt_objects_glow_changed:
 			case mt_objects_selection_changed:
 			case mt_objects_materials_changed:
-			case mt_objects_walkable_changed:
 			case mt_objects_name_changed:
 			case mt_objects_description_changed:
 			case mt_terrain_material_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_terrain_translation_changed:
-			case mt_tile_texture_changed:
 			case mt_scene_ground_hemisphere_changed:
 			case mt_displacement_value_changed:
 			case mt_dungeon_changed:
 			case mt_height_changed:
-				return false;
+			case mt_tile_value_changed:
+			case mt_tile_layer_height_changed:
 			case mt_blend_values_changed:
-				editor.set_terrain_blend_values(m_blend_values);
+				return false;
+			case mt_blend_value_changed:
+				editor.set_terrain_blend_values(m_blend_values,
+					m_layer);
 				return false;
 		}
 

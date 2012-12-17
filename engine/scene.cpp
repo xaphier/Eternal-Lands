@@ -272,6 +272,13 @@ namespace eternal_lands
 		m_map->add_object(object_data, materials);
 	}
 
+	void Scene::add_object(const ObjectData &object_data,
+		const AbstractMeshSharedPtr &mesh,
+		const MaterialSharedPtrVector &materials)
+	{
+		m_map->add_object(object_data, mesh, materials);
+	}
+
 	void Scene::add_object(const InstanceData &instance_data)
 	{
 		m_map->add_object(instance_data);
@@ -693,7 +700,7 @@ namespace eternal_lands
 					continue;
 				}
 
-				visitor.add(it->second, 0.25f,
+				visitor.add(it->second, all_bits_set, 0.25f,
 					bt_alpha_transparency_value);
 			}
 		}
@@ -1370,9 +1377,9 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
-		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance,
-		const bool flip_face_culling)
+		const BitSet64 visibility_mask, const BitSet64 blend_mask,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool flip_face_culling)
 	{
 		Uint16 count, i;
 		bool object_data_set;
@@ -1400,6 +1407,8 @@ namespace eternal_lands
 					continue;
 				}
 			}
+
+			get_state_manager().switch_blend(blend_mask[i]);
 
 			MaterialLock material(object->get_materials()[i]);
 
@@ -1437,9 +1446,9 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object_old_lights(const ObjectSharedPtr &object,
-		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance,
-		const bool flip_face_culling)
+		const BitSet64 visibility_mask, const BitSet64 blend_mask,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool flip_face_culling)
 	{
 		Uint16 count, i, lights_count;
 		bool object_data_set;
@@ -1469,6 +1478,8 @@ namespace eternal_lands
 					continue;
 				}
 			}
+
+			get_state_manager().switch_blend(blend_mask[i]);
 
 			MaterialLock material(object->get_materials()[i]);
 
@@ -1514,21 +1525,23 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object_old_lights(const ObjectSharedPtr &object,
-		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance,
-		const bool flip_face_culling)
+		const BitSet64 visibility_mask, const BitSet64 blend_mask,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool flip_face_culling)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
 				"'%2%', instances %3%, visibility mask %4%, "
-				"flip face culling %5%"), object->get_name() %
+				"blend mask %5%, flip face culling %6%"),
+				object->get_name() %
 				object->get_mesh()->get_name() % instances %
-				visibility_mask % (flip_face_culling ?
-					UTF8("yes") : UTF8("no")));
+				visibility_mask % blend_mask %
+				(flip_face_culling ? UTF8("yes") : UTF8("no")));
 
 			do_draw_object_old_lights(object, visibility_mask,
-				type, instances, distance, flip_face_culling);
+				blend_mask, type, instances, distance,
+				flip_face_culling);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1556,21 +1569,22 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object(const ObjectSharedPtr &object,
-		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance,
-		const bool flip_face_culling)
+		const BitSet64 visibility_mask, const BitSet64 blend_mask,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool flip_face_culling)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
 				"'%2%', instances %3%, visibility mask %4%, "
-				"flip face culling %5%"), object->get_name() %
+				"blend mask %5%, flip face culling %6%"),
+				object->get_name() %
 				object->get_mesh()->get_name() % instances %
-				visibility_mask % (flip_face_culling ?
-					UTF8("yes") : UTF8("no")));
+				visibility_mask % blend_mask %
+				(flip_face_culling ? UTF8("yes") : UTF8("no")));
 
-			do_draw_object(object, visibility_mask, type,
-				instances, distance, flip_face_culling);
+			do_draw_object(object, visibility_mask, blend_mask,
+				type, instances, distance, flip_face_culling);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1599,6 +1613,8 @@ namespace eternal_lands
 
 	void Scene::do_update_shadow_map(const Uint16 slice)
 	{
+		BitSet64 mask;
+
 		DEBUG_CHECK_GL_ERROR();
 
 		if (get_scene_view().get_exponential_shadow_maps())
@@ -1649,9 +1665,16 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects[slice].get_objects())
 		{
-			draw_object(object.get_object(),
-				object.get_visibility_mask(), ept_shadow, 1,
-				object.get_distance(), false);
+			mask = object.get_blend_mask();
+			mask.flip();
+			mask &= object.get_visibility_mask();
+
+			if (mask.any())
+			{
+				draw_object(object.get_object(), mask,
+					object.get_blend_mask(), ept_shadow, 1,
+					object.get_distance(), false);
+			}
 		}
 
 		update_program_vars_id();
@@ -1764,6 +1787,7 @@ namespace eternal_lands
 	void Scene::do_draw_depth()
 	{
 		StateSetUtil state_set(get_state_manager());
+		BitSet64 mask;
 		Uint32 index;
 		bool no_depth_read;
 
@@ -1787,8 +1811,11 @@ namespace eternal_lands
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			if ((object.get_blend() != bt_disabled) ||
-				!object.get_depth_read())
+			mask = object.get_blend_mask();
+			mask.flip();
+			mask &= object.get_visibility_mask();
+
+			if (mask.none() || !object.get_depth_read())
 			{
 				no_depth_read |= !object.get_depth_read();
 
@@ -1801,8 +1828,7 @@ namespace eternal_lands
 
 			GlQuery query(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
-			draw_object(object.get_object(),
-				object.get_visibility_mask(), ept_depth, 1,
+			draw_object(object.get_object(), mask, 0, ept_depth, 1,
 				object.get_distance(), false);
 
 			index++;
@@ -1815,8 +1841,11 @@ namespace eternal_lands
 			BOOST_FOREACH(RenderObjectData &object,
 				m_visible_objects.get_objects())
 			{
-				if ((object.get_blend() != bt_disabled) ||
-					object.get_depth_read())
+				mask = object.get_blend_mask();
+				mask.flip();
+				mask &= object.get_visibility_mask();
+
+				if (mask.none() || object.get_depth_read())
 				{
 					continue;
 				}
@@ -1826,8 +1855,7 @@ namespace eternal_lands
 				GlQuery query(GL_SAMPLES_PASSED,
 					m_querie_ids[index]);
 
-				draw_object(object.get_object(),
-					object.get_visibility_mask(),
+				draw_object(object.get_object(), mask, 0,
 					ept_depth, 1, object.get_distance(),
 					false);
 
@@ -1875,6 +1903,7 @@ namespace eternal_lands
 	void Scene::do_draw_default()
 	{
 		StateSetUtil state_set(get_state_manager());
+		BitSet64 mask;
 		Uint32 index, count;
 		EffectProgramType effect;
 		BlendType blend;
@@ -1904,7 +1933,8 @@ namespace eternal_lands
 			effect = ept_debug;
 		}
 
-		blend = bt_disabled;
+		blend = bt_alpha_transparency_value;
+		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
 
 		if (get_terrain())
 		{
@@ -1914,6 +1944,52 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
+			if (object.get_blend_mask().any())
+			{
+				continue;
+			}
+
+			index = object.get_occlusion_culling();
+
+			if (index < m_querie_ids.size())
+			{
+				count = 0;
+
+				glGetQueryObjectuiv(m_querie_ids[index],
+					GL_QUERY_RESULT, &count);
+
+				if (count == 0)
+				{
+					continue;
+				}
+			}
+
+			mask = object.get_blend_mask();
+			mask.flip();
+			mask &= object.get_visibility_mask();
+
+			if (old_lights)
+			{
+				draw_object_old_lights(object.get_object(),
+					mask, object.get_blend_mask(), effect,
+					1, object.get_distance(), false);
+			}
+			else
+			{
+				draw_object(object.get_object(), mask,
+					object.get_blend_mask(), effect,
+					1, object.get_distance(), false);
+			}
+		}
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			if (object.get_blend_mask().none())
+			{
+				continue;
+			}
+
 			index = object.get_occlusion_culling();
 
 			if (index < m_querie_ids.size())
@@ -1935,8 +2011,6 @@ namespace eternal_lands
 
 				switch (blend)
 				{
-					case bt_disabled:
-						break;
 					case bt_alpha_transparency_source_value:
 						glBlendFunc(GL_SRC_ALPHA,
 							GL_ONE_MINUS_SRC_ALPHA);
@@ -1950,9 +2024,6 @@ namespace eternal_lands
 							GL_ONE_MINUS_SRC_ALPHA);
 						break;
 				}
-
-				get_state_manager().switch_blend(blend !=
-					bt_disabled);
 			}
 
 			if (blend == bt_alpha_transparency_value)
@@ -1963,16 +2034,19 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
+			mask = object.get_blend_mask();
+			mask &= object.get_visibility_mask();
+
 			if (old_lights)
 			{
 				draw_object_old_lights(object.get_object(),
-					object.get_visibility_mask(), effect,
+					mask, object.get_blend_mask(), effect,
 					1, object.get_distance(), false);
 			}
 			else
 			{
-				draw_object(object.get_object(),
-					object.get_visibility_mask(), effect,
+				draw_object(object.get_object(), mask,
+					object.get_blend_mask(), effect,
 					1, object.get_distance(), false);
 			}
 		}
@@ -2435,7 +2509,7 @@ namespace eternal_lands
 		STRING_MARKER(UTF8("drawing light %1%, %2%"),
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
-
+#if	0
 		/************/
 		glStencilFunc(GL_ALWAYS, light_index, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP); 
@@ -2445,20 +2519,22 @@ namespace eternal_lands
 		get_state_manager().switch_blend(false);
 
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_depth, 1, 0, true);
+		draw_object(m_light_sphere, all_bits_set, 0, ept_depth, 1, 0,
+			true);
 
 		// Set the stencil to only pass on equal value
 		glStencilFunc(GL_EQUAL, light_index, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
 		/************/
+#endif
 
 		get_state_manager().switch_color_mask(glm::bvec4(true));
 		get_state_manager().switch_blend(true);
 
 		//TODO: Render lowers detail spheres when light is far away?
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0,
-			false);
+		draw_object(m_light_sphere, all_bits_set, all_bits_set,
+			ept_default, 1, 0, false);
 	}
 
 	void Scene::draw_light_camera_inside(const glm::vec3 &position,
@@ -2511,8 +2587,8 @@ namespace eternal_lands
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
 
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0,
-			true);
+		draw_object(m_light_sphere, all_bits_set, all_bits_set,
+			ept_default, 1, 0, true);
 	}
 
 	void Scene::draw_lights()
@@ -2564,7 +2640,7 @@ namespace eternal_lands
 				break;
 		};
 
-		get_state_manager().switch_stencil_test(true);
+//		get_state_manager().switch_stencil_test(true);
 		get_state_manager().switch_depth_clamp(true);
 		get_state_manager().switch_depth_mask(false);
 		get_state_manager().switch_blend(true);
@@ -2726,6 +2802,7 @@ namespace eternal_lands
 			}
 		}
 
+		glDepthFunc(GL_LEQUAL);
 		draw_default();
 
 #ifdef	USE_BLOOM
@@ -2868,7 +2945,8 @@ namespace eternal_lands
 				m_querie_ids[query_index]);
 
 			draw_object(object.get_object(),
-				object.get_visibility_mask(), ept_depth, 1,
+				object.get_visibility_mask(),
+				object.get_blend_mask(), ept_depth, 1,
 				object.get_distance(), false);
 
 			ids.push_back(data);
@@ -3087,6 +3165,7 @@ namespace eternal_lands
 			get_scene_resources().get_material_description_cache(),
 			get_scene_resources().get_terrain_builder(),
 			get_scene_resources().get_texture_cache(),
+			get_scene_resources().get_tile_builder(),
 			m_free_ids));
 
 		set_map(map_loader->load(name));

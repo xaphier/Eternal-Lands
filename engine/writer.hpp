@@ -144,6 +144,18 @@ namespace eternal_lands
 			void write_s64_be(const Sint64 value);
 
 			/**
+			 * Writes a half float swapped to little endian.
+			 * @param value The float to write as half float.
+			 */
+			void write_half_le(const float value);
+
+			/**
+			 * Writes a half float swapped to big endian.
+			 * @param value The float to write as half float.
+			 */
+			void write_half_be(const float value);
+
+			/**
 			 * Writes a float swapped to little endian.
 			 * @param value The float to write.
 			 */

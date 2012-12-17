@@ -72,8 +72,6 @@ BOOST_AUTO_TEST_CASE(stream)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::BlendUtil::get_str(el::bt_disabled).get(),
-		"disabled");
 	BOOST_CHECK_EQUAL(el::BlendUtil::get_str(
 		el::bt_alpha_transparency_source_value).get(),
 		"alpha_transparency_source_value");

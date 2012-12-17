@@ -39,7 +39,8 @@ class ELGLWidget: public QGLWidget
 		glm::mat3 m_camera_yaw_rotate;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
-		glm::vec3 m_start_position;
+		glm::vec3 m_min_position;
+		glm::vec3 m_max_position;
 		glm::vec3 m_world_position;
 		glm::vec3 m_grab_world_position;
 		glm::vec3 m_move_offset;
@@ -52,6 +53,7 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_press_pos;
 		glm::vec2 m_camera_yaw_roll;
 		String m_object_name;
+		BitSet64 m_blend_mask;
 		float m_light_radius;
 		float m_zoom;
 		float m_aspect;
@@ -62,6 +64,7 @@ class ELGLWidget: public QGLWidget
 		bool m_select;
 		bool m_select_depth;
 		bool m_terrain_editing;
+		bool m_tile_editing;
 		bool m_object_adding;
 		bool m_light_adding;
 		bool m_mouse_click_action;
@@ -91,6 +94,11 @@ class ELGLWidget: public QGLWidget
 		inline bool get_terrain_editing() const
 		{
 			return m_terrain_editing;
+		}
+
+		inline bool get_tile_editing() const
+		{
+			return m_tile_editing;
 		}
 
 		inline bool get_object_adding() const
@@ -173,6 +181,7 @@ class ELGLWidget: public QGLWidget
 		void set_light_color(const glm::vec3 &color);
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
+		void set_object_disable_blend();
 		void set_object_transparency(const float transparency);
 		void set_object_materials(const StringVector &materials);
 		void set_lights_color(const glm::vec3 &color);
@@ -213,8 +222,7 @@ class ELGLWidget: public QGLWidget
 			const float attenuation_size, const float strength,
 			const int attenuation, const int shape,
 			const int effect, const int layer);
-		void ground_tile_edit(const int tile);
-		void water_tile_edit(const int water);
+		void set_tile(const int layer, const int size, const int tile);
 		void height_edit(const int height);
 		void set_debug_mode(const int value);
 		void change_terrain_displacement_values(const QVector3D &data,
@@ -233,7 +241,7 @@ class ELGLWidget: public QGLWidget
 			const bool load_lights, const bool load_particles,
 			const bool load_materials, const bool load_height_map,
 			const bool load_tile_map, const bool load_walk_map,
-			const bool load_terrain, const bool load_water);
+			const bool load_terrain);
 		bool get_terrain() const;
 		int get_terrain_layer_count() const;
 		QSize get_map_size() const;
@@ -465,6 +473,7 @@ class ELGLWidget: public QGLWidget
 			const int blend_image_size_y,
 			const QStringList textures);
 		void set_terrain_editing(const bool enabled);
+		void set_tile_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);
 		void set_random_translation_x(const bool value);
@@ -503,8 +512,6 @@ class ELGLWidget: public QGLWidget
 		void init_terrain(const QString &height_map,
 			const QVector3D &translation, const QSize &size,
 			const TerrainTextureData &data);
-		void set_object_walkable(const bool value);
-		void set_objects_walkable(const bool value);
 		void get_albedo_map_data(const QString &name,
 			const QSize &icon_size, const QSize &image_size,
 			QIcon &icon, bool &use_blend_size_texture, bool &ok);
@@ -512,6 +519,8 @@ class ELGLWidget: public QGLWidget
 			const QSize &image_size, bool &ok);
 		void get_gloss_height_map_data(const QString &name,
 			const QSize &image_size, bool &ok);
+		bool get_texture_icon(const QString &name,
+			const QSize &image_size, QIcon &icon);
 		void get_image_data(const QString &name, QSize &size, bool &ok);
 		void update_terrain_dudv();
 		void clear_invisible_terrain_layers();
@@ -522,6 +531,12 @@ class ELGLWidget: public QGLWidget
 		void set_terrain_enabled(const bool enabled);
 		void set_object_description(const QString &description);
 		void export_tile_map();
+		void set_object_glow(const double glow);
+		void set_objects_glow(const double glow);
+		void set_tile_layer_height_0(const double value);
+		void set_tile_layer_height_1(const double value);
+		void set_tile_layer_height_2(const double value);
+		void set_tile_layer_height_3(const double value);
 
 	signals:
 		void update_object(const bool select);
@@ -530,11 +545,16 @@ class ELGLWidget: public QGLWidget
 		void deselect();
 		void can_undo(const bool undo);
 		void terrain_edit();
+		void tile_edit();
 		void initialized();
 		void changed_camera_yaw(const int yaw);
 		void changed_camera_roll(const int roll);
 		void terrain_displacement(const QVector3D &displacement);
 		void terrain_normal(const QVector3D &normal);
+		void tile_layer_height_0_changed(const double value);
+		void tile_layer_height_1_changed(const double value);
+		void tile_layer_height_2_changed(const double value);
+		void tile_layer_height_3_changed(const double value);
 
 };
 

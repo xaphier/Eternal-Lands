@@ -20,7 +20,6 @@ class LoadMapDialog: public QDialog, public Ui::LoadMap
 		bool get_load_tile_map() const;
 		bool get_load_walk_map() const;
 		bool get_load_terrain() const;
-		bool get_load_water() const;
 
 };
 

@@ -277,6 +277,7 @@ namespace
 	{
 		Transformation transformation;
 		glm::quat rotation;
+		BitSet64 blend_mask;
 		float transparency;
 		SelectionType el_selection;
 		BlendType el_blend;
@@ -297,19 +298,14 @@ namespace
 
 		el_selection = get_selection_type(name, selection);
 
-		if (transparent)
-		{
-			transparency = 0.7f;
-			el_blend = bt_alpha_transparency_source_value;
-		}
-		else
-		{
-			transparency = 1.0f;
-			el_blend = bt_disabled;
-		}
+		transparency = 0.7f;
+		el_blend = bt_alpha_transparency_source_value;
+
+		blend_mask.set(transparent);
 
 		return ObjectDescription(transformation, StringVector(),
-			name, transparency, id, el_selection, el_blend);
+			name, blend_mask, transparency, 0.0f, id, el_selection,
+			el_blend);
 	}
 
 	class ConsoleLogger: public AbstractLogger

@@ -117,9 +117,9 @@ namespace eternal_lands
 		MaterialSharedPtr material;
 		MaterialDescription material_description;
 		ActorDataCacheMap::const_iterator found;
+		BitSet64 blend_mask;
 		std::auto_ptr<Actor> result;
-		VertexStreamBitset all;
-		BlendType blend;
+		float glow;
 
 		found = m_actor_data_cache.find(type_id);
 
@@ -151,21 +151,23 @@ namespace eternal_lands
 
 		if (found->second.m_ghost)
 		{
-			blend = bt_alpha_transparency_value;
+			glow = 0.25f;
+			blend_mask.set();
 		}
 		else
 		{
-			blend = bt_disabled;
+			glow = 0.0f;
+			blend_mask.reset();
 		}
-
-		all.set();
 
 		if (enhanced_actor)
 		{
 			result.reset(new Actor(ObjectData(Transformation(),
-				name, 0.7f, id, selection, blend),
-				found->second.m_mesh->clone(all, false),
-				materials, found->second.m_index_source,
+				name, blend_mask, 0.7f, glow, id, selection,
+				bt_alpha_transparency_value),
+				found->second.m_mesh->clone(all_bits_set,
+					false), materials,
+				found->second.m_index_source,
 				found->second.m_core_model));
 
 			result->init_enhanced_actor(get_file_system(),
@@ -174,7 +176,8 @@ namespace eternal_lands
 		else
 		{
 			result.reset(new Actor(ObjectData(Transformation(),
-				name, 0.7f, id, selection, blend),
+				name, blend_mask, 0.7f, glow, id, selection,
+				bt_alpha_transparency_value),
 				found->second.m_mesh, materials,
 				found->second.m_core_model));
 		}

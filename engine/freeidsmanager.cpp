@@ -12,7 +12,10 @@ namespace eternal_lands
 
 	FreeIdsManager::FreeIdsManager(): m_free_ids(boost::assign::list_of
 		(FreeIds(it_3d_object))(FreeIds(it_2d_object))
-		(FreeIds(it_tile_object))(FreeIds(it_water_object))
+		(FreeIds(it_tile_layer_0_object))
+		(FreeIds(it_tile_layer_1_object))
+		(FreeIds(it_tile_layer_2_object))
+		(FreeIds(it_tile_layer_3_object))
 		(FreeIds(it_dynamic_object))(FreeIds(it_light_object))
 		(FreeIds(it_particle_object)))
 	{
@@ -157,6 +160,15 @@ namespace eternal_lands
 	bool FreeIdsManager::get_is_decal_id_free(const Uint32 id) const
 	{
 		return m_free_decal_ids.get_is_id_free(id);
+	}
+
+	Uint32 FreeIdsManager::get_tile_id(const Uint16 x, const Uint16 y,
+		const Uint16 layer)
+	{
+		RANGE_CECK_MAX(layer, 3, UTF8("layer value too big"));
+
+		return m_free_ids[it_tile_layer_0_object + layer].get_id(
+			x + (y << 12));
 	}
 
 }

@@ -166,12 +166,21 @@ namespace eternal_lands
 				const bool static_vertices = true,
 				const bool static_instances = true);
 
-			void update_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
-				const Uint16 index);
+			/**
+			 * Inits the vertex buffers.
+			 */
+			void init(const VertexFormatSharedPtr &vertex_format,
+				const Uint32 vertex_count,
+				const Uint32 instance_count,
+				const bool static_vertices = true,
+				const bool static_instances = true);
 
-			void update_index_buffer(
-				const AbstractReadMemorySharedPtr &buffer);
+			/**
+			 * Inits the index buffer.
+			 */
+			void init(const Uint32 index_count,
+				const bool use_16_bit_indices,
+				const bool static_indices = true);
 
 			virtual AbstractWriteMemorySharedPtr
 				get_vertex_buffer(const Uint16 index) = 0;

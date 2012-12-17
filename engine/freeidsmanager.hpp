@@ -28,8 +28,10 @@ namespace eternal_lands
 	{
 		it_3d_object = 0,
 		it_2d_object,
-		it_tile_object,
-		it_water_object,
+		it_tile_layer_0_object,
+		it_tile_layer_1_object,
+		it_tile_layer_2_object,
+		it_tile_layer_3_object,
 		it_dynamic_object,
 		it_light_object,
 		it_particle_object
@@ -43,7 +45,7 @@ namespace eternal_lands
 	class FreeIdsManager
 	{
 		private:
-			boost::array<FreeIds, 7> m_free_ids;
+			boost::array<FreeIds, 9> m_free_ids;
 			FreeIds m_free_light_ids;
 			FreeIds m_free_particle_ids;
 			FreeIds m_free_decal_ids;
@@ -79,6 +81,8 @@ namespace eternal_lands
 			bool get_is_light_id_free(const Uint32 id) const;
 			bool get_is_particle_id_free(const Uint32 id) const;
 			bool get_is_decal_id_free(const Uint32 id) const;
+			Uint32 get_tile_id(const Uint16 x, const Uint16 y,
+				const Uint16 layer);
 
 			FreeIds &get_free_object_ids(const IdType type)
 			{

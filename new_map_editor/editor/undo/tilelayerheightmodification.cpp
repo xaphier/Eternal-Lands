@@ -1,72 +1,33 @@
 /****************************************************************************
- *            heightmodification.cpp
+ *            tilelayerheightmodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "heightmodification.hpp"
+#include "tilelayerheightmodification.hpp"
 #include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	class CompareHeightIndex
-	{
-		public:
-			inline bool operator() (const Height &height1,
-				const Height &height2) const
-			{
-				return height1.get_index() <
-					height2.get_index();
-			}
-
-	};
-
-	HeightModification::HeightModification(const HeightVector &heights,
-		const Uint32 edit_id):
-		Modification(edit_id, 0, mt_height_changed), m_heights(heights)
+	TileLayerHeightModification::TileLayerHeightModification(
+		const float value, const Uint16 layer, const Uint32 edit_id):
+		Modification(edit_id, layer, mt_tile_layer_height_changed),
+		m_value(value), m_layer(layer)
 	{
 	}
 
-	HeightModification::~HeightModification() throw()
+	TileLayerHeightModification::~TileLayerHeightModification() throw()
 	{
 	}
 
-	bool HeightModification::do_merge(Modification* modification)
+	bool TileLayerHeightModification::do_merge(Modification* modification)
 	{
-		HeightModification* height_modification;
-		HeightVector::iterator begin, end;
-		Uint32 size;
-		bool found;
-
-		height_modification = boost::polymorphic_downcast<
-			HeightModification*>(modification);
-
-		size = m_heights.size();
-		begin = m_heights.begin();
-		end = begin + size;
-
-		std::sort(begin, end, CompareHeightIndex());
-
-		BOOST_FOREACH(const Height &height,
-			height_modification->m_heights)
-		{
-			found = std::binary_search(begin, end, height,
-				CompareHeightIndex());
-
-			if (!found)
-			{
-				m_heights.push_back(height);
-				begin = m_heights.begin();
-				end = begin + size;
-			}
-		}
-
 		return true;
 	}
 
-	bool HeightModification::undo(EditorMapData &editor)
+	bool TileLayerHeightModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
@@ -107,14 +68,13 @@ namespace eternal_lands
 			case mt_scene_ground_hemisphere_changed:
 			case mt_displacement_value_changed:
 			case mt_dungeon_changed:
-				return false;
 			case mt_height_changed:
-				editor.set_heights(m_heights);
-				return false;
-			case mt_tile_value_changed:
-			case mt_tile_layer_height_changed:
 			case mt_blend_value_changed:
 			case mt_blend_values_changed:
+			case mt_tile_value_changed:
+				return false;
+			case mt_tile_layer_height_changed:
+				editor.set_tile_layer_height(m_value, m_layer);
 				return false;
 		}
 

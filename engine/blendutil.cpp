@@ -16,7 +16,6 @@ namespace eternal_lands
 
 		const String blend_names[] =
 		{
-			String(UTF8("disabled")),
 			String(UTF8("alpha_transparency_source_value")),
 			String(UTF8("alpha_transparency_value")),
 			String(UTF8("additive"))

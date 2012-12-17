@@ -163,6 +163,63 @@ namespace eternal_lands
 		}
 	}
 
+	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
+		const Uint32 vertex_count, const Uint32 instance_count,
+		const bool static_vertices, const bool static_instances)
+	{
+		if (vertex_count == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_name(get_name())
+				<< errinfo_message(UTF8("Vertex count is "
+					"zero")));
+		}
+
+		m_vertex_format = vertex_format;
+		m_vertex_count = vertex_count;
+		m_instance_count = instance_count;
+		m_static_vertices = static_vertices;
+		m_static_instances = static_instances;
+
+		LOG_DEBUG(lt_mesh, UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
+			"vertex_count: %3%, index_count: %4%"), get_name() %
+			get_use_16_bit_indices() % get_vertex_count() %
+			get_index_count());
+
+		try
+		{
+			init_vertex_buffers(get_used_vertex_buffers());
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(get_name());
+			throw;
+		}
+	}
+
+	void AbstractMesh::init(const Uint32 index_count,
+		const bool use_16_bit_indices, const bool static_indices)
+	{
+		m_use_16_bit_indices = use_16_bit_indices;
+		m_index_count = index_count;
+		m_static_indices = static_indices;
+
+		LOG_DEBUG(lt_mesh, UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
+			"vertex_count: %3%, index_count: %4%"), get_name() %
+			get_use_16_bit_indices() % get_vertex_count() %
+			get_index_count());
+
+		try
+		{
+			init_index_buffer();
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(get_name());
+			throw;
+		}
+	}
+
 	VertexStreamBitset AbstractMesh::get_used_vertex_buffers() const
 	{
 		VertexStreamBitset result;

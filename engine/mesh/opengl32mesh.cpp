@@ -70,6 +70,27 @@ namespace eternal_lands
 			glDrawArraysInstanced(primitive, draw_data.get_offset(),
 				draw_data.get_count(), instances);
 		}
+
+		GLint error;
+
+		error = glGetError();
+		if (error != GL_NO_ERROR)
+		{
+			std::cout << "primitive: " << primitive << "\t";
+			std::cout << "has_index_data: " << get_has_index_data() << "\t";
+			std::cout << "get_count: " << draw_data.get_count() << "\t";
+			std::cout << "get_index_type: " << get_index_type() << "\t";
+			std::cout << "get_offset: " << draw_data.get_offset() << "\t";
+			std::cout << "instances: " << instances << "\t";
+			std::cout << "get_base_vertex: " << draw_data.get_base_vertex() << "\t";
+			std::cout << "error: " << error << "\t";
+			std::cout << "get_gl_error_string(error): " << get_gl_error_string(error) << "\t";
+			std::cout << std::endl;
+
+			EL_THROW_EXCEPTION(OpenGlException()
+				<< errinfo_message(get_gl_error_string(error))
+				<< errinfo_opengl_error(error));
+		}
 	}
 
 }

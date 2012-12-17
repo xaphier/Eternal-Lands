@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "packtool.hpp"
 
 namespace eternal_lands
 {
@@ -21,9 +20,9 @@ namespace eternal_lands
 	class ImageValue
 	{
 		private:
-			Uint16Array4 m_values;
 			Uint16 m_x;
 			Uint16 m_y;
+			Uint8 m_value;
 
 		public:
 			inline ImageValue(const Uint16 x, const Uint16 y):
@@ -47,47 +46,14 @@ namespace eternal_lands
 					(static_cast<Uint32>(get_y()) << 16);
 			}
 
-			inline glm::uvec4 get_value(const Uint16 index) const
+			inline Uint16 get_value() const
 			{
-				return glm::uvec4(PackTool::unpack_uint_4_4_4_4(
-					false, m_values[index]));
+				return m_value;
 			}
 
-			inline glm::vec4 get_normalized_value(
-				const Uint16 index) const
+			inline void set_value(const Uint16 value)
 			{
-				return PackTool::unpack_uint_4_4_4_4(true,
-					m_values[index]);
-			}
-
-			inline Uint16 get_packed_value(const Uint16 index) const
-			{
-				return m_values[index];
-			}
-
-			inline void set_value(const glm::uvec4 &value,
-				const Uint16 index)
-			{
-				m_values[index] = PackTool::pack_uint_4_4_4_4(
-					false, glm::vec4(value));
-			}
-
-			inline void set_normalized_value(
-				const glm::vec4 &value, const Uint16 index)
-			{
-				m_values[index] = PackTool::pack_uint_4_4_4_4(
-					true, glm::vec4(value));
-			}
-
-			inline void set_packed_value(const Uint16 value,
-				const Uint16 index)
-			{
-				m_values[index] = value;
-			}
-
-			static inline Uint16 get_image_count()
-			{
-				return Uint16Array4::size() * 4;
+				m_value = value;
 			}
 
 	};

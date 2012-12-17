@@ -32,6 +32,7 @@ namespace eternal_lands
 		private:
 			ObjectSharedPtr m_object;
 			BitSet64 m_visibility_mask;
+			BitSet64 m_blend_mask;
 			float m_transparency;
 			float m_distance;
 			Uint32 m_occlusion_culling;
@@ -45,10 +46,12 @@ namespace eternal_lands
 				const BitSet64 visibility_mask);
 			RenderObjectData(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const float transparency,
 				const BlendType blend);
 			RenderObjectData(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
+				const BitSet64 blend_mask,
 				const float transparency, const BlendType blend,
 				const bool depth_read);
 			~RenderObjectData() noexcept;
@@ -60,9 +63,15 @@ namespace eternal_lands
 			}
 
 			inline void set_visibility_mask(
-				const BitSet64 visibility_mask)	noexcept
+				const BitSet64 visibility_mask) noexcept
 			{
 				m_visibility_mask = visibility_mask;
+			}
+
+			inline void set_blend_mask(const BitSet64 blend_mask)
+				noexcept
+			{
+				m_blend_mask = blend_mask;
 			}
 
 			inline void set_transparency(const float transparency)
@@ -104,9 +113,15 @@ namespace eternal_lands
 				return m_object;
 			}
 
-			inline BitSet64 get_visibility_mask() const noexcept
+			inline const BitSet64 get_visibility_mask() const
+				noexcept
 			{
 				return m_visibility_mask;
+			}
+
+			inline const BitSet64 get_blend_mask() const noexcept
+			{
+				return m_blend_mask;
 			}
 
 			inline float get_transparency() const noexcept

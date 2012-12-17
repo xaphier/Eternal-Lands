@@ -8,14 +8,16 @@
 #include "editor.hpp"
 #include "height.hpp"
 #include "undo/groundhemispheremodification.hpp"
-#include "undo/blendmodification.hpp"
+#include "undo/blendvaluemodification.hpp"
+#include "undo/blendvaluesmodification.hpp"
 #include "undo/dungeonmodification.hpp"
 #include "undo/heightmodification.hpp"
 #include "undo/lightmodification.hpp"
 #include "undo/objectmodification.hpp"
 #include "undo/heightmodification.hpp"
 #include "undo/terrainmaterialmodification.hpp"
-#include "undo/groundtilemodification.hpp"
+#include "undo/tilevaluemodification.hpp"
+#include "undo/tilelayerheightmodification.hpp"
 #include "undo/displacementvaluemodification.hpp"
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
@@ -24,6 +26,7 @@
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
 #include "image.hpp"
+#include "tilebuilder.hpp"
 
 namespace eternal_lands
 {
@@ -199,31 +202,24 @@ namespace eternal_lands
 			index);
 	}
 
-	void Editor::set_ground_tile(const glm::vec2 &point,
+	void Editor::set_tile(const glm::uvec3 &offset, const Uint16 size,
 		const Uint16 tile)
 	{
-		glm::uvec2 offset;
-		Uint16 tmp;
+		ImageValueVector tile_values;
 
-		offset = m_data.get_tile_offset(point);
-		tmp = m_data.get_tile(offset.x, offset.y);
+		m_data.get_tile_values(offset, size, tile_values);
 
-		if (tile == tmp)
+		ModificationAutoPtr modification(new TileValueModification(
+			tile_values, offset.z, get_edit_id()));
+
+		m_undo.add(modification);
+
+		BOOST_FOREACH(ImageValue &tile_value, tile_values)
 		{
-			return;
+			tile_value.set_value(tile);
 		}
 
-		if (add_needed(offset.x + (offset.y << 16),
-			mt_tile_texture_changed))
-		{
-			ModificationAutoPtr modification(
-				new GroundTileModification(offset, tmp,
-					get_edit_id()));
-
-			m_undo.add(modification);
-		}
-
-		m_data.set_tile(offset[0], offset[1], tile);
+		m_data.set_tile_values(tile_values, offset.z);
 	}
 
 	void Editor::add_3d_object(const glm::vec3 &position,
@@ -343,43 +339,76 @@ namespace eternal_lands
 		return m_data.get_ground_hemisphere();
 	}
 
-	void Editor::ground_tile_edit(const glm::vec3 &point,
-		const Uint8 height)
+	bool Editor::get_tile_edit(const glm::vec3 &min_position,
+		const glm::vec3 &max_position, const Uint16 layer,
+		glm::uvec3 &offset) const
 	{
-		set_ground_tile(glm::vec2(point), height);
+		glm::vec3 dir, position, camera;
+		float d;
+
+		dir = max_position - min_position;
+
+		if (std::abs(dir.z) < epsilon)
+		{
+			return false;
+		}
+
+		d = (m_data.get_tile_layer_height(layer) - min_position.z) /
+			dir.z;
+
+		if ((d > 1.0f) || (d < 0.0f))
+		{
+			return false;
+		}
+
+		position = min_position + dir * d;
+		position /= TileBuilder::get_tile_world_scale();
+
+		if ((position.x < 0.0f) || (position.y < 0.0f))
+		{
+			return false;
+		}
+
+		offset = position;
+
+		if ((offset.x >= m_data.get_tile_map_size().x) ||
+			(offset.y >= m_data.get_tile_map_size().x))
+		{
+			return false;
+		}
+
+		offset.z = layer;
+
+		return true;
 	}
 
-	void Editor::water_tile_edit(const glm::vec3 &start,
-		const glm::vec3 &point, const Uint16 water)
+	float Editor::get_tile_layer_height(const Uint16 index) const
 	{
-/*
-		glm::uvec2 index;
-		Uint16 tmp;
+		return m_data.get_tile_layer_height(index);
+	}
 
-		if (!m_data.get_water_vertex(start, point, index))
+	void Editor::set_tile_layer_height(const float value,
+		const Uint16 layer)
+	{
+		float height;
+
+		height = m_data.get_tile_layer_height(layer);
+
+		if (value == height)
 		{
 			return;
 		}
 
-		tmp = m_data.get_water(index);
-
-		if (water == tmp)
+		if (add_needed(layer, mt_tile_layer_height_changed))
 		{
-			return;
-		}
-
-		if (add_needed(index.x + (index.y << 16),
-			mt_water_changed))
-		{
-			ModificationAutoPtr modification(
-				new WaterModification(index, tmp,
-					get_edit_id()));
+			ModificationAutoPtr modification(new
+				TileLayerHeightModification(height,
+				layer, get_edit_id()));
 
 			m_undo.add(modification);
 		}
 
-		m_data.set_water(index.x, index.y, water);
-*/
+		m_data.set_tile_layer_height(value, layer);
 	}
 
 	void Editor::height_edit(const glm::vec3 &point, const Uint8 height)
@@ -398,8 +427,7 @@ namespace eternal_lands
 		const bool load_3d_objects, const bool load_lights,
 		const bool load_particles, const bool load_materials,
 		const bool load_height_map, const bool load_tile_map,
-		const bool load_walk_map, const bool load_terrain,
-		const bool load_water)
+		const bool load_walk_map, const bool load_terrain)
 	{
 		MapItemsTypeSet skip_items;
 
@@ -448,11 +476,6 @@ namespace eternal_lands
 			skip_items.insert(mit_terrain);
 		}
 
-		if (!load_water)
-		{
-			skip_items.insert(mit_water);
-		}
-
 		m_data.load_map(name, skip_items);
 
 		m_undo.clear();
@@ -485,18 +508,39 @@ namespace eternal_lands
 		}
 	}
 
-	void Editor::set_object_blend(const Uint32 id, const BlendType blend)
+	void Editor::set_object_blend(const Uint32 id, const BlendType blend,
+		const BitSet64 blend_mask)
 	{
 		EditorObjectDescription object_description;
 
 		m_data.get_object(id, object_description);
 
-		if (object_description.get_blend() != blend)
+		if ((object_description.get_blend() != blend) ||
+			(object_description.get_blend_mask() != blend_mask))
 		{
 			change_object(mt_object_blend_changed,
 				object_description);
 
 			object_description.set_blend(blend);
+			object_description.set_blend_mask(blend_mask);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
+	void Editor::set_object_blend_mask(const Uint32 id,
+		const BitSet64 blend_mask)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_blend_mask() != blend_mask)
+		{
+			change_object(mt_object_blend_changed,
+				object_description);
+
+			object_description.set_blend_mask(blend_mask);
 
 			m_data.modify_object(object_description);
 		}
@@ -515,6 +559,23 @@ namespace eternal_lands
 				object_description);
 
 			object_description.set_transparency(transparency);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
+	void Editor::set_object_glow(const Uint32 id, const float glow)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_glow() != glow)
+		{
+			change_object(mt_object_glow_changed,
+				object_description);
+
+			object_description.set_glow(glow);
 
 			m_data.modify_object(object_description);
 		}
@@ -588,23 +649,6 @@ namespace eternal_lands
 				object_description);
 
 			object_description.set_selection(selection);
-
-			m_data.modify_object(object_description);
-		}
-	}
-
-	void Editor::set_object_walkable(const Uint32 id, const bool walkable)
-	{
-		EditorObjectDescription object_description;
-
-		m_data.get_object(id, object_description);
-
-		if (object_description.get_walkable() != walkable)
-		{
-			change_object(mt_object_walkable_changed,
-				object_description);
-
-			object_description.set_walkable(walkable);
 
 			m_data.modify_object(object_description);
 		}
@@ -781,6 +825,39 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_objects_glow(const Uint32Set &ids,
+		const float glow)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_glow_changed, object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_glow(glow);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
 	void Editor::set_objects_translation(const Uint32Set &ids,
 		const glm::vec3 &translation)
 	{
@@ -912,40 +989,6 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			object_descriptions[i].set_selection(selection);
-
-			m_data.modify_object(object_descriptions[i]);
-		}
-	}
-
-	void Editor::set_objects_walkable(const Uint32Set &ids,
-		const bool walkable)
-	{
-		EditorObjectDescriptionVector object_descriptions;
-		Uint32 i, index, count;
-
-		count = ids.size();
-
-		if (count == 0)
-		{
-			return;
-		}
-
-		object_descriptions.resize(count);
-
-		index = 0;
-
-		BOOST_FOREACH(const Uint32 id, ids)
-		{
-			m_data.get_object(id, object_descriptions[index]);
-			index++;
-		}
-
-		change_objects(mt_objects_walkable_changed,
-			object_descriptions);
-
-		for (i = 0; i < count; ++i)
-		{
-			object_descriptions[i].set_walkable(walkable);
 
 			m_data.modify_object(object_descriptions[i]);
 		}
@@ -1283,10 +1326,11 @@ namespace eternal_lands
 
 		m_data.get_terrain_blend_values(vertex, size, attenuation_size,
 			static_cast<BrushAttenuationType>(attenuation),
-			static_cast<BrushShapeType>(shape), blend_values);
+			static_cast<BrushShapeType>(shape), layer,
+			blend_values);
 
-		ModificationAutoPtr modification(new BlendModification(
-			blend_values, get_edit_id()));
+		ModificationAutoPtr modification(new BlendValueModification(
+			blend_values, layer, get_edit_id()));
 
 		m_undo.add(modification);
 
@@ -1297,7 +1341,7 @@ namespace eternal_lands
 			static_cast<BlendEffectType>(effect), layer,
 			blend_values);
 
-		m_data.set_terrain_blend_values(blend_values);
+		m_data.set_terrain_blend_values(blend_values, layer);
 	}
 
 	void Editor::import_terrain_height_map(const String &name)
@@ -1318,11 +1362,11 @@ namespace eternal_lands
 
 	void Editor::import_terrain_blend_map(const String &name)
 	{
-		ImageValueVector blend_values;
+		ImageValuesVector blend_values;
 
 		m_data.get_all_terrain_blend_values(blend_values);
 
-		ModificationAutoPtr modification(new BlendModification(
+		ModificationAutoPtr modification(new BlendValuesModification(
 			blend_values, get_edit_id()));
 
 		m_undo.add(modification);
@@ -1408,10 +1452,10 @@ namespace eternal_lands
 	{
 		ImageValueVector blend_values;
 
-		m_data.get_all_terrain_blend_values(blend_values);
+		m_data.get_all_terrain_blend_values(layer, blend_values);
 
-		ModificationAutoPtr modification(new BlendModification(
-			blend_values, get_edit_id()));
+		ModificationAutoPtr modification(new BlendValueModification(
+			blend_values, layer, get_edit_id()));
 
 		m_undo.add(modification);
 

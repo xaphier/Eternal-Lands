@@ -131,12 +131,8 @@ namespace eternal_lands
 				const Sint32 offset);
 			void resize_vertices(const Uint32 vertex_count);
 			void build_quad_map(const Uint16MultiArray2 &types,
-				const FloatVector &heights,
-				const Uint16Vector &materials,
-				const Vec4Vector &colors,
-				const glm::vec4 &uv_scale_offset,
-				const glm::vec2 &quad_size,
-				Uint16Vector &material_sub_meshs);
+				const glm::vec2 &uv_scale,
+				const glm::vec2 &quad_size);
 
 			inline void resize_indices(const Uint32 index_count)
 			{

@@ -53,8 +53,3 @@ bool LoadMapDialog::get_load_terrain() const
 {
 	return load_terrain->isChecked();
 }
-
-bool LoadMapDialog::get_load_water() const
-{
-	return load_water->isChecked();
-}

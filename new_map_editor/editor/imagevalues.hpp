@@ -5,15 +5,15 @@
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_0718c037_a791_43bb_a030_4271c16870ba
-#define	UUID_0718c037_a791_43bb_a030_4271c16870ba
+#ifndef	UUID_a752477a_b221_4ceb_83a6_2cae7fc7e03e
+#define	UUID_a752477a_b221_4ceb_83a6_2cae7fc7e03e
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "imagevalue.hpp"
+#include "packtool.hpp"
 
 namespace eternal_lands
 {
@@ -21,17 +21,79 @@ namespace eternal_lands
 	class ImageValues
 	{
 		private:
-			ReadWriteMemorySharedPtr m_buffer;
-			Uint32 m_size;
+			Uint16Array4 m_values;
+			Uint16 m_x;
+			Uint16 m_y;
 
 		public:
-			ImageValues();
-			~ImageValues() noexcept;
-			void pack(const ImageValueVector &image_values);
-			ImageValueVector unpack() const;
+			inline ImageValues(const Uint16 x, const Uint16 y):
+				m_x(x), m_y(y)
+			{
+			}
+
+			inline Uint16 get_x() const
+			{
+				return m_x;
+			}
+
+			inline Uint16 get_y() const
+			{
+				return m_y;
+			}
+
+			inline Uint32 get_index() const
+			{
+				return static_cast<Uint32>(get_x()) +
+					(static_cast<Uint32>(get_y()) << 16);
+			}
+
+			inline glm::uvec4 get_value(const Uint16 index) const
+			{
+				return glm::uvec4(PackTool::unpack_uint_4_4_4_4(
+					false, m_values[index]));
+			}
+
+			inline glm::vec4 get_normalized_value(
+				const Uint16 index) const
+			{
+				return PackTool::unpack_uint_4_4_4_4(true,
+					m_values[index]);
+			}
+
+			inline Uint16 get_packed_value(const Uint16 index) const
+			{
+				return m_values[index];
+			}
+
+			inline void set_value(const glm::uvec4 &value,
+				const Uint16 index)
+			{
+				m_values[index] = PackTool::pack_uint_4_4_4_4(
+					false, glm::vec4(value));
+			}
+
+			inline void set_normalized_value(
+				const glm::vec4 &value, const Uint16 index)
+			{
+				m_values[index] = PackTool::pack_uint_4_4_4_4(
+					true, glm::vec4(value));
+			}
+
+			inline void set_packed_value(const Uint16 value,
+				const Uint16 index)
+			{
+				m_values[index] = value;
+			}
+
+			static inline Uint16 get_image_count()
+			{
+				return Uint16Array4::size() * 4;
+			}
 
 	};
 
+	VECTOR(ImageValues);
+
 }
 
-#endif	/* UUID_0718c037_a791_43bb_a030_4271c16870ba */
+#endif	/* UUID_a752477a_b221_4ceb_83a6_2cae7fc7e03e */
