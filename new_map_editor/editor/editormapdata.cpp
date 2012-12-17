@@ -1779,15 +1779,14 @@ namespace eternal_lands
 
 	void EditorMapData::set_tile_map_size(const glm::uvec2 &size)
 	{
-		glm::uvec2 min, max;
+		glm::uvec2 min;
 		Uint32 x, y, start_x;
 
 		min = glm::min(get_tile_map_size(), size);
-		max = glm::max(get_tile_map_size(), size);
 
 		m_tile_maps.resize(boost::extents[size.x][size.y]);
 
-		for (y = 0; y < max.y; ++y)
+		for (y = 0; y < size.y; ++y)
 		{
 			if (min.y < y)
 			{
@@ -1798,7 +1797,7 @@ namespace eternal_lands
 				start_x = min.x;
 			}
 
-			for (x = start_x; x < max.x; ++x)
+			for (x = start_x; x < size.x; ++x)
 			{
 				m_tile_maps[x][y][0] = 0xFF;
 				m_tile_maps[x][y][1] = 0xFF;

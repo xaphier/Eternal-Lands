@@ -1990,21 +1990,6 @@ namespace eternal_lands
 				continue;
 			}
 
-			index = object.get_occlusion_culling();
-
-			if (index < m_querie_ids.size())
-			{
-				count = 0;
-
-				glGetQueryObjectuiv(m_querie_ids[index],
-					GL_QUERY_RESULT, &count);
-
-				if (count == 0)
-				{
-					continue;
-				}
-			}
-
 			if (blend != object.get_blend())
 			{
 				blend = object.get_blend();

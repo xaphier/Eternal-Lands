@@ -216,6 +216,7 @@ namespace eternal_lands
 				glm::vec3 result;
 
 				result = glm::vec3(value);
+				result = glm::clamp(result, 0.0f, 1.0f);
 				result.x = result.x * 2.0f - 1.0f;
 				result.y = result.y * 2.0f - 1.0f;
 
@@ -228,6 +229,7 @@ namespace eternal_lands
 				glm::vec3 result;
 
 				result = glm::vec3(value) / 1023.0f;
+				result = glm::clamp(result, 0.0f, 1.0f);
 				result.x = result.x * 2.0f - 1.0f;
 				result.y = result.y * 2.0f - 1.0f;
 
@@ -256,6 +258,7 @@ namespace eternal_lands
 				result = offset / get_vector_scale();
 				result.x = result.x * 0.5f + 0.5f;
 				result.y = result.y * 0.5f + 0.5f;
+				result = glm::clamp(result, 0.0f, 1.0f);
 
 				return glm::uvec4(result * 1023.0f + 0.5f, 0);
 			}
@@ -266,6 +269,7 @@ namespace eternal_lands
 				glm::vec3 result;
 
 				result = glm::vec3(value) / 1023.0f;
+				result = glm::clamp(result, 0.0f, 1.0f);
 				result.x = result.x * 2.0f - 1.0f;
 				result.y = result.y * 2.0f - 1.0f;
 
@@ -280,6 +284,7 @@ namespace eternal_lands
 				result = offset;
 				result.x = result.x * 0.5f + 0.5f;
 				result.y = result.y * 0.5f + 0.5f;
+				result = glm::clamp(result, 0.0f, 1.0f);
 
 				return glm::uvec4(result * 1023.0f + 0.5f, 0);
 			}
