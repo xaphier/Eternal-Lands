@@ -48,8 +48,8 @@ namespace eternal_lands
 			void add(const ObjectSharedPtr &object);
 			void add(const ObjectSharedPtr &object,
 				const BitSet64 blend_mask,
-				const float transparency, const BlendType blend,
-				const bool depth_read = true);
+				const float transparency,
+				const BlendType blend);
 			void next_frame();
 
 			inline void set_projection_view_matrix(

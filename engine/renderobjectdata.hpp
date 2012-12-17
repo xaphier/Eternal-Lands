@@ -38,7 +38,6 @@ namespace eternal_lands
 			Uint32 m_occlusion_culling;
 			Uint16 m_lod;
 			BlendType m_blend;
-			bool m_depth_read;
 
 		public:
 			RenderObjectData();
@@ -49,11 +48,6 @@ namespace eternal_lands
 				const BitSet64 blend_mask,
 				const float transparency,
 				const BlendType blend);
-			RenderObjectData(const ObjectSharedPtr &object,
-				const BitSet64 visibility_mask,
-				const BitSet64 blend_mask,
-				const float transparency, const BlendType blend,
-				const bool depth_read);
 			~RenderObjectData() noexcept;
 
 			inline void set_object(const ObjectSharedPtr &object)
@@ -93,12 +87,6 @@ namespace eternal_lands
 			inline void set_blend(const BlendType blend) noexcept
 			{
 				m_blend = blend;
-			}
-
-			inline void set_depth_read(const bool depth_read)
-				noexcept
-			{
-				m_depth_read = depth_read;
 			}
 
 			inline void set_occlusion_culling(
@@ -147,11 +135,6 @@ namespace eternal_lands
 			inline Uint32 get_occlusion_culling() const noexcept
 			{
 				return m_occlusion_culling;
-			}
-
-			inline bool get_depth_read() const noexcept
-			{
-				return m_depth_read;
 			}
 
 	};

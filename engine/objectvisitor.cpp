@@ -118,7 +118,7 @@ namespace eternal_lands
 
 	void ObjectVisitor::add(const ObjectSharedPtr &object,
 		const BitSet64 blend_mask, const float transparency,
-		const BlendType blend, const bool depth_read)
+		const BlendType blend)
 	{
 		BitSet64 visibility_mask;
 
@@ -128,7 +128,7 @@ namespace eternal_lands
 		{
 			m_objects.push_back(RenderObjectData(object,
 				visibility_mask, blend_mask, transparency,
-				blend, depth_read));
+				blend));
 		}
 	}
 

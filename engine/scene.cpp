@@ -1789,7 +1789,6 @@ namespace eternal_lands
 		StateSetUtil state_set(get_state_manager());
 		BitSet64 mask;
 		Uint32 index;
-		bool no_depth_read;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
@@ -1806,7 +1805,7 @@ namespace eternal_lands
 			draw_terrain(m_visible_terrain, ept_depth, false);
 		}
 
-		no_depth_read = false;
+		depth_read();
 
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -1815,10 +1814,8 @@ namespace eternal_lands
 			mask.flip();
 			mask &= object.get_visibility_mask();
 
-			if (mask.none() || !object.get_depth_read())
+			if (mask.none())
 			{
-				no_depth_read |= !object.get_depth_read();
-
 				object.set_occlusion_culling(
 					std::numeric_limits<Uint32>::max());
 				continue;
@@ -1834,33 +1831,20 @@ namespace eternal_lands
 			index++;
 		}
 
-		depth_read();
-
-		if (no_depth_read)
+		BOOST_FOREACH(RenderObjectData &object,
+			m_visible_objects.get_objects())
 		{
-			BOOST_FOREACH(RenderObjectData &object,
-				m_visible_objects.get_objects())
+			mask = object.get_blend_mask();
+			mask.flip();
+			mask &= object.get_visibility_mask();
+
+			if (mask.none())
 			{
-				mask = object.get_blend_mask();
-				mask.flip();
-				mask &= object.get_visibility_mask();
-
-				if (mask.none() || object.get_depth_read())
-				{
-					continue;
-				}
-
-				object.set_occlusion_culling(index);
-
-				GlQuery query(GL_SAMPLES_PASSED,
-					m_querie_ids[index]);
-
-				draw_object(object.get_object(), mask, 0,
-					ept_depth, 1, object.get_distance(),
-					false);
-
-				index++;
+				continue;
 			}
+
+			draw_object(object.get_object(), mask, 0, ept_depth, 1,
+				object.get_distance(), false);
 		}
 
 		unbind_all();
@@ -1944,7 +1928,11 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			if (object.get_blend_mask().any())
+			mask = object.get_blend_mask();
+			mask.flip();
+			mask &= object.get_visibility_mask();
+
+			if (mask.none())
 			{
 				continue;
 			}
@@ -1964,10 +1952,6 @@ namespace eternal_lands
 				}
 			}
 
-			mask = object.get_blend_mask();
-			mask.flip();
-			mask &= object.get_visibility_mask();
-
 			if (old_lights)
 			{
 				draw_object_old_lights(object.get_object(),
@@ -1985,7 +1969,10 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			if (object.get_blend_mask().none())
+			mask = object.get_blend_mask();
+			mask &= object.get_visibility_mask();
+
+			if (mask.none())
 			{
 				continue;
 			}
@@ -2018,9 +2005,6 @@ namespace eternal_lands
 			}
 
 			DEBUG_CHECK_GL_ERROR();
-
-			mask = object.get_blend_mask();
-			mask &= object.get_visibility_mask();
 
 			if (old_lights)
 			{

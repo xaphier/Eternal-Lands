@@ -270,14 +270,6 @@ namespace eternal_lands
 			m_height_tree->intersect(frustum, visitor);
 		}
 
-		BOOST_FOREACH(RenderObjectData& object, visitor.get_objects())
-		{
-			if (object.get_object()->get_id() == m_selected_object)
-			{
-				object.set_depth_read(false);
-			}
-		}
-
 		if (!get_draw_lights() || shadow)
 		{
 			return;
@@ -306,7 +298,7 @@ namespace eternal_lands
 				!= it_outside)
 			{
 				visitor.add(it->second, blend_mask,
-					transparency, blend, false);
+					transparency, blend);
 			}
 		}
 	}
