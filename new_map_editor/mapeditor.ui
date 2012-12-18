@@ -2442,19 +2442,34 @@
             <property name="spacing">
              <number>2</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_26">
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="y_translation">
               <property name="minimumSize">
                <size>
-                <width>15</width>
+                <width>30</width>
                 <height>0</height>
                </size>
               </property>
-              <property name="text">
-               <string>X</string>
-              </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buttonSymbols">
+               <enum>QAbstractSpinBox::PlusMinus</enum>
+              </property>
+              <property name="keyboardTracking">
+               <bool>false</bool>
+              </property>
+              <property name="minimum">
+               <double>-1024.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>1024.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value">
+               <double>0.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -2517,66 +2532,33 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_27">
-              <property name="minimumSize">
-               <size>
-                <width>15</width>
-                <height>0</height>
-               </size>
-              </property>
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="x_translation_enabled">
               <property name="text">
-               <string>Y</string>
+               <string>X</string>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="y_translation">
-              <property name="minimumSize">
-               <size>
-                <width>30</width>
-                <height>0</height>
-               </size>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="y_translation_enabled">
+              <property name="text">
+               <string>Y</string>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buttonSymbols">
-               <enum>QAbstractSpinBox::PlusMinus</enum>
-              </property>
-              <property name="keyboardTracking">
-               <bool>false</bool>
-              </property>
-              <property name="minimum">
-               <double>-1024.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>1024.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-              <property name="value">
-               <double>0.000000000000000</double>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="label_28">
-              <property name="minimumSize">
-               <size>
-                <width>15</width>
-                <height>0</height>
-               </size>
-              </property>
+             <widget class="QCheckBox" name="z_translation_enabled">
               <property name="text">
                <string>Z</string>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -4708,6 +4690,198 @@
     <hint type="destinationlabel">
      <x>140</x>
      <y>657</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transparency_type_1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>transparency_value</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>771</x>
+     <y>377</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>886</x>
+     <y>377</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>x_translation_enabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>x_translation</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>346</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>346</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>y_translation_enabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>y_translation</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>372</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>z_translation_enabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>z_translation</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uniform_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_slider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>737</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>766</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uniform_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_value</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>737</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>766</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_slider_x</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>825</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_value_x</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>825</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_slider_y</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>861</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_value_y</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>861</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_slider_z</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>103</x>
+     <y>897</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invidual_scales_button</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scale_value_z</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>796</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>897</y>
     </hint>
    </hints>
   </connection>
