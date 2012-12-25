@@ -122,7 +122,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_object_blend(const int);
 		void set_object_selection(const int);
 		void update_translation();
-		void update_position();
 		void update_scale();
 		void update_scale_x();
 		void update_scale_y();
@@ -193,6 +192,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_terrain_translation();
 		void remove_terrain();
 		void tile_edit();
+		void update_translation_mask();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -26,6 +26,15 @@ enum TerrainPickingType
 	tpt_normal
 };
 
+enum EditingType
+{
+	et_nothing,
+	et_terrain_editing,
+	et_tile_editing,
+	et_object_adding,
+	et_light_adding
+};
+
 class ELGLWidget: public QGLWidget
 {
 	Q_OBJECT
@@ -51,6 +60,7 @@ class ELGLWidget: public QGLWidget
 		glm::uvec2 m_selected_screen_position;
 		glm::uvec2 m_press_screen_position;
 		glm::vec3 m_press_pos;
+		glm::bvec3 m_moving_mask;
 		glm::vec2 m_camera_yaw_roll;
 		String m_object_name;
 		BitSet64 m_blend_mask;
@@ -63,15 +73,12 @@ class ELGLWidget: public QGLWidget
 		Uint32 m_terrain_layer_index;
 		bool m_select;
 		bool m_select_depth;
-		bool m_terrain_editing;
-		bool m_tile_editing;
-		bool m_object_adding;
-		bool m_light_adding;
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
 		bool m_grab_world_position_valid;
 		TerrainPickingType m_terrain_picking;
 		KeyPressType m_mouse_move;
+		EditingType m_editing;
 		BlendType m_blend;
 		Qt::MouseButton m_press_button;
 		Qt::MouseButton m_select_rect_button;
@@ -93,22 +100,22 @@ class ELGLWidget: public QGLWidget
 
 		inline bool get_terrain_editing() const
 		{
-			return m_terrain_editing;
+			return m_editing == et_terrain_editing;
 		}
 
 		inline bool get_tile_editing() const
 		{
-			return m_tile_editing;
+			return m_editing == et_tile_editing;
 		}
 
 		inline bool get_object_adding() const
 		{
-			return m_object_adding;
+			return m_editing == et_object_adding;
 		}
 
 		inline bool get_light_adding() const
 		{
-			return m_light_adding;
+			return m_editing == et_light_adding;
 		}
 
 		inline Uint32 get_terrain_type_index() const
@@ -446,6 +453,16 @@ class ELGLWidget: public QGLWidget
 		inline const FileSystemSharedPtr &get_file_system() const
 		{
 			return m_file_system;
+		}
+
+		inline const glm::bvec3 &get_moving_mask() const
+		{
+			return m_moving_mask;
+		}
+
+		inline void set_moving_mask(const glm::bvec3 &moving_mask)
+		{
+			m_moving_mask = moving_mask;
 		}
 
 	public slots:

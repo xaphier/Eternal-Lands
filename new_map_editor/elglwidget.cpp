@@ -20,12 +20,8 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_select = false;
 	m_select_depth = false;
 	m_zoom = 10.0f;
-	m_terrain_editing = false;
-	m_tile_editing = false;
 	m_terrain_type_index = 0;
 	m_terrain_layer_index = 0;
-	m_object_adding = false;
-	m_light_adding = false;
 	m_blend = bt_alpha_transparency_source_value;
 	m_camera_roll = 45.0f;
 	m_camera_yaw = 0.0f;
@@ -768,8 +764,9 @@ void ELGLWidget::mouse_move_action()
 
 	if (m_grab_world_position_valid)
 	{
-		position = m_move_offset + m_world_position -
-			m_grab_world_position;
+		position = m_move_offset;
+		position += (m_world_position - m_grab_world_position) *
+			glm::vec3(get_moving_mask());
 
 		switch (m_editor->get_renderable())
 		{
@@ -1605,16 +1602,14 @@ void ELGLWidget::zoom_out()
 
 void ELGLWidget::add_object(const String &object)
 {
-	m_light_adding = false;
-	m_object_adding = true;
+	m_editing = et_object_adding;
 	m_object_name = object;
 	m_light_radius = 0.0f;
 }
 
 void ELGLWidget::add_light(const float radius)
 {
-	m_light_adding = true;
-	m_object_adding = false;
+	m_editing = et_light_adding;
 	m_object_name = String("");
 	m_light_radius = radius;
 }
@@ -1688,25 +1683,25 @@ void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 
 void ELGLWidget::set_terrain_editing(const bool enabled)
 {
-	m_terrain_editing = enabled;
-
 	if (enabled)
 	{
-		m_light_adding = false;
-		m_object_adding = false;
-		m_tile_editing = false;
+		m_editing = et_terrain_editing;
+	}
+	else
+	{
+		m_editing = et_nothing;
 	}
 }
 
 void ELGLWidget::set_tile_editing(const bool enabled)
 {
-	m_tile_editing = enabled;
-
 	if (enabled)
 	{
-		m_light_adding = false;
-		m_object_adding = false;
-		m_terrain_editing = false;
+		m_editing = et_tile_editing;
+	}
+	else
+	{
+		m_editing = et_nothing;
 	}
 }
 
@@ -1935,13 +1930,13 @@ void ELGLWidget::set_random_scale_max(const double value)
 
 void ELGLWidget::disable_object()
 {
-	m_object_adding = false;
+	m_editing = et_nothing;
 	m_object_name = String("");
 }
 
 void ELGLWidget::disable_light()
 {
-	m_light_adding = false;
+	m_editing = et_nothing;
 	m_light_radius = 0.0f;
 }
 

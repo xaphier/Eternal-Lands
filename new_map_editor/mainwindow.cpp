@@ -68,6 +68,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(y_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 	QObject::connect(z_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 
+	QObject::connect(x_translation_enabled, SIGNAL(toggled(bool)), this, SLOT(update_translation_mask()));
+	QObject::connect(y_translation_enabled, SIGNAL(toggled(bool)), this, SLOT(update_translation_mask()));
+	QObject::connect(z_translation_enabled, SIGNAL(toggled(bool)), this, SLOT(update_translation_mask()));
+
 	QObject::connect(scale_value, SIGNAL(valueChanged(double)), this, SLOT(update_scale()));
 	QObject::connect(scale_slider, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider()));
 	QObject::connect(scale_value_x, SIGNAL(valueChanged(double)), this, SLOT(update_scale_x()));
@@ -119,9 +123,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
 	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
 	QObject::connect(light_power, SIGNAL(valueChanged(double)), this, SLOT(change_light_power()));
-	QObject::connect(x_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
-	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
-	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
 		SLOT(terrain_edit()));
@@ -331,9 +332,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_material_label_witdgets.push_back(material_label_8);
 	m_material_label_witdgets.push_back(material_label_9);
 
-	m_light_witdgets.push_back(x_position);
-	m_light_witdgets.push_back(y_position);
-	m_light_witdgets.push_back(z_position);
+	m_light_witdgets.push_back(x_translation);
+	m_light_witdgets.push_back(y_translation);
+	m_light_witdgets.push_back(z_translation);
 	m_light_witdgets.push_back(radius);
 	m_light_witdgets.push_back(light_color);
 	m_light_witdgets.push_back(light_power);
@@ -576,6 +577,7 @@ void MainWindow::initialized()
 	progress.setValue(count);
 
 	update_tile_materials();
+	update_translation_mask();
 }
 
 bool MainWindow::get_terrain_texture_data(const QString &name,
@@ -1108,9 +1110,9 @@ void MainWindow::update_light(const bool select)
 		light_widget->blockSignals(true);
 	}
 
-	x_position->setValue(light.get_position()[0]);
-	y_position->setValue(light.get_position()[1]);
-	z_position->setValue(light.get_position()[2]);
+	x_translation->setValue(light.get_position()[0]);
+	y_translation->setValue(light.get_position()[1]);
+	z_translation->setValue(light.get_position()[2]);
 
 	radius->setValue(light.get_radius());
 
@@ -1149,17 +1151,6 @@ void MainWindow::update_translation()
 	translation[2] = z_translation->value();
 
 	el_gl_widget->set_translation(translation);
-}
-
-void MainWindow::update_position()
-{
-	glm::vec3 position;
-
-	position[0] = x_position->value();
-	position[1] = y_position->value();
-	position[2] = z_position->value();
-
-	el_gl_widget->set_translation(position);
 }
 
 void MainWindow::update_rotation(const int index)
@@ -3609,4 +3600,12 @@ void MainWindow::remove_terrain()
 	{
 		el_gl_widget->set_terrain_enabled(false);
 	}
+}
+
+void MainWindow::update_translation_mask()
+{
+	el_gl_widget->set_moving_mask(glm::bvec3(
+		x_translation_enabled->isChecked(),
+		y_translation_enabled->isChecked(),
+		z_translation_enabled->isChecked()));
 }

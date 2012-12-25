@@ -425,7 +425,7 @@ namespace eternal_lands
 		glm::vec2 center, position;
 		glm::ivec2 index;
 		float tmp, slope;
-		Uint16 idx0, idx1, value;
+		Uint16 value;
 
 		if (blend_values.size() < 1)
 		{
@@ -435,9 +435,6 @@ namespace eternal_lands
 		assert(layer < get_layer_count());
 
 		center = glm::vec2(vertex);
-
-		idx0 = layer / 4;
-		idx1 = layer % 4;
 
 		BOOST_FOREACH(ImageValue &blend_value, blend_values)
 		{
@@ -1000,6 +997,70 @@ namespace eternal_lands
 
 		return min_distance <= glm::length(
 			AbstractTerrain::get_vector_scale());
+	}
+
+	bool TerrainEditor::get_neares_terrain_data(
+		const glm::vec3 &world_position, const glm::bvec3 &mask,
+		glm::vec3 &position, glm::vec3 &normal) const
+	{
+		glm::vec3 p0, p1;
+		glm::ivec2 index, min, max, size, result;
+		Sint32 x, y;
+		float distance, min_distance;
+
+		p0 = world_position - get_translation() * glm::vec3(mask);
+
+		min_distance = std::numeric_limits<float>::max();
+
+		min = glm::ivec2(glm::vec2(position -
+			AbstractTerrain::get_vector_scale()) /
+			AbstractTerrain::get_patch_scale());
+
+		max = glm::ivec2(glm::vec2(position +
+			AbstractTerrain::get_vector_scale()) /
+			AbstractTerrain::get_patch_scale()) + 1;
+
+		size.x = m_displacement_map->get_width();
+		size.y = m_displacement_map->get_height();
+		size -= 1;
+
+		min = glm::clamp(min, glm::ivec2(0), size);
+		max = glm::clamp(max, glm::ivec2(0), size);
+
+		for (y = min.y; y <= max.y; ++y)
+		{
+			for (x = min.x; x <= max.x; ++x)
+			{
+				index.x = x;
+				index.y = y;
+
+				p1 = get_position(index) * glm::vec3(mask);
+
+				distance = glm::distance(p0, p1);
+
+				if (distance < min_distance)
+				{
+					if (distance == 0.0f)
+					{
+						return true;
+					}
+
+					min_distance = distance;
+					result = index;
+				}
+			}
+		}
+
+		if (min_distance <= glm::length(
+			AbstractTerrain::get_vector_scale()))
+		{
+			normal = get_normal(result);
+			position = get_position(result);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	void TerrainEditor::set_material(const String &albedo_map,
