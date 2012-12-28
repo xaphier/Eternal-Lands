@@ -511,6 +511,15 @@ namespace eternal_lands
 					blend_values);
 			}
 
+			inline bool get_neares_terrain_data(
+				const glm::vec3 &world_position,
+				const glm::vec3 &dir, glm::vec3 &position,
+				glm::vec3 &normal) const
+			{
+				return m_terrain_editor.get_neares_data(
+					world_position, dir, position, normal);
+			}
+
 	};
 
 }

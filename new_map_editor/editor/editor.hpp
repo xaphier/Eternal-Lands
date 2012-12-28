@@ -213,6 +213,15 @@ namespace eternal_lands
 			void set_tile_layer_height(const float value,
 				const Uint16 layer);
 
+			inline bool get_neares_terrain_data(
+				const glm::vec3 &world_position,
+				const glm::vec3 &dir, glm::vec3 &position,
+				glm::vec3 &normal) const
+			{
+				return m_data.get_neares_terrain_data(
+					world_position, dir, position, normal);
+			}
+
 			inline void export_tile_map(const String &file_name)
 				const
 			{

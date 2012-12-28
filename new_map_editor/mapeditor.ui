@@ -2249,14 +2249,14 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="snap_to_terrain">
              <property name="text">
               <string>Snap to terrain</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="align_to_terrain">
              <property name="text">
               <string>Align to terrain</string>
              </property>

@@ -999,24 +999,28 @@ namespace eternal_lands
 			AbstractTerrain::get_vector_scale());
 	}
 
-	bool TerrainEditor::get_neares_terrain_data(
-		const glm::vec3 &world_position, const glm::bvec3 &mask,
-		glm::vec3 &position, glm::vec3 &normal) const
+	bool TerrainEditor::get_neares_data(const glm::vec3 &world_position,
+		const glm::vec3 &dir, glm::vec3 &position, glm::vec3 &normal)
+		const
 	{
-		glm::vec3 p0, p1;
+		glm::vec3 pos0, pos1, dir0, dir1, temp0, temp1, pos;
 		glm::ivec2 index, min, max, size, result;
 		Sint32 x, y;
-		float distance, min_distance;
+		float distance, min_distance, dist0, dist1;
 
-		p0 = world_position - get_translation() * glm::vec3(mask);
+		pos = world_position - get_translation();
+		dir0 = 1.0f - glm::min(glm::abs(dir), 1.0f);
+		dir1 = 1.0f - dir0;
+		pos0 = pos * dir0;
+		pos1 = pos * dir1;
 
 		min_distance = std::numeric_limits<float>::max();
 
-		min = glm::ivec2(glm::vec2(position -
+		min = glm::ivec2(glm::vec2(pos -
 			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale());
 
-		max = glm::ivec2(glm::vec2(position +
+		max = glm::ivec2(glm::vec2(pos +
 			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale()) + 1;
 
@@ -1034,33 +1038,31 @@ namespace eternal_lands
 				index.x = x;
 				index.y = y;
 
-				p1 = get_position(index) * glm::vec3(mask);
+				dist0 = glm::distance(pos0,
+					get_position(index) * dir0);
 
-				distance = glm::distance(p0, p1);
+				dist1 = glm::distance(pos1,
+					get_position(index) * dir1);
+
+				distance = dist0 * dist0 + dist1;
 
 				if (distance < min_distance)
 				{
-					if (distance == 0.0f)
-					{
-						return true;
-					}
-
 					min_distance = distance;
 					result = index;
 				}
 			}
 		}
 
-		if (min_distance <= glm::length(
-			AbstractTerrain::get_vector_scale()))
+		if (min_distance >= std::numeric_limits<float>::max())
 		{
-			normal = get_normal(result);
-			position = get_position(result);
-
-			return true;
+			return false;
 		}
 
-		return false;
+		normal = get_normal(result);
+		position = get_position(result) + get_translation();
+
+		return true;
 	}
 
 	void TerrainEditor::set_material(const String &albedo_map,

@@ -2257,3 +2257,84 @@ void ELGLWidget::export_tile_map()
 
 	m_editor->export_tile_map(String(file_name.toUtf8()));
 }
+
+void ELGLWidget::snap_object_to_terrain()
+{
+	EditorObjectDescription object_description;
+	glm::vec3 position, normal;
+
+	if (m_editor->get_renderable() != rt_object)
+	{
+		return;
+	}
+
+	get_object_description(object_description);
+
+	if (!m_editor->get_neares_terrain_data(
+		object_description.get_translation(),
+		glm::vec3(0.0f, 0.0f, 1.0f), position, normal))
+	{
+		return;
+	}
+
+	m_editor->set_object_translation(position);
+
+	emit can_undo(m_editor->get_can_undo());
+	emit update_object(true);
+}
+
+void ELGLWidget::align_object_to_terrain()
+{
+	EditorObjectDescription object_description;
+	glm::vec3 position, normal, rotation;
+	glm::vec2 dir;
+	float l;
+
+	if (m_editor->get_renderable() != rt_object)
+	{
+		return;
+	}
+
+	get_object_description(object_description);
+
+	if (!m_editor->get_neares_terrain_data(
+		object_description.get_translation(),
+		glm::vec3(0.0f, 0.0f, 1.0f), position, normal))
+	{
+		return;
+	}
+
+	rotation = object_description.get_rotation_angles();
+
+	rotation.x = 0.0f;
+	rotation.y = 0.0f;
+
+	dir.x = glm::dot(glm::vec3(1.0f, 0.0f, 0.0f), normal);
+	dir.y = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), normal);
+
+	l = glm::dot(dir, dir);
+
+	if (l > epsilon)
+	{
+		dir /= std::sqrt(l);
+
+		rotation.y = std::asin(dir.x) / M_PI * 180.0f;
+	}
+
+	dir.x = glm::dot(glm::vec3(0.0f, -1.0f, 0.0f), normal);
+	dir.y = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), normal);
+
+	l = glm::dot(dir, dir);
+
+	if (l > epsilon)
+	{
+		dir /= std::sqrt(l);
+
+		rotation.x = std::asin(dir.x) / M_PI * 180.0f;
+	}
+
+	m_editor->set_object_rotation(rotation);
+
+	emit can_undo(m_editor->get_can_undo());
+	emit update_object(true);
+}

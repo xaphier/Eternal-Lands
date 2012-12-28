@@ -554,6 +554,8 @@ class ELGLWidget: public QGLWidget
 		void set_tile_layer_height_1(const double value);
 		void set_tile_layer_height_2(const double value);
 		void set_tile_layer_height_3(const double value);
+		void snap_object_to_terrain();
+		void align_object_to_terrain();
 
 	signals:
 		void update_object(const bool select);

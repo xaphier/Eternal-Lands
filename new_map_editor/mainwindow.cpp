@@ -533,6 +533,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		el_gl_widget, SLOT(set_tile_layer_height_2(double)));
 	connect(tile_layer_height_3, SIGNAL(valueChanged(double)),
 		el_gl_widget, SLOT(set_tile_layer_height_3(double)));
+
+	connect(snap_to_terrain, SIGNAL(clicked()), el_gl_widget,
+		SLOT(snap_object_to_terrain()));
+	connect(align_to_terrain, SIGNAL(clicked()), el_gl_widget,
+		SLOT(align_object_to_terrain()));
 }
 
 MainWindow::~MainWindow()
@@ -830,6 +835,7 @@ void MainWindow::update_object()
 	QStringList default_materials, materials, object_materials;
 	QString material;
 	EditorObjectDescription object_description;
+	glm::vec3 rotation;
 	unsigned int id, i, index;
 	int j;
 
@@ -859,9 +865,41 @@ void MainWindow::update_object()
 	z_translation->setValue(object_description.get_world_transformation(
 		).get_translation()[2]);
 
-	x_rotation->setValue(object_description.get_rotation_angles()[0]);
-	y_rotation->setValue(object_description.get_rotation_angles()[1]);
-	z_rotation->setValue(object_description.get_rotation_angles()[2]);
+	rotation = object_description.get_rotation_angles();
+
+	while (rotation.x > x_rotation->maximum())
+	{
+		rotation.x -= 360.0f;
+	}
+
+	while (rotation.y > y_rotation->maximum())
+	{
+		rotation.y -= 360.0f;
+	}
+
+	while (rotation.z > z_rotation->maximum())
+	{
+		rotation.z -= 360.0f;
+	}
+
+	while (rotation.x < x_rotation->minimum())
+	{
+		rotation.x += 360.0f;
+	}
+
+	while (rotation.y < y_rotation->minimum())
+	{
+		rotation.y += 360.0f;
+	}
+
+	while (rotation.z < z_rotation->minimum())
+	{
+		rotation.z += 360.0f;
+	}
+
+	x_rotation->setValue(rotation.x);
+	y_rotation->setValue(rotation.y);
+	z_rotation->setValue(rotation.z);
 	x_rotation_dial->setValue(object_description.get_rotation_angles()[0]);
 	y_rotation_dial->setValue(object_description.get_rotation_angles()[1]);
 	z_rotation_dial->setValue(object_description.get_rotation_angles()[2]);

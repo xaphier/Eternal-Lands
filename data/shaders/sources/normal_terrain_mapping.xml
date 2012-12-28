@@ -81,6 +81,7 @@ normal = vec3(0.0, 0.0, 1.0);
 if (index &lt; 2)
 {
 	normal.xy = textureGrad(effect_sampler_1, vec3(terrain_uvs[index], index), ddx, ddy).rg;
+	normal.xy = normal.xy * 2.0 - 1.0;
 	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 }
 

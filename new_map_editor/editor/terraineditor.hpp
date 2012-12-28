@@ -208,9 +208,8 @@ namespace eternal_lands
 			static const glm::vec3 &get_terrain_offset_max();
 			bool get_vertex(const glm::vec3 &world_position,
 				glm::uvec2 &result) const;
-			bool get_neares_terrain_data(
-				const glm::vec3 &world_position,
-				const glm::bvec3 &mask, glm::vec3 &position,
+			bool get_neares_data(const glm::vec3 &world_position,
+				const glm::vec3 &dir, glm::vec3 &position,
 				glm::vec3 &normal) const;
 			static glm::vec3 calc_displacement_brush(
 				const glm::vec3 &value, const glm::vec3 &data,

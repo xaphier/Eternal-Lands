@@ -502,7 +502,7 @@ namespace eternal_lands
 				boost::make_shared<Texture>(
 					String(UTF8("terrain normal map")),
 					size, size, count, mipmaps, 0,
-					tft_rg8_snorm, target);
+					tft_rg8, target);
 
 			m_clipmap_terrain_normal_texture->set_wrap_s(twt_clamp);
 			m_clipmap_terrain_normal_texture->set_wrap_t(twt_clamp);
