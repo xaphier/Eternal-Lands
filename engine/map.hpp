@@ -121,7 +121,8 @@ namespace eternal_lands
 			}
 
 			void init_walk_height_map(
-				const ImageSharedPtr &displacement_map);
+				const ImageSharedPtr &displacement_map,
+				const glm::vec3 &translation);
 
 		public:
 			/**

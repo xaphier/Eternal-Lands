@@ -82,6 +82,9 @@
 #define UTF8(str) u8##str
 #endif
 
+#define	notEqualEpsilon	epsilonNotEqual
+#define	equalEpsilon	epsilonEqual
+
 namespace eternal_lands
 {
 

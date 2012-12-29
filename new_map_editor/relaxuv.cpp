@@ -14,7 +14,7 @@ void RelaxUV::run()
 {
 	m_el_progress->cancel(false);
 
-	m_el_gl_widget->relax_terrain_uv(m_el_progress, 15000);
+	m_el_gl_widget->relax_terrain_uv(m_el_progress, 5000);
 
 	emit done();
 }

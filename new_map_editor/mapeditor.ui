@@ -1439,7 +1439,7 @@
      <item>
       <widget class="QStackedWidget" name="transformations_stack">
        <property name="currentIndex">
-        <number>1</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="terrain_page">
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1687,7 +1687,7 @@
          <item>
           <widget class="QTabWidget" name="paint_tool_tabs">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <property name="iconSize">
             <size>
@@ -4729,6 +4729,38 @@
     <hint type="destinationlabel">
      <x>234</x>
      <y>897</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blend_strength_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>blend_strength</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>141</x>
+     <y>582</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>243</x>
+     <y>582</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blend_strength</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>blend_strength_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>582</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>141</x>
+     <y>582</y>
     </hint>
    </hints>
   </connection>

@@ -342,7 +342,7 @@ namespace eternal_lands
 		{
 			for (i = 0; i < count; ++i)
 			{
-				relax_sse2(m_half_distances, m_uvs, 0.05f,
+				relax_sse2(m_half_distances, m_uvs, 0.15f,
 					AbstractTerrain::get_patch_scale(),
 					m_width, m_height, new_uvs);
 

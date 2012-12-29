@@ -63,7 +63,8 @@ namespace eternal_lands
 	{
 	}
 
-	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map)
+	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map,
+		const glm::vec3 &translation)
 	{
 		glm::uvec2 size;
 		Uint32 x, y;
@@ -82,7 +83,8 @@ namespace eternal_lands
 				z = displacement_map->get_pixel(x, y, 0, 0,
 					0).z;
 
-				m_walk_height_map[x][y] = z * scale;
+				m_walk_height_map[x][y] = z * scale -
+					translation.z;
 			}
 		}
 
@@ -382,7 +384,7 @@ namespace eternal_lands
 			normal_tangent_map, dudv_map, translation);
 
 		init_walk_height_map(displacement_map->decompress(false, true,
-			false));
+			false), translation);
 	}
 
 	void Map::set_terrain_blend_map(const ImageSharedPtr &blend_map)
