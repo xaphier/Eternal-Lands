@@ -22,6 +22,8 @@
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
 #include "undo/terraintranslationmodification.hpp"
+#include "undo/terrainblendlayersswapmodification.hpp"
+#include "undo/terrainblendlayermovemodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -1461,6 +1463,40 @@ namespace eternal_lands
 
 		m_data.fill_terrain_blend_layer(strength,
 			static_cast<BlendEffectType>(effect), layer);
+	}
+
+	void Editor::swap_terrain_blend_layers(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		if (idx0 == idx1)
+		{
+			return;
+		}
+
+		ModificationAutoPtr modification(
+			new TerrainBlendLayersSwapModification(idx0, idx1,
+			get_edit_id()));
+
+		m_undo.add(modification);
+
+		m_data.swap_terrain_blend_layers(idx0, idx1);
+	}
+
+	void Editor::move_terrain_blend_layer(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		if (idx0 == idx1)
+		{
+			return;
+		}
+
+		ModificationAutoPtr modification(
+			new TerrainBlendLayerMoveModification(idx0, idx1,
+			get_edit_id()));
+
+		m_undo.add(modification);
+
+		m_data.move_terrain_blend_layer(idx0, idx1);
 	}
 
 }

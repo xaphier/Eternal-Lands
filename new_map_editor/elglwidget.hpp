@@ -261,6 +261,8 @@ class ELGLWidget: public QGLWidget
 			const int effect, const int layer);
 		void set_terrain_translation(const QVector3D &translation);
 		QVector3D get_terrain_translation() const;
+		void swap_terrain_blend_layers(const int idx0, const int idx1);
+		void move_terrain_blend_layer(const int idx0, const int idx1);
 
 		inline Qt::MouseButton get_press_button() const
 		{

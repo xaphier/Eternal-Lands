@@ -1820,5 +1820,147 @@ namespace eternal_lands
 		return result;
 	}
 
+	void TerrainEditor::swap_blend_layers(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		Uvec4Array4 values;
+		glm::vec3 default_specular_0, default_specular_1;
+		String albedo_map_0, specular_map_0, gloss_map_0, height_map_0;
+		String albedo_map_1, specular_map_1, gloss_map_1, height_map_1;
+		float default_gloss_0, default_height_0, blend_size_0;
+		float default_gloss_1, default_height_1, blend_size_1;
+		Uint32 x, y, z, l0, l1;
+		bool use_blend_size_texture_0, use_specular_map_0;
+		bool use_blend_size_texture_1, use_specular_map_1;
+		bool use_gloss_map_0, use_height_map_0;
+		bool use_gloss_map_1, use_height_map_1;
+
+		assert(idx0 > 0);
+		assert(idx1 > 0);
+
+		l0 = idx0 - 1;
+		l1 = idx1 - 1;
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				for (z = 0; z < m_size.z; ++z)
+				{
+					values[z] = m_blend_map->
+						get_pixel_uint(x, y, z, 0, 0);
+				}
+
+				std::swap(values[l0 / 4][l0 % 4],
+					values[l1 / 4][l1 % 4]);
+
+				for (z = 0; z < m_size.z; ++z)
+				{
+					m_blend_map->set_pixel_uint(x, y, z, 0,
+						0, values[z]);
+				}
+			}
+		}
+
+		get_material(albedo_map_0, specular_map_0, gloss_map_0,
+			height_map_0, default_specular_0, default_gloss_0,
+			default_height_0, blend_size_0,
+			use_blend_size_texture_0, use_specular_map_0,
+			use_gloss_map_0, use_height_map_0, idx0);
+
+		get_material(albedo_map_1, specular_map_1, gloss_map_1,
+			height_map_1, default_specular_1, default_gloss_1,
+			default_height_1, blend_size_1,
+			use_blend_size_texture_1, use_specular_map_1,
+			use_gloss_map_1, use_height_map_1, idx1);
+
+		set_material(albedo_map_0, specular_map_0, gloss_map_0,
+			height_map_0, default_specular_0, default_gloss_0,
+			default_height_0, blend_size_0,
+			use_blend_size_texture_0, use_specular_map_0,
+			use_gloss_map_0, use_height_map_0, idx1);
+
+		set_material(albedo_map_1, specular_map_1, gloss_map_1,
+			height_map_1, default_specular_1, default_gloss_1,
+			default_height_1, blend_size_1,
+			use_blend_size_texture_1, use_specular_map_1,
+			use_gloss_map_1, use_height_map_1, idx0);
+	}
+
+	void TerrainEditor::move_blend_layer(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		Uvec4Array4 values;
+		glm::vec3 default_specular_0, default_specular_1;
+		String albedo_map_0, specular_map_0, gloss_map_0, height_map_0;
+		String albedo_map_1, specular_map_1, gloss_map_1, height_map_1;
+		float default_gloss_0, default_height_0, blend_size_0;
+		float default_gloss_1, default_height_1, blend_size_1;
+		Uint32 x, y, z, i, min, max;
+		bool use_blend_size_texture_0, use_specular_map_0;
+		bool use_blend_size_texture_1, use_specular_map_1;
+		bool use_gloss_map_0, use_height_map_0;
+		bool use_gloss_map_1, use_height_map_1;
+
+		assert(idx0 > 0);
+		assert(idx1 > 0);
+
+		min = std::min(idx0, idx1) - 1;
+		max = std::max(idx0, idx1) - 1;
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				for (z = 0; z < m_size.z; ++z)
+				{
+					values[z] = m_blend_map->
+						get_pixel_uint(x, y, z, 0, 0);
+				}
+
+				for (i = min; i < max; ++i)
+				{
+					std::swap(values[i / 4][i % 4],
+						values[max / 4][max % 4]);
+				}
+
+				for (z = 0; z < m_size.z; ++z)
+				{
+					m_blend_map->set_pixel_uint(x, y, z, 0,
+						0, values[z]);
+				}
+			}
+		}
+
+		min = std::min(idx0, idx1);
+		max = std::max(idx0, idx1);
+
+		for (i = min; i < max; ++i)
+		{
+			get_material(albedo_map_0, specular_map_0, gloss_map_0,
+				height_map_0, default_specular_0,
+				default_gloss_0, default_height_0, blend_size_0,
+				use_blend_size_texture_0, use_specular_map_0,
+				use_gloss_map_0, use_height_map_0, i);
+
+			get_material(albedo_map_1, specular_map_1, gloss_map_1,
+				height_map_1, default_specular_1,
+				default_gloss_1, default_height_1, blend_size_1,
+				use_blend_size_texture_1, use_specular_map_1,
+				use_gloss_map_1, use_height_map_1, max);
+
+			set_material(albedo_map_0, specular_map_0, gloss_map_0,
+				height_map_0, default_specular_0,
+				default_gloss_0, default_height_0, blend_size_0,
+				use_blend_size_texture_0, use_specular_map_0,
+				use_gloss_map_0, use_height_map_0, max);
+
+			set_material(albedo_map_1, specular_map_1, gloss_map_1,
+				height_map_1, default_specular_1,
+				default_gloss_1, default_height_1, blend_size_1,
+				use_blend_size_texture_1, use_specular_map_1,
+				use_gloss_map_1, use_height_map_1, i);
+		}
+	}
 
 }

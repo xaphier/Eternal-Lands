@@ -538,6 +538,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(snap_object_to_terrain()));
 	connect(align_to_terrain, SIGNAL(clicked()), el_gl_widget,
 		SLOT(align_object_to_terrain()));
+	connect(action_swap_terrain_blend_layers, SIGNAL(triggered()), this,
+		SLOT(swap_terrain_blend_layers()));
+	connect(action_move_terrain_blend_layer, SIGNAL(triggered()), this,
+		SLOT(move_terrain_blend_layer()));
 }
 
 MainWindow::~MainWindow()
@@ -1039,6 +1043,8 @@ void MainWindow::update_terrain(const bool enabled)
 	action_remove_terrain->setEnabled(enabled);
 	action_change_terrain_translation->setEnabled(enabled);
 	action_fill_terrain_blend_layer->setEnabled(enabled);
+	action_swap_terrain_blend_layers->setEnabled(enabled);
+	action_move_terrain_blend_layer->setEnabled(enabled);
 
 	if (enabled)
 	{
@@ -3646,4 +3652,60 @@ void MainWindow::update_translation_mask()
 		x_translation_enabled->isChecked(),
 		y_translation_enabled->isChecked(),
 		z_translation_enabled->isChecked()));
+}
+
+void MainWindow::swap_terrain_blend_layers()
+{
+	int idx0, idx1;
+	bool ok;
+
+	idx0 = terrain_layers->currentRow();
+
+	if (idx0 < 1)
+	{
+		return;
+	}
+
+	ok = false;
+
+	idx1 = QInputDialog::getInt(this, "Swap current blend layer", "dest",
+		(idx0 + 1) % 17, 1, 16, 1, &ok);
+
+	if ((idx1 < 1) || !ok)
+	{
+		return;
+	}
+
+	el_gl_widget->swap_terrain_blend_layers(idx0, idx1);
+
+	update_terrain_layers();
+	terrain_layers->setCurrentRow(idx1);
+}
+
+void MainWindow::move_terrain_blend_layer()
+{
+	int idx0, idx1;
+	bool ok;
+
+	idx0 = terrain_layers->currentRow();
+
+	if (idx0 < 0)
+	{
+		return;
+	}
+
+	ok = false;
+
+	idx1 = QInputDialog::getInt(this, "Move current blend layer", "dest",
+		(idx0 + 1) % 17, 1, 16, 1, &ok);
+
+	if ((idx1 < 1) || !ok)
+	{
+		return;
+	}
+
+	el_gl_widget->move_terrain_blend_layer(idx0, idx1);
+
+	update_terrain_layers();
+	terrain_layers->setCurrentRow(idx1);
 }

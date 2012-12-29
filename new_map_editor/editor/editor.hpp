@@ -212,6 +212,10 @@ namespace eternal_lands
 			float get_tile_layer_height(const Uint16 index) const;
 			void set_tile_layer_height(const float value,
 				const Uint16 layer);
+			void swap_terrain_blend_layers(const Uint16 idx0,
+				const Uint16 idx1);
+			void move_terrain_blend_layer(const Uint16 idx0,
+				const Uint16 idx1);
 
 			inline bool get_neares_terrain_data(
 				const glm::vec3 &world_position,

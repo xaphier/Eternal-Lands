@@ -1,35 +1,35 @@
 /****************************************************************************
- *            terraintranslationmodification.cpp
+ *            terrainblendlayersswapmodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "terraintranslationmodification.hpp"
+#include "terrainblendlayersswapmodification.hpp"
 #include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	TerrainTranslationModification::TerrainTranslationModification(
-		const glm::vec3 &translation, const ModificationType type,
-		const Uint32 edit_id): Modification(edit_id, 0, type),
-		m_translation(translation)
+	TerrainBlendLayersSwapModification::TerrainBlendLayersSwapModification(
+		const Uint16 idx0, const Uint16 idx1, const Uint32 edit_id):
+		Modification(edit_id, 0, mt_terrain_blend_layers_swapped),
+		m_idx0(idx0), m_idx1(idx1)
 	{
 	}
 
-	TerrainTranslationModification::~TerrainTranslationModification()
-		throw()
+	TerrainBlendLayersSwapModification::~TerrainBlendLayersSwapModification(
+		) throw()
 	{
 	}
 
-	bool TerrainTranslationModification::do_merge(
+	bool TerrainBlendLayersSwapModification::do_merge(
 		Modification* modification)
 	{
-		return true;
+		return false;
 	}
 
-	bool TerrainTranslationModification::undo(EditorMapData &editor)
+	bool TerrainBlendLayersSwapModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
@@ -58,14 +58,15 @@ namespace eternal_lands
 			case mt_objects_rotation_changed:
 			case mt_objects_scale_changed:
 			case mt_objects_blend_changed:
-			case mt_objects_glow_changed:
 			case mt_objects_transparency_changed:
+			case mt_objects_glow_changed:
 			case mt_objects_selection_changed:
 			case mt_objects_materials_changed:
 			case mt_objects_name_changed:
 			case mt_objects_description_changed:
 			case mt_terrain_material_changed:
 			case mt_terrain_scale_offset_changed:
+			case mt_terrain_translation_changed:
 			case mt_scene_ground_hemisphere_changed:
 			case mt_dungeon_changed:
 			case mt_displacement_value_changed:
@@ -74,12 +75,12 @@ namespace eternal_lands
 			case mt_tile_layer_height_changed:
 			case mt_blend_value_changed:
 			case mt_blend_values_changed:
-			case mt_terrain_blend_layers_swapped:
 			case mt_terrain_blend_layer_moved:
 				return false;
-			case mt_terrain_translation_changed:
-				editor.set_terrain_translation(m_translation);
-				break;
+			case mt_terrain_blend_layers_swapped:
+				editor.swap_terrain_blend_layers(m_idx0,
+					m_idx1);
+				return false;
 		}
 
 		return false;

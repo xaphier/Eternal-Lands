@@ -331,6 +331,10 @@ namespace eternal_lands
 			Uint16 get_used_layer_count() const;
 			ImageSharedPtr get_partial_blend_map(const Uint16 layer)
 				const;
+			void swap_blend_layers(const Uint16 idx0,
+				const Uint16 idx1);
+			void move_blend_layer(const Uint16 idx0,
+				const Uint16 idx1);
 
 			inline void set_enabled(const bool enabled)
 			{

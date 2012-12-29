@@ -82,8 +82,10 @@
 #define UTF8(str) u8##str
 #endif
 
+#if (GLM_VERSION > 93)
 #define	notEqualEpsilon	epsilonNotEqual
 #define	equalEpsilon	epsilonEqual
+#endif
 
 namespace eternal_lands
 {

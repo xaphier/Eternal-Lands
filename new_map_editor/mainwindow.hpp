@@ -193,6 +193,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void remove_terrain();
 		void tile_edit();
 		void update_translation_mask();
+		void swap_terrain_blend_layers();
+		void move_terrain_blend_layer();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -66,6 +66,8 @@ namespace eternal_lands
 		mt_height_changed,
 		mt_blend_value_changed,
 		mt_blend_values_changed,
+		mt_terrain_blend_layers_swapped,
+		mt_terrain_blend_layer_moved
 	};
 
 	class EditorMapData;

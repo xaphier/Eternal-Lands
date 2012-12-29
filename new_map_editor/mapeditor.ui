@@ -150,6 +150,8 @@
     <addaction name="action_clear_invisible_terrain_layers"/>
     <addaction name="action_pack_terrain_layers"/>
     <addaction name="action_fill_terrain_blend_layer"/>
+    <addaction name="action_swap_terrain_blend_layers"/>
+    <addaction name="action_move_terrain_blend_layer"/>
     <addaction name="action_show_used_terrain_layers"/>
     <addaction name="separator"/>
     <addaction name="action_remove_terrain"/>
@@ -1687,7 +1689,7 @@
          <item>
           <widget class="QTabWidget" name="paint_tool_tabs">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="iconSize">
             <size>
@@ -4413,6 +4415,36 @@
    </property>
    <property name="toolTip">
     <string>Tile mode</string>
+   </property>
+  </action>
+  <action name="action_swap_terrain_blend_layers">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/tranlate_terrain.png</normaloff>:/icons/tranlate_terrain.png</iconset>
+   </property>
+   <property name="text">
+    <string>Swap terrain blend layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Swap terrain blend layers</string>
+   </property>
+  </action>
+  <action name="action_move_terrain_blend_layer">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/tranlate_terrain.png</normaloff>:/icons/tranlate_terrain.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move terrain blend layer</string>
+   </property>
+   <property name="toolTip">
+    <string>Move terrain blend layer</string>
    </property>
   </action>
  </widget>

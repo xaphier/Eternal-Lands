@@ -2338,3 +2338,15 @@ void ELGLWidget::align_object_to_terrain()
 	emit can_undo(m_editor->get_can_undo());
 	emit update_object(true);
 }
+
+void ELGLWidget::swap_terrain_blend_layers(const int idx0, const int idx1)
+{
+	m_editor->swap_terrain_blend_layers(idx0, idx1);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::move_terrain_blend_layer(const int idx0, const int idx1)
+{
+	m_editor->move_terrain_blend_layer(idx0, idx1);
+	emit can_undo(m_editor->get_can_undo());
+}

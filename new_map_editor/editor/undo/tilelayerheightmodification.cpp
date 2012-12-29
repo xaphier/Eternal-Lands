@@ -72,6 +72,8 @@ namespace eternal_lands
 			case mt_blend_value_changed:
 			case mt_blend_values_changed:
 			case mt_tile_value_changed:
+			case mt_terrain_blend_layers_swapped:
+			case mt_terrain_blend_layer_moved:
 				return false;
 			case mt_tile_layer_height_changed:
 				editor.set_tile_layer_height(m_value, m_layer);

@@ -759,6 +759,38 @@ namespace eternal_lands
 			m_terrain_editor.get_blend_map());
 	}
 
+	void EditorMapData::swap_terrain_blend_layers(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		m_terrain_editor.swap_blend_layers(idx0, idx1);
+
+		m_scene->update_terrain_blend_map(
+			m_terrain_editor.get_blend_map());
+
+		m_scene->set_terrain_material(
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
+			m_terrain_editor.get_material_data());
+	}
+
+	void EditorMapData::move_terrain_blend_layer(const Uint16 idx0,
+		const Uint16 idx1)
+	{
+		m_terrain_editor.move_blend_layer(idx0, idx1);
+
+		m_scene->update_terrain_blend_map(
+			m_terrain_editor.get_blend_map());
+
+		m_scene->set_terrain_material(
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_specular_maps(),
+			m_terrain_editor.get_gloss_maps(),
+			m_terrain_editor.get_height_maps(),
+			m_terrain_editor.get_material_data());
+	}
+
 	void EditorMapData::set_terrain_material(const String &albedo_map,
 		const String &specular_map, const String &gloss_map,
 		const String &height_map, const glm::vec3 &default_specular,

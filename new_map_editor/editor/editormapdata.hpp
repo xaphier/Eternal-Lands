@@ -260,6 +260,10 @@ namespace eternal_lands
 				const Uint16 layer);
 			void update_tile_layer(const Uint16 layer);
 			void set_tile_map_size(const glm::uvec2 &size);
+			void swap_terrain_blend_layers(const Uint16 idx0,
+				const Uint16 idx1);
+			void move_terrain_blend_layer(const Uint16 idx0,
+				const Uint16 idx1);
 
 			inline void update_tile_layers()
 			{
