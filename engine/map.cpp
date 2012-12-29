@@ -83,7 +83,7 @@ namespace eternal_lands
 				z = displacement_map->get_pixel(x, y, 0, 0,
 					0).z;
 
-				m_walk_height_map[x][y] = z * scale -
+				m_walk_height_map[x][y] = z * scale +
 					translation.z;
 			}
 		}
