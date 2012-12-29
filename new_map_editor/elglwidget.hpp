@@ -263,6 +263,7 @@ class ELGLWidget: public QGLWidget
 		QVector3D get_terrain_translation() const;
 		void swap_terrain_blend_layers(const int idx0, const int idx1);
 		void move_terrain_blend_layer(const int idx0, const int idx1);
+		Uint32Set get_free_object_ids() const;
 
 		inline Qt::MouseButton get_press_button() const
 		{
@@ -558,6 +559,7 @@ class ELGLWidget: public QGLWidget
 		void set_tile_layer_height_3(const double value);
 		void snap_object_to_terrain();
 		void align_object_to_terrain();
+		void object_id_changed(const QString &id);
 
 	signals:
 		void update_object(const bool select);

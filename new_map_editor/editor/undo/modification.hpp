@@ -31,6 +31,7 @@ namespace eternal_lands
 		mt_object_materials_changed,
 		mt_object_name_changed,
 		mt_object_description_changed,
+		mt_object_id_changed,
 
 		mt_objects_removed,
 		mt_objects_translation_changed,

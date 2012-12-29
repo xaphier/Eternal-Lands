@@ -130,6 +130,8 @@ namespace eternal_lands
 				const String &name);
 			void set_object_description(const Uint32 id,
 				const String &description);
+			void set_object_id(const Uint32 id,
+				const Uint32 new_id);
 			void set_all_copies_of_object_name(const Uint32 id,
 				const String &name);
 			void set_objects_transparency(const Uint32Set &ids,
@@ -216,6 +218,7 @@ namespace eternal_lands
 				const Uint16 idx1);
 			void move_terrain_blend_layer(const Uint16 idx0,
 				const Uint16 idx1);
+			Uint32Set get_free_object_ids() const;
 
 			inline bool get_neares_terrain_data(
 				const glm::vec3 &world_position,
@@ -666,6 +669,18 @@ namespace eternal_lands
 				}
 
 				set_object_description(get_id(), description);
+
+				return true;
+			}
+
+			inline bool set_object_id(const Uint32 id)
+			{
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
+				set_object_id(get_id(), id);
 
 				return true;
 			}

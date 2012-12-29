@@ -44,6 +44,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_name_changed:
 			case mt_object_description_changed:
+			case mt_object_id_changed:
 				return false;
 			case mt_objects_removed:
 				BOOST_FOREACH(const EditorObjectDescription

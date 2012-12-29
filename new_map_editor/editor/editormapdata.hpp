@@ -156,6 +156,7 @@ namespace eternal_lands
 				const bool use_height_map, const Uint16 index);
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
+			Uint32Set get_free_object_ids() const;
 			void use_object_id(const Uint32 id);
 			void use_light_id(const Uint32 id);
 			void set_view_matrix(const glm::mat4 &view_matrix);

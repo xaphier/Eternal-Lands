@@ -2350,3 +2350,14 @@ void ELGLWidget::move_terrain_blend_layer(const int idx0, const int idx1)
 	m_editor->move_terrain_blend_layer(idx0, idx1);
 	emit can_undo(m_editor->get_can_undo());
 }
+
+Uint32Set ELGLWidget::get_free_object_ids() const
+{
+	return m_editor->get_free_object_ids();
+}
+
+void ELGLWidget::object_id_changed(const QString &id)
+{
+	m_editor->set_object_id(id.toLong());
+	emit can_undo(m_editor->get_can_undo());
+}

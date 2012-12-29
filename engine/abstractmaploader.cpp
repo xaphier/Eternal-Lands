@@ -974,7 +974,7 @@ namespace eternal_lands
 		Uint32 particle_size;
 		Uint32 particle_count;
 		Uint32 particle_offset;
-		Uint32 clusters_offset;
+//		Uint32 clusters_offset;
 		Uint32 terrain_offset;
 		Uint32 name_count;
 		Uint32 name_offset; 
@@ -1043,7 +1043,8 @@ namespace eternal_lands
 		particle_size = get_reader()->read_u32_le();
 		particle_count = get_reader()->read_u32_le();
 		particle_offset = get_reader()->read_u32_le();
-		clusters_offset = get_reader()->read_u32_le();
+//		clusters_offset = get_reader()->read_u32_le();
+		get_reader()->skip(sizeof(Uint32));
 
 		name_count = get_reader()->read_u32_le();
 		name_offset = get_reader()->read_u32_le();

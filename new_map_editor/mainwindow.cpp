@@ -239,6 +239,18 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(update_materials()));
 	QObject::connect(material_9, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(update_materials()));
+	QObject::connect(material_10, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_11, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_12, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_13, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_14, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_15, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
 
 	QObject::connect(translate_x_group, SIGNAL(clicked(bool)),
 		el_gl_widget, SLOT(set_random_translation_x(bool)));
@@ -299,6 +311,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_object_witdgets.push_back(selection_type_1);
 	m_object_witdgets.push_back(selection_type_2);
 	m_object_witdgets.push_back(description);
+	m_object_witdgets.push_back(object_id);
 	m_object_witdgets.push_back(material_0);
 	m_object_witdgets.push_back(material_1);
 	m_object_witdgets.push_back(material_2);
@@ -309,6 +322,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_object_witdgets.push_back(material_7);
 	m_object_witdgets.push_back(material_8);
 	m_object_witdgets.push_back(material_9);
+	m_object_witdgets.push_back(material_10);
+	m_object_witdgets.push_back(material_11);
+	m_object_witdgets.push_back(material_12);
+	m_object_witdgets.push_back(material_13);
+	m_object_witdgets.push_back(material_14);
+	m_object_witdgets.push_back(material_15);
 
 	m_material_witdgets.push_back(material_0);
 	m_material_witdgets.push_back(material_1);
@@ -320,6 +339,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_material_witdgets.push_back(material_7);
 	m_material_witdgets.push_back(material_8);
 	m_material_witdgets.push_back(material_9);
+	m_material_witdgets.push_back(material_10);
+	m_material_witdgets.push_back(material_11);
+	m_material_witdgets.push_back(material_12);
+	m_material_witdgets.push_back(material_13);
+	m_material_witdgets.push_back(material_14);
+	m_material_witdgets.push_back(material_15);
 
 	m_material_label_witdgets.push_back(material_label_0);
 	m_material_label_witdgets.push_back(material_label_1);
@@ -331,6 +356,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_material_label_witdgets.push_back(material_label_7);
 	m_material_label_witdgets.push_back(material_label_8);
 	m_material_label_witdgets.push_back(material_label_9);
+	m_material_label_witdgets.push_back(material_label_10);
+	m_material_label_witdgets.push_back(material_label_11);
+	m_material_label_witdgets.push_back(material_label_12);
+	m_material_label_witdgets.push_back(material_label_13);
+	m_material_label_witdgets.push_back(material_label_14);
+	m_material_label_witdgets.push_back(material_label_15);
 
 	m_light_witdgets.push_back(x_translation);
 	m_light_witdgets.push_back(y_translation);
@@ -542,6 +573,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(swap_terrain_blend_layers()));
 	connect(action_move_terrain_blend_layer, SIGNAL(triggered()), this,
 		SLOT(move_terrain_blend_layer()));
+
+	connect(object_id, SIGNAL(currentIndexChanged(QString)), el_gl_widget,
+		SLOT(object_id_changed(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -839,9 +873,11 @@ void MainWindow::update_object()
 	QStringList default_materials, materials, object_materials;
 	QString material;
 	EditorObjectDescription object_description;
+	QColor color;
 	glm::vec3 rotation;
-	unsigned int id, i, index;
-	int j;
+	Uint32Set ids;
+	unsigned int id, i;
+	int j, index;
 
 	el_gl_widget->get_object_description(object_description);
 
@@ -949,7 +985,29 @@ void MainWindow::update_object()
 
 	id = object_description.get_id();
 
-	object_id->setText(QVariant(id).toString());
+	ids = el_gl_widget->get_free_object_ids();
+	ids.insert(id);
+
+	index = 0;
+
+	object_id->clear();
+	color = QColor::fromRgbF(0.5f, 0.5f, 0.5f);
+
+	BOOST_FOREACH(const Uint32 id_value, ids)
+	{
+		object_id->addItem(QString::number(id_value), id_value);
+
+		if (id_value == id)
+		{
+			object_id->setItemData(index, QBrush(color),
+				Qt::BackgroundRole);
+		}
+
+		index++;
+	}
+
+	object_id->setCurrentIndex(object_id->findText(QString::number(
+		id)));
 
 	default_materials = el_gl_widget->get_default_materials(
 		object_description.get_name());
@@ -979,6 +1037,8 @@ void MainWindow::update_object()
 
 	materials = el_gl_widget->get_materials();
 
+	color = QColor::fromRgbF(0.5f, 0.5f, 0.5f);
+
 	for (i = 0; i < m_material_count; ++i)
 	{
 		material = object_materials[i];
@@ -988,14 +1048,10 @@ void MainWindow::update_object()
 
 		for (j = 0; j < materials.size(); ++j)
 		{
-			QColor color;
-
 			m_material_witdgets[i]->addItem(materials[j]);
 
 			if (materials[j] == default_materials[i])
 			{
-				color = QColor::fromRgbF(0.5f, 0.5f, 0.5f);
-
 				m_material_witdgets[i]->setItemData(j,
 					QBrush(color), Qt::BackgroundRole);
 			}

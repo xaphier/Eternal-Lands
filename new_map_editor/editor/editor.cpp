@@ -740,6 +740,25 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_object_id(const Uint32 id, const Uint32 new_id)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_id() != new_id)
+		{
+			change_object(mt_object_id_changed,
+				object_description);
+
+			object_description.set_id(new_id);
+
+			m_data.remove_object(id);
+			m_data.add_object(object_description,
+				sct_no);
+		}
+	}
+
 	void Editor::set_all_copies_of_object_name(const Uint32 id,
 		const String &name)
 	{
@@ -1497,6 +1516,11 @@ namespace eternal_lands
 		m_undo.add(modification);
 
 		m_data.move_terrain_blend_layer(idx0, idx1);
+	}
+
+	Uint32Set Editor::get_free_object_ids() const
+	{
+		return m_data.get_free_object_ids();
 	}
 
 }

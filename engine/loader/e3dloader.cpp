@@ -396,12 +396,13 @@ namespace eternal_lands
 	{
 		String file_name;
 		String name;
-		Uint32 options;
+//		Uint32 options;
 
 		m_reader->set_position(material_offset + material_size *
 			material_index);
 
-		options = m_reader->read_u32_le();
+//		options = m_reader->read_u32_le();
+		m_reader->skip(sizeof(Uint32));
 
 		file_name = m_reader->read_utf8_string(128);
 

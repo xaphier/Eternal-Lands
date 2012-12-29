@@ -818,6 +818,19 @@ namespace eternal_lands
 			it_3d_object);
 	}
 
+	Uint32Set EditorMapData::get_free_object_ids() const
+	{
+		Uint32Set result;
+
+		result = m_scene->get_free_ids()->get_free_object_ids(
+			it_3d_object).get_free_typeless_ids();
+
+		result.insert(m_scene->get_free_ids()->get_free_object_ids(
+			it_3d_object).get_next_free_typeless_id());
+
+		return result;
+	}
+
 	Uint32 EditorMapData::get_free_light_id() const
 	{
 		return m_scene->get_free_ids()->get_next_free_light_id();

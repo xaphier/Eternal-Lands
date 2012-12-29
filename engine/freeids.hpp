@@ -58,6 +58,16 @@ namespace eternal_lands
 
 			void use_id(const Uint32 id);
 
+			inline const Uint32Set &get_free_typeless_ids() const
+			{
+				return m_free_typeless_ids;
+			}
+
+			inline Uint32 get_next_free_typeless_id() const
+			{
+				return m_next_free_typeless_id;
+			}
+
 			inline Uint32 get_id(const Uint32 typeless_id) const
 			{
 				return (typeless_id & m_typeless_id_mask) |
@@ -65,7 +75,7 @@ namespace eternal_lands
 						m_type_shift);
 			}
 
-			Uint32 use_typeless_id(const Uint32 typeless_id)
+			inline Uint32 use_typeless_id(const Uint32 typeless_id)
 			{
 				Uint32 id;
 

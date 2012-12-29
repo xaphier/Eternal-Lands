@@ -19,6 +19,7 @@
 #include "elconfig.h"
 #include "gl_init.h"
 #include "tiles.h"
+#include "engine.h"
 
 // We create an enum of the sides so we don't have to call each side 0 or 1.
 // This way it makes it more understandable and readable when dealing with frustum sides.

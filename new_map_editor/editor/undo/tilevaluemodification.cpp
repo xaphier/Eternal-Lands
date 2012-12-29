@@ -105,6 +105,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_name_changed:
 			case mt_object_description_changed:
+			case mt_object_id_changed:
 			case mt_objects_removed:
 			case mt_objects_translation_changed:
 			case mt_objects_rotation_changed:
