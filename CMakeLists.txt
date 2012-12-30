@@ -251,6 +251,8 @@ if ((${OPENMP_FOUND} MATCHES "TRUE") AND (${BUILD_OPENMP} MATCHES "ON"))
 target_link_libraries(el_client ${OpenMP_LIB})
 endif ((${OPENMP_FOUND} MATCHES "TRUE") AND (${BUILD_OPENMP} MATCHES "ON"))
 
+set_target_properties(el_client PROPERTIES COMPILE_DEFINITIONS EL2_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+
 if ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
 target_link_libraries(el_client ${GPA_LIBRARY})
 endif ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))

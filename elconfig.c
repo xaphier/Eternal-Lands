@@ -239,7 +239,7 @@ int engine_use_multisample_shadows = engine_true;
 int engine_use_scene_fbo = engine_true;
 int engine_light_system = 0;
 int engine_use_multithreaded_culling = engine_true;
-char el2_data_dir[256] = { 0 }; /*!< the default directory where we look for el2 data files (aka installation dir) */
+char el2_data_dir[256] = { EL2_DATA_DIR }; /*!< the default directory where we look for el2 data files (aka installation dir) */
 
 void change_engine_shadow_quality(int* var, int value)
 {
