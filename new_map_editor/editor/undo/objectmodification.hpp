@@ -22,6 +22,7 @@ namespace eternal_lands
 	{
 		private:
 			EditorObjectDescription m_object_description;
+			Uint32 m_new_id;
 
 			virtual bool do_merge(Modification* modification);
 
@@ -29,6 +30,12 @@ namespace eternal_lands
 			ObjectModification(
 				const EditorObjectDescription
 					&object_description,
+				const ModificationType type,
+				const Uint32 edit_id);
+			ObjectModification(
+				const EditorObjectDescription
+					&object_description,
+				const Uint32 new_id,
 				const ModificationType type,
 				const Uint32 edit_id);
 			virtual ~ObjectModification() throw();

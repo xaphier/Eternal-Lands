@@ -59,7 +59,7 @@ target_link_libraries(map_editor elengine)
 target_link_libraries(map_editor ${QT_LIBRARIES})
 target_link_libraries(map_editor ${ZLIB_LIBRARIES})
 if ((${OPENMP_FOUND} MATCHES "TRUE") AND (${BUILD_OPENMP} MATCHES "ON"))
-target_link_libraries(map_editor gomp)
+target_link_libraries(map_editor ${OpenMP_LIB})
 endif ((${OPENMP_FOUND} MATCHES "TRUE") AND (${BUILD_OPENMP} MATCHES "ON"))
 
 if (WIN32)

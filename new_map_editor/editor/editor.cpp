@@ -746,17 +746,26 @@ namespace eternal_lands
 
 		m_data.get_object(id, object_description);
 
-		if (object_description.get_id() != new_id)
+		if (object_description.get_id() == new_id)
 		{
-			change_object(mt_object_id_changed,
-				object_description);
-
-			object_description.set_id(new_id);
-
-			m_data.remove_object(id);
-			m_data.add_object(object_description,
-				sct_no);
+			return;
 		}
+
+		if (!add_needed(object_description.get_id(),
+			mt_object_id_changed))
+		{
+			return;
+		}
+
+		ModificationAutoPtr modification(new ObjectModification(
+			object_description, new_id, mt_object_id_changed,
+			m_edit_id));
+
+		m_undo.add(modification);
+
+		object_description.set_id(new_id);
+
+		m_data.modify_object(object_description, id);
 	}
 
 	void Editor::set_all_copies_of_object_name(const Uint32 id,

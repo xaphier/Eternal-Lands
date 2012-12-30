@@ -15,8 +15,19 @@ namespace eternal_lands
 		const EditorObjectDescription &object_description,
 		const ModificationType type, const Uint32 edit_id):
 		Modification(edit_id, object_description.get_id(), type),
-		m_object_description(object_description)
+		m_object_description(object_description), m_new_id(0)
 	{
+		assert(type != mt_object_id_changed);
+	}
+
+	ObjectModification::ObjectModification(
+		const EditorObjectDescription &object_description,
+		const Uint32 new_id, const ModificationType type,
+		const Uint32 edit_id):
+		Modification(edit_id, object_description.get_id(), type),
+		m_object_description(object_description), m_new_id(new_id)
+	{
+		assert(type == mt_object_id_changed);
 	}
 
 	ObjectModification::~ObjectModification() throw()
@@ -51,8 +62,11 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_object_name_changed:
 			case mt_object_description_changed:
-			case mt_object_id_changed:
 				editor.modify_object(m_object_description);
+				return false;
+			case mt_object_id_changed:
+				editor.modify_object(m_object_description,
+					m_new_id);
 				return false;
 			case mt_objects_removed:
 			case mt_objects_translation_changed:

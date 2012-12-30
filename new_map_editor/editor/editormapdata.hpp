@@ -100,6 +100,9 @@ namespace eternal_lands
 				const SelectionChangeType select);
 			void modify_object(
 				const EditorObjectDescription &object);
+			void modify_object(
+				const EditorObjectDescription &object,
+				const Uint32 id);
 			void modify_light(const LightData &light);
 			void modify_particle(const ParticleData &particle);
 			void modify_decal(const DecalDescription &decal);

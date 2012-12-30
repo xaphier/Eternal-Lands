@@ -280,6 +280,23 @@ namespace eternal_lands
 		m_scene->add_object(object_description);
 	}
 
+	void EditorMapData::modify_object(
+		const EditorObjectDescription &object_description,
+		const Uint32 id)
+	{
+		m_objects.erase(id);
+		m_scene->remove_object(id);
+
+		m_scene->get_free_ids()->use_object_id(
+			object_description.get_id());
+
+		m_objects.insert(std::pair<Uint32,
+			EditorObjectDescription>(object_description.get_id(),
+				object_description));
+		m_scene->add_object(object_description);
+		m_id = object_description.get_id();
+	}
+
 	void EditorMapData::modify_light(const LightData &light)
 	{
 		m_lights.erase(light.get_id());
