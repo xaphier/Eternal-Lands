@@ -1284,6 +1284,39 @@
 			</object>
 		</sub_category>
 		<sub_category>
+					<name>Caves</name>
+					<object>
+						<name>cave1</name>
+						<file>3dobjects/cave1.e3d</file>
+						<rotation>0.0 0.0 0.0</rotation>
+						<scale>1.0</scale>
+					</object>
+					<object>
+						<name>cave2</name>
+						<file>3dobjects/cave2.e3d</file>
+						<rotation>0.0 0.0 0.0</rotation>
+						<scale>1.0</scale>
+					</object>
+					<object>
+						<name>cave3</name>
+						<file>3dobjects/cave3.e3d</file>
+						<rotation>0.0 0.0 0.0</rotation>
+						<scale>1.0</scale>
+					</object>
+					<object>
+						<name>cave4</name>
+						<file>3dobjects/cave4.e3d</file>
+						<rotation>0.0 0.0 0.0</rotation>
+						<scale>1.0</scale>
+					</object>
+					<object>
+						<name>cave5</name>
+						<file>3dobjects/cave5.e3d</file>
+						<rotation>0.0 0.0 0.0</rotation>
+						<scale>1.0</scale>
+					</object>
+		</sub_category>
+		<sub_category>
 			<name>Cliffs</name>
 			<object>
 				<name>cliff_low1</name>
