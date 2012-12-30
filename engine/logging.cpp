@@ -161,7 +161,7 @@ namespace eternal_lands
 				log_level = llt_info;
 			}			
 
-			log_levels[lt_default] = llt_info;
+			log_levels[lt_default] = log_level;
 			log_levels[lt_io] = log_level;
 			log_levels[lt_texture] = log_level;
 			log_levels[lt_glsl_program] = log_level;

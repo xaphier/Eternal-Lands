@@ -469,12 +469,20 @@ extern "C" void log_ARB_debug_output(GLenum source, GLenum type, GLuint id,
 
 extern "C" void load_harvestable_list()
 {
+	TRY_BLOCK
+
 	harvestables = AbstractMapLoader::load_harvestables(file_system);
+
+	CATCH_BLOCK
 }
 
 extern "C" void load_entrable_list()
 {
+	TRY_BLOCK
+
 	entrables = AbstractMapLoader::load_entrables(file_system);
+
+	CATCH_BLOCK
 }
 
 extern "C" void init_global_vars()

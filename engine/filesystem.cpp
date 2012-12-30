@@ -552,11 +552,15 @@ namespace eternal_lands
 
 	void FileSystem::add_dir(const String &dir_name)
 	{
+		LOG_DEBUG(lt_io, UTF8("Add dir '%1%'"), dir_name);
+
 		m_archives.push_back(new DirArchive(dir_name));
 	}
 
 	void FileSystem::add_zip(const String &zip_name)
 	{
+		LOG_DEBUG(lt_io, UTF8("Add zip '%1%'"), zip_name);
+
 		m_archives.push_back(new ZipFile(zip_name));
 	}
 
@@ -564,6 +568,8 @@ namespace eternal_lands
 		const Uint8Array20 &sha1)
 	{
 		Uint8Array20 file_sha1;
+
+		LOG_DEBUG(lt_io, UTF8("Add zip '%1%'"), zip_name);
 
 		file_sha1 = get_file_sha1(zip_name);
 
@@ -580,12 +586,18 @@ namespace eternal_lands
 	void FileSystem::replace_with_dir(const String &dir_name,
 		const Uint32 index)
 	{
+		LOG_DEBUG(lt_io, UTF8("Replace index %1% with dir '%2%'"),
+			index % dir_name);
+
 		m_archives.replace(index, new DirArchive(dir_name));
 	}
 
 	void FileSystem::replace_with_zip(const String &zip_name,
 		const Uint32 index)
 	{
+		LOG_DEBUG(lt_io, UTF8("Replace index %1% with zip '%2%'"),
+			index % zip_name);
+
 		m_archives.replace(index, new ZipFile(zip_name));
 	}
 
@@ -595,6 +607,9 @@ namespace eternal_lands
 		Uint8Array20 file_sha1;
 
 		file_sha1 = get_file_sha1(zip_name);
+
+		LOG_DEBUG(lt_io, UTF8("Replace index %1% with zip '%2%'"),
+			index % zip_name);
 
 		if (sha1 != file_sha1)
 		{
@@ -611,6 +626,8 @@ namespace eternal_lands
 		AbstractArchiveVector::iterator it, end;
 
 		end = m_archives.end();
+
+		LOG_DEBUG(lt_io, UTF8("Removing dir '%1%'"), name);
 
 		for (it = m_archives.begin(); it != end; ++it)
 		{
@@ -655,8 +672,13 @@ namespace eternal_lands
 
 		end = m_archives.rend();
 
+		LOG_DEBUG(lt_io, UTF8("Checking file '%1%'"), file_name);
+
 		for (it = m_archives.rbegin(); it != end; ++it)
 		{
+			LOG_DEBUG(lt_io, UTF8("Checking archive '%1%'"),
+				it->get_name());
+
 			try
 			{
 				if (it->get_has_file(file_name))
