@@ -722,8 +722,6 @@ namespace eternal_lands
 
 		try
 		{
-			objects.next_frame();
-
 			objects.set_projection_view_matrix(
 				projection_view_matrix);
 
@@ -823,6 +821,9 @@ namespace eternal_lands
 
 		count = get_scene_view().get_shadow_map_count();
 
+		m_visible_objects.next_frame();
+		m_shadow_objects[2].next_frame()
+
 		if (use_terrain)
 		{
 			visible_terrain_buffer = m_visible_terrain.get_mesh(
@@ -909,6 +910,13 @@ namespace eternal_lands
 		{
 			shadow_frutums[i] = Frustum(get_scene_view(
 				).get_shadow_projection_view_matrices()[i]);
+		}
+
+		m_visible_objects.next_frame();
+
+		for (i = 0; i < count; ++i)
+		{
+			m_shadow_objects[i].next_frame();
 		}
 
 		if (get_global_vars()->get_use_multithreaded_culling())
