@@ -20,8 +20,10 @@ namespace eternal_lands
 		const IndexUpdateSourceSharedPtr &index_source,
 		CalCoreModel* core_model): Object(object_data, mesh,
 			materials, core_model), m_index_source(index_source)
-	{
-	}
+	{       
+        get_materials()[0]->set_texture("textures/rim.png", spt_effect_1, false);
+        get_materials()[0]->set_texture("textures/wave.png", spt_effect_2, false);
+    }
 
 	Actor::Actor(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
