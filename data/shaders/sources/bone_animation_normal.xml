@@ -83,7 +83,7 @@ world_normal = normal.xyz;
 world_position += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_position) + dual[0].w * world_position);
 world_position += 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cross(dual[0].xyz, dual[1].xyz)) ;
 world_normal += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_normal) + dual[0].w * world_normal);
-world_position += world_normal * abs(fract(time * 0.1f) - 0.5)  * 0.03;
+//world_position += world_normal * abs(fract(time * 0.1f) - 0.5)  * 0.03;
 
 world_position = vec4(world_position, 1.0) * world_transformation;
 world_normal = normalize(world_normal * mat3(world_transformation));
