@@ -821,9 +821,6 @@ namespace eternal_lands
 
 		count = get_scene_view().get_shadow_map_count();
 
-		m_visible_objects.next_frame();
-		m_shadow_objects[2].next_frame()
-
 		if (use_terrain)
 		{
 			visible_terrain_buffer = m_visible_terrain.get_mesh(
