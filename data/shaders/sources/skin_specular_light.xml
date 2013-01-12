@@ -48,8 +48,8 @@
    </parameters>
    <source>
 vec4 rim;
-vec3 dir, reflect_dir, h;
-float dist, scale, diffuse, specular, exponent, n_dot_h, n_dot_l, n_dot_v;
+vec3 diffuse, dir, reflect_dir, h;
+float dist, scale, specular, exponent, n_dot_h, n_dot_l, n_dot_v;
 
 dir = light_position.xyz - world_position * light_color.a;
 dist = dot(dir, dir);
