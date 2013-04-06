@@ -293,7 +293,7 @@ namespace IconWindow
 				{
 					const char *error_str = " : not freeing as doing action";
 					std::cerr << __PRETTY_FUNCTION__ << error_str << std::endl;
-					LOG_ERROR("%s%s", __PRETTY_FUNCTION__, error_str );
+					LOG_ERROR_OLD("%s%s", __PRETTY_FUNCTION__, error_str );
 					return;
 				}
 				for (size_t i=0; i<icon_list.size(); ++i)
@@ -469,7 +469,7 @@ namespace IconWindow
 		if (the_type.empty() || (image_id<0) || (alt_image_id<0) ||
 			(help_name.empty() && help_text.empty()) || param_name.empty())
 		{
-			LOG_ERROR("icon window factory: xml field error type=[%s] image_id=[%d] alt_image_id=[%d] help_name=[%s] help_text=[%s] param_name=[%s]\n",
+			LOG_ERROR_OLD("icon window factory: xml field error type=[%s] image_id=[%d] alt_image_id=[%d] help_name=[%s] help_text=[%s] param_name=[%s]\n",
 				the_type.c_str(), image_id, alt_image_id, help_name.c_str(), help_text.c_str(), param_name.c_str() );
 			return 0;
 		}
@@ -503,7 +503,7 @@ namespace IconWindow
 			file_name = "main_icon_window.xml";
 		else
 		{
-			LOG_ERROR("%s : invalid icon mode\n", error_prefix );
+			LOG_ERROR_OLD("%s : invalid icon mode\n", error_prefix );
 			return false;
 		}
 
@@ -516,20 +516,20 @@ namespace IconWindow
 
 		if ((doc = xmlReadFile(file_name.c_str(), NULL, 0)) == NULL)
 		{
-			LOG_ERROR("%s : Can't open file [%s]\n", error_prefix, file_name.c_str() );
+			LOG_ERROR_OLD("%s : Can't open file [%s]\n", error_prefix, file_name.c_str() );
 			return false;
 		}
 
 		if ((cur = xmlDocGetRootElement (doc)) == NULL)
 		{
-			LOG_ERROR("%s : Empty xml document\n", error_prefix );
+			LOG_ERROR_OLD("%s : Empty xml document\n", error_prefix );
 			xmlFreeDoc(doc);
 			return false;
 		}
 
 		if (xmlStrcasecmp (cur->name, (const xmlChar *) "icon_window"))
 		{
-			LOG_ERROR("%s : Not icon_window file\n", error_prefix );
+			LOG_ERROR_OLD("%s : Not icon_window file\n", error_prefix );
 			xmlFreeDoc(doc);
 			return false;
 		}
@@ -547,7 +547,7 @@ namespace IconWindow
 				std::string control_name;
 				get_xml_field_string(control_name, "control_name", cur);
 				if (control_name.empty())
-					LOG_ERROR("%s : invalid multi icon control_name\n", error_prefix );
+					LOG_ERROR_OLD("%s : invalid multi icon control_name\n", error_prefix );
 				else
 				{
 					std::vector<Virtual_Icon *> multi_icons;
@@ -583,7 +583,7 @@ namespace IconWindow
 #endif
 			icon_list.push_back(new Window_Icon(39, 38, get_named_string("tooltips", "help"), "help"));
 			icon_list.push_back(new Window_Icon(14, 34, get_named_string("tooltips", "opts"), "opts"));
-			LOG_ERROR("%s : Using default new character icons\n", __PRETTY_FUNCTION__ );
+			LOG_ERROR_OLD("%s : Using default new character icons\n", __PRETTY_FUNCTION__ );
 		}
 		else if (icon_mode == MAIN_WINDOW_ICONS)
 		{
@@ -609,10 +609,10 @@ namespace IconWindow
 			icon_list.push_back(new Window_Icon(1, 28, get_named_string("tooltips", "console"), "console"));
 			icon_list.push_back(new Window_Icon(39, 38, get_named_string("tooltips", "help"), "help"));
 			icon_list.push_back(new Window_Icon(14, 34, get_named_string("tooltips", "opts"), "opts"));
-			LOG_ERROR("%s : Using default main icons\n", __PRETTY_FUNCTION__ );
+			LOG_ERROR_OLD("%s : Using default main icons\n", __PRETTY_FUNCTION__ );
 		}
 		else
-			LOG_ERROR("%s : Invalid mode for defaul icons\n", __PRETTY_FUNCTION__ );
+			LOG_ERROR_OLD("%s : Invalid mode for defaul icons\n", __PRETTY_FUNCTION__ );
 	}
 
 }

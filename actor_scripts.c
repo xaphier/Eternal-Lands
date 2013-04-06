@@ -4771,8 +4771,6 @@ void free_actor_defs()
 			free(actors_defs[i].boots);
 		if (actors_defs[i].legs)
 			free(actors_defs[i].legs);
-		if (actors_defs[i].hardware_model)
-			clear_buffers(&actors_defs[i]);
 		CalCoreModel_Delete(actors_defs[i].coremodel);
 	}
 }

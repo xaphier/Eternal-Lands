@@ -101,13 +101,6 @@ void cleanup_mem(void)
 	end_actors_lists();
 	cleanup_lights();
 
-	/* 2d objects */
-	destroy_all_2d_objects();
-	/* 3d objects */
-	destroy_all_3d_objects();
-	/* caches */
-	cache_e3d->free_item = &destroy_e3d;
-	cache_delete(cache_e3d);
 	cache_e3d = NULL;
 	free_texture_cache();
 	// This should be fixed now  Sir_Odie
@@ -252,7 +245,6 @@ int start_rendering()
 	if (have_a_map)
 	{
 		destroy_map();
-		free_buffers();
 	}
 	unload_questlog();
 	save_item_lists();
@@ -289,8 +281,6 @@ int start_rendering()
 	clear_zip_archives();
 
 	destroy_tcp_out_mutex();
-
-	if (use_frame_buffer) free_reflection_framebuffer();
 
 	printf("doing SDL_Quit\n");
 	fflush(stderr);

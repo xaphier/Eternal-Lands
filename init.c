@@ -730,7 +730,7 @@ void init_stuff()
 	//now load the font textures
 	if (load_font_textures () != 1)
 	{
-		LOG_ERROR("%s\n", fatal_data_error);
+		LOG_ERROR_OLD("%s\n", fatal_data_error);
 		fprintf(stderr, "%s:%d: %s\n", __FILE__, __LINE__, fatal_data_error);
 		SDL_Quit();
 		exit(1);

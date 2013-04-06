@@ -188,7 +188,7 @@ namespace Trade_Log
 			{
 				std::string error_str = std::string(file_write_error_str) + ' ' + filename;
 				LOG_TO_CONSOLE(c_red2, error_str.c_str());
-				LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
+				LOG_ERROR_OLD("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
 			}
 			else
 				out << message.str();

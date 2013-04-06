@@ -2097,7 +2097,7 @@ void display_sigils_menu()
 				for(j=0;j<4;j++)
 					if (spells_list[i].reagents_id[j] >= 0)
 						if (get_item_count(spells_list[i].reagents_uid[j], spells_list[i].reagents_id[j]) != 1)
-							LOG_ERROR("Invalid spell.xml reagents spells_list[%d].reagents_uid[%d]=%d spells_list[%d].reagents_id[%d]=%d\n",
+							LOG_ERROR_OLD("Invalid spell.xml reagents spells_list[%d].reagents_uid[%d]=%d spells_list[%d].reagents_id[%d]=%d\n",
 								i, j, spells_list[i].reagents_uid[j], i, j, spells_list[i].reagents_id[j]);
 		}
 		checked_reagents = 1;
