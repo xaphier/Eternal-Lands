@@ -388,7 +388,7 @@ void load_marks_to_buffer(char* mapname, marking* buffer, int* max)
 				buffer[*max].g=g;
 				buffer[*max].b=b;
 				*max = *max + 1;
-				if ( *max > MAX_USER_MARKS ) break;
+				if ( *max >= MAX_USER_MARKS ) break;
 			}
 		}
 	}
@@ -504,7 +504,6 @@ void save_server_markings(){
 void change_3d_marks(int *rel){
 	*rel= !*rel;
 }
-
 
 int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 {

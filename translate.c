@@ -16,6 +16,24 @@
 #endif
 
 
+#ifdef ELC
+typedef struct
+{
+	char *name;
+	const char *string;
+} named_string;
+
+typedef struct
+{
+	char *name;
+	size_t num_strings;
+	named_string *strings;
+} string_group;
+
+static string_group* named_strings = NULL;
+static size_t num_named_strings = 0;
+#endif
+
 /*! \name Tooltips*/
 /*! \{ */
 #ifdef ELC
@@ -45,8 +63,10 @@ char	tt_walk[30],
 	newchar_cred_help[100],
 	newchar_done_help[100],
 	tt_name[60],
-	tt_info[30];
-char	tt_emotewin[30];
+	tt_info[30],
+	tt_emotewin[30],
+	tt_rangewin[30],
+	tt_minimap[30];
 
 #endif // ELC
 
@@ -322,7 +342,7 @@ char
 	cm_dialog_options_str[80],
 	cm_dialog_menu_str[60],
 	cm_url_menu_str[150],
-	cm_counters_menu_str[90],
+	cm_counters_menu_str[160],
 	cm_help_options_str[50],
 	cm_npcname_menu_str[50],
 	cm_dialog_copy_menu_str[50],
@@ -444,7 +464,9 @@ char	name_too_long[75],
 	cmd_user_menu_wait_time_ms[30],
 	cmd_open_url[20],
 	cmd_show_spell[20],
-	cmd_cast_spell[20];
+	cmd_cast_spell[20],
+	cmd_reload_icons[20],
+	cmd_session_counters[20];
 #endif
 
 /*! \name Errors */
@@ -472,6 +494,7 @@ char	reg_error_str[15],
 	/* books.c */
 	book_open_err_str[30],
 	/*cache.c*/
+	cache_items_str[20],
 	cache_size_str[20],
 	/* cal.c */
 	no_animation_err_str[30],
@@ -561,6 +584,7 @@ char	reg_error_str[15],
 	init_display_str[35],
 	prep_op_win_str[35],
 	/* interface;c */
+	err_mapmarks_str[60],
 	err_nomap_str[60],
 	/* map_io.c */
 	load_map_str[35],
@@ -675,6 +699,7 @@ char	reg_error_str[15],
 	exceed_note_buffer[100],
 	user_no_more_notes[100],
 	user_no_more_note_tabs[100],
+	fatal_data_error[120],
 	dc_note_remove[50],
 	note_saved[50],
 	note_save_failed[50],
@@ -896,6 +921,76 @@ void init_translatables()
 }
 
 #ifdef ELC
+/* Save translated strings with their names for later lookup.
+*/
+void save_named_strings(const group_id *groups, size_t num_groups, const char *group_name)
+{
+	size_t i,j;
+
+	for (j=0; j<num_groups; j++)
+	{
+		if (strcmp(groups[j].xml_id, group_name) == 0)
+		{
+			named_strings = (string_group*)realloc(named_strings, (num_named_strings+1) * sizeof(string_group));
+			named_strings[num_named_strings].name = (char *)malloc(sizeof(char *) * (strlen(group_name) + 1));
+			strcpy(named_strings[num_named_strings].name, group_name);
+
+			named_strings[num_named_strings].num_strings = groups[j].no;
+			named_strings[num_named_strings].strings = (named_string*)malloc(sizeof(named_string) * groups[j].no);
+
+			for (i=0; i<groups[j].no; i++)
+			{
+				named_strings[num_named_strings].strings[i].name = (char *)malloc(sizeof(char *) * (strlen(groups[j].strings[i]->xml_id) + 1));
+				strcpy(named_strings[num_named_strings].strings[i].name, groups[j].strings[i]->xml_id);
+				named_strings[num_named_strings].strings[i].string = groups[j].strings[i]->var;
+			}
+
+			num_named_strings++;
+			return;
+		}
+	}
+}
+#endif
+
+#ifdef ELC
+/* Retrieve a translated string by its name.
+*/
+const char* get_named_string(const char* group_name, const char* string_name)
+{
+	size_t i,j;
+	if ((group_name!=NULL) && (string_name!=NULL))
+		for (j=0; j<num_named_strings; j++)
+			if (strcmp(named_strings[j].name, group_name) == 0)
+				for (i=0; i<named_strings[j].num_strings; i++)
+					if (strcmp(named_strings[j].strings[i].name, string_name) == 0)
+						return named_strings[j].strings[i].string;
+	return "Unknown string";
+}
+#endif
+
+/* Free the memory allocated by translation module
+*/
+void free_translations(void)
+{
+#ifdef ELC
+	/* the named strings */
+	{
+	size_t i,j;
+	for (j=0; j<num_named_strings; j++)
+	{
+		for (i=0; i<named_strings[j].num_strings; i++)
+			free(named_strings[j].strings[i].name);
+		free(named_strings[j].name);
+		free(named_strings[j].strings);
+	}
+	free(named_strings);
+	num_named_strings = 0;
+	named_strings = NULL;
+	}
+#endif
+}
+
+#ifdef ELC
 void init_console()
 {
 	group_id * filter=&(console_str[0]);
@@ -1017,6 +1112,8 @@ void init_console()
 	add_xml_identifier(cmd_grp,"user_menu_wait_time_ms",cmd_user_menu_wait_time_ms,"user_menu_wait_time_ms",sizeof(cmd_user_menu_wait_time_ms));
 	add_xml_identifier(cmd_grp,"show_spell",cmd_show_spell,"show_spell",sizeof(cmd_show_spell));
 	add_xml_identifier(cmd_grp,"cast_spell",cmd_cast_spell,"cast_spell",sizeof(cmd_cast_spell));
+	add_xml_identifier(cmd_grp,"session_counters",cmd_session_counters,"session_counters",sizeof(cmd_session_counters));
+	add_xml_identifier(cmd_grp,"reload_icons",cmd_reload_icons,"reload_icons",sizeof(cmd_reload_icons));
 }
 #endif
 
@@ -1068,7 +1165,7 @@ void init_errors()
 	add_xml_identifier(load,"exceednotes",exceed_note_buffer,"Tried to exceed notepad buffer! Ignored.",sizeof(exceed_note_buffer));
 	add_xml_identifier(load,"nomorenotes",user_no_more_notes,"No room for more notes.",sizeof(user_no_more_notes));
 	add_xml_identifier(load,"nomorenotetabs",user_no_more_note_tabs,"No room for more note tabs.",sizeof(user_no_more_note_tabs));
-
+	add_xml_identifier(load,"fataldataerror",fatal_data_error,"Fatal error while loading data files. Either set the data_dir correctly or run from the data directory.",sizeof(fatal_data_error));
 
 	//Miscellaneous errors
 	add_xml_identifier(misc,"no_walk_sitlock",no_walk_with_sitlock,"Sitlock is enabled. Disable it or stand before walking.",sizeof(no_walk_with_sitlock));
@@ -1104,6 +1201,7 @@ void init_errors()
 	add_xml_identifier (misc, "emptymap", empty_map_str, "Using an empty map instead.", sizeof(empty_map_str));
 	add_xml_identifier (misc, "nonomap", no_nomap_str, "Fatal error: Couldn't load map ./maps/nomap.elm.\nFix your maps.", sizeof(no_nomap_str));
 	add_xml_identifier (misc, "nobmpmap", err_nomap_str, "There is no map for this place.", sizeof(err_nomap_str));
+	add_xml_identifier (misc, "mapmarks", err_mapmarks_str, "Maximum number of mapmarks reached.", sizeof(err_mapmarks_str));
 	add_xml_identifier (misc, "book_open", book_open_err_str, "Couldn't open the book: %s!", sizeof(book_open_err_str));
 	add_xml_identifier (misc, "noanimation", no_animation_err_str, "No animation: %s!\n", sizeof(no_animation_err_str));
 	add_xml_identifier (misc, "invalid_location", invalid_location_str, "Invalid location %d,%d", sizeof(invalid_location_str));
@@ -1287,7 +1385,8 @@ void init_help()
 	add_xml_identifier(misc,"abort",abort_str,"Abort",sizeof(abort_str));
 	add_xml_identifier(misc,"sigils",sig_too_few_sigs,"This spell requires at least 2 sigils",sizeof(sig_too_few_sigs));
 	add_xml_identifier(misc,"switch",switch_video_mode,"Switches to video mode %s",sizeof(switch_video_mode));
-	add_xml_identifier(misc,"cache",cache_size_str,"Cache size",sizeof(cache_size_str));
+	add_xml_identifier(misc,"cachei",cache_items_str,"items",sizeof(cache_items_str));
+	add_xml_identifier(misc,"caches",cache_size_str,"Cache size",sizeof(cache_size_str));
 	add_xml_identifier (misc, "appropr_name", use_appropriate_name, "Use an appropriate name:\nPlease do not create a name that is obscene or offensive, contains more than 2 digits, is senseless or stupid (i.e. djrtq47fa), or is made with the intent of impersonating another player.\nTake into consideration that the name you choose does affect the atmosphere of the game. Inappropriate names can and will be locked.", sizeof (use_appropriate_name) );
 	add_xml_identifier(misc,"edit_quantity",quantity_edit_str,"Rightclick on the quantity you wish to edit",sizeof(quantity_edit_str));
 	add_xml_identifier(misc,"equip_here",equip_here_str,"Place an item in these boxes to equip it",sizeof(equip_here_str));
@@ -1428,7 +1527,9 @@ void init_help()
 	add_xml_identifier(tooltips,"name_pass",tt_name,"Choose name and password",sizeof(tt_name));
 	add_xml_identifier (tooltips, "info", tt_info, "View notepad/URL window", sizeof (tt_info));
 	add_xml_identifier (tooltips, "emotewin", tt_emotewin, "View Emote window", sizeof (tt_emotewin));
-	
+	add_xml_identifier (tooltips, "range", tt_rangewin, "View Ranging window", sizeof (tt_rangewin));
+	add_xml_identifier (tooltips, "minimap", tt_minimap, "View Minimap window", sizeof (tt_minimap));
+
 	//Buddy list
 	add_xml_identifier(buddy, "name", buddy_name_str, "Name:", sizeof(buddy_name_str));
 	add_xml_identifier(buddy, "name_desc", buddy_long_name_str, "The name of your buddy", sizeof(buddy_long_name_str));
@@ -1474,7 +1575,7 @@ void init_help()
 	add_xml_identifier(misc, "cm_dialog_options", cm_dialog_options_str, "Auto close storage dialogue\nAuto select storage option in dialogue", sizeof(cm_dialog_options_str));
 	add_xml_identifier(misc, "cm_dialog_menu", cm_dialog_menu_str, "--\nEnable Keypresses\nKeypresses Anywhere", sizeof(cm_dialog_menu_str));
 	add_xml_identifier(misc, "cm_url_menu", cm_url_menu_str, "Open\nFind In Console\nMark Visited\nMark Unvisited\n--\nDelete\n--\nDelete All", sizeof(cm_url_menu_str));	
-	add_xml_identifier(misc, "cm_counters_menu", cm_counters_menu_str, "Delete Entry\n--\nReset Session Total\n--\nEnable Floating Messages For Category", sizeof(cm_counters_menu_str));
+	add_xml_identifier(misc, "cm_counters_menu", cm_counters_menu_str, "Delete Entry\n--\nReset Session Total\n--\nEnable Floating Messages For Category\n--\nPrint Category\nPrint All Categories\nPrint Just Session Information", sizeof(cm_counters_menu_str));
 	add_xml_identifier(misc, "cm_help_options", cm_help_options_str, "Right-click for options.", sizeof(cm_help_options_str));
 	add_xml_identifier(misc, "cm_npcname_menu", cm_npcname_menu_str, "Copy NPC Name", sizeof(cm_npcname_menu_str));
 	add_xml_identifier(misc, "cm_dialog_copy_menu", cm_dialog_copy_menu_str, "Exclude Responses\nRemove newlines", sizeof(cm_dialog_copy_menu_str));
@@ -1494,7 +1595,8 @@ void init_help()
 
 	/* quest_log.cpp */
 	add_xml_identifier(misc, "cm_questlog_menu", cm_questlog_menu_str,
-		"Show all quests & entries\nOpen quest list window\nOpen NPC list window\nSelect NPCs, starting with none...\nShow just this NPC\n--\n"
+		"Show all quests & entries\nOpen quest list window\nOpen NPC list window\n"
+		"Select NPCs, starting with none...\nShow just this NPC\nShow just this quest\n--\n"
 		"Copy entry\nCopy all entries\nFind text...\nAdd entry...\n--\n"
 		"Select entry\nUnselect entry\nSelect all entries\nUnselect all entires\nShow only selected entries\n--\n"
 		"Delete entry\nUndelete entry\n--\n"
@@ -1502,7 +1604,7 @@ void init_help()
 		"Save changes", sizeof(cm_questlog_menu_str));
 	add_xml_identifier(misc, "cm_questlist_menu", cm_questlist_menu_str,
 		"Quest completed\nAdd selected entries to quest\n--\n"
-		"Hide completed quests\nDo not always open window\n", sizeof(cm_questlist_menu_str));
+		"Hide completed quests\nDo not always open window\nStart window left of entires\n", sizeof(cm_questlist_menu_str));
 	add_xml_identifier(misc, "questlog_find_prompt", questlog_find_prompt_str, "Text to Find", sizeof(questlog_find_prompt_str));
 	add_xml_identifier(misc, "questlog_add_npc_prompt", questlog_add_npc_prompt_str, "NPC name", sizeof(questlog_add_npc_prompt_str));	
 	add_xml_identifier(misc, "questlog_add_text_prompt", questlog_add_text_prompt_str, "Entry text", sizeof(questlog_add_text_prompt_str));	
@@ -1761,6 +1863,9 @@ void load_translatables()
 #endif
 		xmlFreeDoc(file.file);
 	}
+#endif
+#ifdef ELC
+	save_named_strings(help_str,HELP_STR, "tooltips");
 #endif
 #ifndef WRITE_XML
 //There's no need for these variables to be hanging around any more...

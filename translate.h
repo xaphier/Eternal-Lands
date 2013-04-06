@@ -205,8 +205,10 @@ extern char 	tt_walk[30],
 		newchar_cred_help[100],
 		newchar_done_help[100],
 		tt_name[60],
-		tt_info[30];
-extern char	tt_emotewin[30];
+		tt_info[30],
+		tt_emotewin[30],
+		tt_rangewin[30],
+		tt_minimap[30];
 
 
 #endif  //DOXYGEN_SKIP_THIS
@@ -282,6 +284,8 @@ extern char
 		cmd_open_url[20],
 		cmd_show_spell[20],
 		cmd_cast_spell[20],
+		cmd_reload_icons[20],
+		cmd_session_counters[20],
 		help_cmd_markpos_str[50],
 		location_info_str[40],
 		knowledge_cmd_str[40],
@@ -472,7 +476,7 @@ extern char
 		cm_dialog_options_str[80],
 		cm_dialog_menu_str[60],
 		cm_url_menu_str[150],
-		cm_counters_menu_str[90],
+		cm_counters_menu_str[160],
 		cm_help_options_str[50],
 		cm_npcname_menu_str[50],
 		cm_dialog_copy_menu_str[50],
@@ -542,6 +546,7 @@ extern char	reg_error_str[15],
 		/* books.c*/
 		book_open_err_str[30],
 		/*cache.c*/
+		cache_items_str[20],
 		cache_size_str[20],
 		/* cal.c */
 		no_animation_err_str[30],
@@ -667,6 +672,7 @@ extern char	reg_error_str[15],
 		init_display_str[35],
 		prep_op_win_str[35],
 		/* interface;c */
+		err_mapmarks_str[60],
 		err_nomap_str[60],
 		/* map_io.c */
 		load_map_str[35],
@@ -777,6 +783,7 @@ extern char	reg_error_str[15],
 		exceed_note_buffer[100],
 		user_no_more_notes[100],
 		user_no_more_note_tabs[100],
+		fatal_data_error[120],
 		warn_currently_ignoring[50],
 		dc_note_remove[50],
 		note_saved[50],
@@ -889,6 +896,26 @@ void load_translatables();
  * \callgraph
  */
 void add_options_distringid(char * xml_id, dichar * var, char * str, char * desc);
+
+
+/*!
+ * \ingroup	translation
+ *
+ *          Retrieve a translated string by its name.
+ *
+ * \callgraph
+ */
+const char* get_named_string(const char* group_name, const char* string_name);
+
+
+/*!
+ * \ingroup	translation
+ *
+ *          Free allocated memory.
+ *
+ * \callgraph
+ */
+ void free_translations(void);
 
 #ifdef __cplusplus
 } // extern "C"

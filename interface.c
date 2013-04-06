@@ -62,7 +62,6 @@ int username_text_length=0;
 int password_text_length=0;
 
 int have_a_map=0;
-int combat_mode=0;
 int auto_camera=0;
 int view_health_bar=1;
 int view_ether_bar=0;
@@ -1201,9 +1200,14 @@ int put_mark_on_position(int map_x, int map_y, char * name)
 		if (map_x < 0
 		|| map_x >= tile_map_size_x*6
 		|| map_y < 0
-		|| map_y >= tile_map_size_y*6
-		|| max_mark>=MAX_USER_MARKS) {
-						return 0;
+		|| map_y >= tile_map_size_y*6)
+		{
+			return 0;
+		}
+		if (max_mark>=MAX_USER_MARKS)
+		{
+			LOG_TO_CONSOLE(c_red2, err_mapmarks_str);
+			return 0;
 		}
 		marks[max_mark].x = map_x;
 		marks[max_mark].y = map_y;
@@ -1250,13 +1254,14 @@ void put_mark_on_map_on_mouse_position()
         adding_mark = 1;
 		}
 }
-void put_mark_on_current_position(char *name)
+int put_mark_on_current_position(char *name)
 {
 	actor *me = get_our_actor ();
 
 	if (me != NULL)
 	{	
-		put_mark_on_position(me->x_tile_pos, me->y_tile_pos, name);
+		if (put_mark_on_position(me->x_tile_pos, me->y_tile_pos, name))
+			return 1;
 		/* Lachesis: reusing available code
 		marks[max_mark].x = me->x_tile_pos;
 		marks[max_mark].y = me->y_tile_pos;
@@ -1267,7 +1272,8 @@ void put_mark_on_current_position(char *name)
 		max_mark++;
 		save_markings();
 		*/
-	}		
+	}
+	return 0;		
 }
 
 void delete_mark_on_map_on_mouse_position()

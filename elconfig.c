@@ -37,6 +37,7 @@
  #include "init.h"
  #include "interface.h"
  #include "items.h"
+ #include "item_info.h"
  #include "manufacture.h"
  #include "map.h"
  #include "mapwin.h"
@@ -56,6 +57,7 @@
  #include "storage.h"
  #include "tabs.h"
  #include "trade.h"
+ #include "trade_log.h"
  #include "weather.h"
  #include "minimap.h"
  #ifdef NEW_ALPHA
@@ -654,7 +656,7 @@ static void consolidate_rotate_chat_log_status(void)
 	if ((rotate_chat_log==1) && !rotate_chat_log_config_var)
 	{
 		rotate_chat_log_config_var = 1;
-		set_var_unsaved("rotate_chat_log", OPT_BOOL);
+		set_var_unsaved("rotate_chat_log", INI_FILE_VAR);
 	}
 }
 
@@ -697,6 +699,7 @@ void change_poor_man(int *poor_man)
 #ifndef MAP_EDITOR2
 		special_effects= 0;
 		use_eye_candy = 0;
+		show_weather = 0;
 #endif
 #ifndef MAP_EDITOR
 		use_frame_buffer= 0;
@@ -778,10 +781,10 @@ int switch_video(int mode, int full_screen)
 		win_bpp = video_modes[index].bpp;
 	}
 
-#ifdef WINDOWS
+#ifndef LINUX
 	LOG_TO_CONSOLE(c_green2, video_restart_str);
 	video_mode=mode;
-	set_var_unsaved("switch_vidmode", INI_FILE_VAR);
+	set_var_unsaved("video_mode", INI_FILE_VAR);
 	return 1;
 #endif
 
@@ -990,6 +993,17 @@ void set_buff_icon_size(int *pointer, int value)
 	*pointer = value;
 	/* Turn off icons when the size is zero (or at least low). */
 	view_buffs = (value < 5) ?0: 1;
+}
+
+void change_dark_channeltext(int *dct, int value)
+{
+	*dct = value;
+	if (*dct == 1)
+		set_text_message_color (&input_text_line, 0.6f, 0.6f, 0.6f);
+	else if (*dct == 2)
+		set_text_message_color (&input_text_line, 0.16f, 0.16f, 0.16f);
+	else
+		set_text_message_color (&input_text_line, 1.0f, 1.0f, 1.0f);
 }
 
 void change_windowed_chat (int *wc, int val)
@@ -1752,6 +1766,8 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"big_cursors","big_cursors", &big_cursors, change_var,0,"Big Pointers", "Use 32x32 graphics for pointer. Only works with SDL cursor turned off.", CONTROLS);
 	add_var(OPT_FLOAT,"pointer_size","pointer_size", &pointer_size, change_float,1.0,"Pointer Size", "Scale the pointer. 1.0 is 1:1 scale with pointer graphic. Only works with SDL cursor turned off.", CONTROLS,0.25,4.0,0.05);
 #endif // NEW_CURSOR
+	add_var(OPT_BOOL_INI,"enable_trade_log", "enabletradelog", &enable_trade_log, change_var, 0, "Enable trade log", "Enable logging of all successful trades. (Experimental)", CONTROLS);
+	add_var(OPT_MULTI,"trade_log_mode","tradelogmode",&trade_log_mode,change_int, TRADE_LOG_NONE,"Trade log","Set how successful trades are logged.",CONTROLS,"Do not log trades", "Log only to console", "Log only to file", "Log to console and file", NULL);
 	// CONTROLS TAB
 
 
@@ -1767,6 +1783,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"logo_click_to_url","logoclick",&logo_click_to_url,change_var,0,"Logo Click To URL","Toggle clicking the LOGO opening a browser window",HUD);
 	add_var(OPT_STRING,"logo_link", "logolink", LOGO_URL_LINK, change_string, 128, "Logo Link", "URL when clicking the logo", HUD);
 	add_var(OPT_BOOL,"show_help_text","shelp",&show_help_text,change_var,1,"Help Text","Enable tooltips.",HUD);
+	add_var(OPT_BOOL,"show_item_desc_text","showitemdesctext",&show_item_desc_text,change_var,1,"Item Description Text","Enable item description tooltips. Needs item_info.txt file.",HUD);
 	add_var(OPT_BOOL,"use_alpha_border", "aborder", &use_alpha_border, change_var, 1,"Alpha Border","Toggle the use of alpha borders",HUD);	//ADVVID);
 	add_var(OPT_BOOL,"use_alpha_banner", "abanner", &use_alpha_banner, change_var, 0,"Alpha Behind Name/Health Text","Toggle the use of an alpha background to name/health banners",HUD);
 	add_var(OPT_BOOL,"cm_banner_disabled", "cmbanner", &cm_banner_disabled, change_var, 0,"Disable Name/Health Text Context Menu","Disable the context menu on your players name/health banner.",HUD);
@@ -1831,6 +1848,7 @@ static void init_ELC_vars(void)
 	/* add_var(OPT_STRING,"text_filter_replace","trepl",text_filter_replace,change_string,127,"Text Filter","The word to replace bad text with",CHAT); */
 	add_var(OPT_BOOL,"caps_filter","caps",&caps_filter,change_var,1,"Caps Filter","Toggle the caps filter",CHAT);
 	add_var(OPT_BOOL,"show_timestamp","timestamp",&show_timestamp,change_var,0,"Show Time Stamps","Toggle time stamps for chat messages",CHAT);
+	add_var(OPT_MULTI_H,"dark_channeltext","dark_channeltext",&dark_channeltext,change_dark_channeltext,0,"Channel Text Color","Display the channel text in a darker color for better reading on bright maps ('Dark' may be unreadable in F1 screen)",CHAT, "Normal", "Medium", "Dark");
 	// CHAT TAB
 
 
@@ -1930,6 +1948,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_MULTI_H, "clipmap_terrain_size", "clipmap_terrain_size", &engine_clipmap_terrain_size, change_engine_clipmap_terrain_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_terrain_world_size", "clipmap_terrain_world_size", &engine_clipmap_terrain_world_size, change_engine_clipmap_terrain_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", "LIDR x8", 0);
+	add_var(OPT_BOOL,"show_weather","weather",&show_weather,change_var,1,"Show Weather Effects","Toggles thunder, lightning and rain effects.",GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */

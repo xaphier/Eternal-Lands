@@ -245,7 +245,7 @@ int    do_threaded_update(void *ptr)
 	char    buffer[1024];
 	char	*buf;
 	int	num_files= 0;
-	gzFile *fp= NULL;
+	gzFile fp= NULL;
 	char filename[1024];
 
 	LOG_DEBUG_OLD("init thread update");

@@ -26,6 +26,7 @@
 #include "global.h"
 #include "highlight.h"
 #include "hud.h"
+#include "icon_window.h"
 #include "init.h"
 #include "interface.h"
 #include "items.h"
@@ -1150,7 +1151,9 @@ int display_game_handler (window_info *win)
 		return 1;
 	}
 
-	weather_render();
+	if (show_weather){
+		weather_render();
+	}
 
 	//we do this because we don't want the rain/particles to mess with our cursor
 
@@ -1533,6 +1536,15 @@ void hide_all_windows(){
 }
 
 
+static void toggle_sit_stand()
+{
+	Uint8 str[4];
+	//Send message to server...	
+	str[0]=SIT_DOWN;
+	str[1]=!you_sit;
+	my_tcp_send(my_socket,str,2);
+}
+
 // keypress handler common to all in-game root windows (game_root_win, 
 // console_root_win, and map_root_win)
 int keypress_root_common (Uint32 key, Uint32 unikey)
@@ -1762,24 +1774,6 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 	else if (action_spell_keys(key))
 	{
 	}
-	// Okay, let's move, even when in console or map mode
-	else if (key == K_TURNLEFT)
-	{
-		//Moved delay to my_tcp_send
-		Uint8 str[2];
-		str[0] = TURN_LEFT;
-		my_tcp_send (my_socket, str, 1);
-	}
-	else if (key == K_TURNRIGHT)
-	{
-		Uint8 str[2];
-		str[0] = TURN_RIGHT;
-		my_tcp_send (my_socket, str, 1);
-	}
-	else if (key==K_ADVANCE)
-	{
-		move_self_forward();
-	}
 	// hide all windows
 	else if(key==K_HIDEWINS)
 	{
@@ -1894,53 +1888,6 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 	{
 		item_action_mode = qb_action_mode = action_mode = ACTION_USE;
 	}
-	// Roja likes to rotate the camera while in console mode :)
-	else if (key == K_ROTATELEFT)
-	{
-		camera_rotation_speed = (first_person?-1:1)*normal_camera_rotation_speed / 800.0;
-		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
-		camera_rotation_duration = 800;
-		if (fol_cam && !fol_cam_behind)
-		{
-			hold_camera += camera_kludge - last_kludge;
-			last_kludge = camera_kludge;
-		}
-	}
-	else if (key == K_FROTATELEFT)
-	{
-		camera_rotation_speed = (first_person?-1:1)*fine_camera_rotation_speed / 200.0;
-		camera_rotation_speed /= 4.0;
-		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
-		camera_rotation_duration = 200;
-		if (fol_cam && !fol_cam_behind)
-		{
-			hold_camera += camera_kludge - last_kludge;
-			last_kludge = camera_kludge;
-		}
-	}
-	else if (key == K_ROTATERIGHT)
-	{
-		camera_rotation_speed = (first_person?1:-1)*normal_camera_rotation_speed / 800.0;
-		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
-		camera_rotation_duration = 800;
-		if (fol_cam && !fol_cam_behind)
-		{
-			hold_camera += camera_kludge - last_kludge;
-			last_kludge = camera_kludge;
-		}
-	}
-	else if (key == K_FROTATERIGHT)
-	{
-		camera_rotation_speed = (first_person?1:-1)*fine_camera_rotation_speed / 200.0;
-		camera_rotation_speed /= 4.0;
-		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
-		camera_rotation_duration = 200;
-		if (fol_cam && !fol_cam_behind)
-		{
-			hold_camera += camera_kludge - last_kludge;
-			last_kludge = camera_kludge;
-		}
-	}
 	else if (key == K_AFK)
 	{
 		if (!afk) 
@@ -1959,7 +1906,7 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 	}
 	else if (key == K_SIT)
 	{
-		sit_button_pressed (NULL, 0);
+		toggle_sit_stand ();
 	}
 	else if (key == K_BROWSER)
 	{
@@ -2112,27 +2059,8 @@ int text_input_handler (Uint32 key, Uint32 unikey)
 	}
 	else if (ch == SDLK_RETURN && input_text_line.len > 0)
 	{
-		if (input_text_line.data[0] == '%' && input_text_line.len > 1) 
-		{
-			if ( (check_var (&(input_text_line.data[1]), IN_GAME_VAR) ) < 0)
-				send_input_text_line (input_text_line.data, input_text_line.len);
-		}
-		else if (input_text_line.len > 5 && input_text_line.data[0] == '@' && input_text_line.data[1] == '@' && input_text_line.data[2] != ' ')
-		{
-			chan_target_name(input_text_line.data, input_text_line.len);
-		}
-		else if ( input_text_line.data[0] == '#' || input_text_line.data[0] == char_cmd_str[0] )
-		{
-			test_for_console_command (input_text_line.data, input_text_line.len);
-		}
-		else
-		{
-			if(input_text_line.data[0] == char_at_str[0])
-				input_text_line.data[0]='@';
-			send_input_text_line (input_text_line.data, input_text_line.len);
-		}
+		parse_input(input_text_line.data, input_text_line.len);
 		add_line_to_history(input_text_line.data, input_text_line.len);
-		// also clear the buffer
 		clear_input_line();
 	}
 	else
@@ -2155,6 +2083,69 @@ int keypress_game_handler (window_info *win, int mx, int my, Uint32 key, Uint32 
 	else if (key == K_TABCOMPLETE && input_text_line.len > 0)
 	{
 		do_tab_complete(&input_text_line);
+	}
+	else if (key == K_TURNLEFT)
+	{
+		//Moved delay to my_tcp_send
+		Uint8 str[2];
+		str[0] = TURN_LEFT;
+		my_tcp_send (my_socket, str, 1);
+	}
+	else if (key == K_TURNRIGHT)
+	{
+		Uint8 str[2];
+		str[0] = TURN_RIGHT;
+		my_tcp_send (my_socket, str, 1);
+	}
+	else if (key==K_ADVANCE)
+	{
+		move_self_forward();
+	}
+	else if (key == K_ROTATELEFT)
+	{
+		camera_rotation_speed = (first_person?-1:1)*normal_camera_rotation_speed / 800.0;
+		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
+		camera_rotation_duration = 800;
+		if (fol_cam && !fol_cam_behind)
+		{
+			hold_camera += camera_kludge - last_kludge;
+			last_kludge = camera_kludge;
+		}
+	}
+	else if (key == K_FROTATELEFT)
+	{
+		camera_rotation_speed = (first_person?-1:1)*fine_camera_rotation_speed / 200.0;
+		camera_rotation_speed /= 4.0;
+		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
+		camera_rotation_duration = 200;
+		if (fol_cam && !fol_cam_behind)
+		{
+			hold_camera += camera_kludge - last_kludge;
+			last_kludge = camera_kludge;
+		}
+	}
+	else if (key == K_ROTATERIGHT)
+	{
+		camera_rotation_speed = (first_person?1:-1)*normal_camera_rotation_speed / 800.0;
+		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
+		camera_rotation_duration = 800;
+		if (fol_cam && !fol_cam_behind)
+		{
+			hold_camera += camera_kludge - last_kludge;
+			last_kludge = camera_kludge;
+		}
+	}
+	else if (key == K_FROTATERIGHT)
+	{
+		camera_rotation_speed = (first_person?1:-1)*fine_camera_rotation_speed / 200.0;
+		camera_rotation_speed /= 4.0;
+		camera_rotation_deceleration = normal_camera_deceleration*0.5E-3;
+		camera_rotation_duration = 200;
+		if (fol_cam && !fol_cam_behind)
+		{
+			hold_camera += camera_kludge - last_kludge;
+			last_kludge = camera_kludge;
+		}
 	}
 	else if (key == K_CAMERAUP)
 	{
@@ -2348,6 +2339,12 @@ void create_game_root_window (int width, int height)
 
 		if(input_widget == NULL) {
 			Uint32 id;
+			if (dark_channeltext == 1)
+				set_text_message_color (&input_text_line, 0.6f, 0.6f, 0.6f);
+			else if (dark_channeltext == 2)
+				set_text_message_color (&input_text_line, 0.16f, 0.16f, 0.16f);
+			else
+				set_text_message_color (&input_text_line, 1.0f, 1.0f, 1.0f);
 			id = text_field_add_extended(game_root_win, 42, NULL, 0, height-INPUT_HEIGHT-hud_y, width-hud_x, INPUT_HEIGHT, INPUT_DEFAULT_FLAGS, chat_zoom, 0.77f, 0.57f, 0.39f, &input_text_line, 1, FILTER_ALL, INPUT_MARGIN, INPUT_MARGIN);
 			input_widget = widget_find(game_root_win, id);
 			input_widget->OnResize = input_field_resize;

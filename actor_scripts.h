@@ -164,22 +164,14 @@ void move_self_forward();
 void init_actor_defs();
 
 /*!
- * \ingroup events_actors
- * \brief   Executes the sit down command
+ * \ingroup other
+ * \brief frees the actor_def list
  *
- *      Executes the command to sit down.
+ *      Frees the actor_def list
  *
+ * \callgraph
  */
-void you_sit_down();
-
-/*!
- * \ingroup events_actors
- * \brief   Executes the stand up command
- *
- *      Executes the command to stand up
- *
- */
-void you_stand_up();
+void free_actor_defs();
 
 int checkvisitedlist(int x, int y);
 

@@ -1057,24 +1057,29 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
     actors_list[i]->z_pos = get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
 	if(frame==frame_sit_idle||(pose!=NULL&&pose->pose==EMOTE_SITTING)){ //sitting pose sent by the server
 			actors_list[i]->poses[EMOTE_SITTING]=pose;
-			if(actors_list[i]->actor_id==yourself)you_sit_down();
+			if(actors_list[i]->actor_id==yourself)
+				you_sit=1;
 			actors_list[i]->sitting=1;
 		}
 	else if(frame==frame_stand||(pose!=NULL&&pose->pose==EMOTE_STANDING)){//standing pose sent by server
 			actors_list[i]->poses[EMOTE_STANDING]=pose;
-			if(actors_list[i]->actor_id==yourself)you_stand_up();
+			if(actors_list[i]->actor_id==yourself)
+				you_sit=0;
 		}
 	else if(frame==frame_walk||(pose!=NULL&&pose->pose==EMOTE_WALKING)){//walking pose sent by server
 			actors_list[i]->poses[EMOTE_WALKING]=pose;
-			if(actors_list[i]->actor_id==yourself)you_stand_up();
+			if(actors_list[i]->actor_id==yourself)
+				you_sit=0;
 		}
 	else if(frame==frame_run||(pose!=NULL&&pose->pose==EMOTE_RUNNING)){//running pose sent by server
 			actors_list[i]->poses[EMOTE_RUNNING]=pose;
-			if(actors_list[i]->actor_id==yourself)you_stand_up();
+			if(actors_list[i]->actor_id==yourself)
+				you_sit=0;
 		}
 	else
 		{
-			if(actors_list[i]->actor_id==yourself)you_stand_up();
+			if(actors_list[i]->actor_id==yourself)
+				you_sit=0;
 			if(frame==frame_combat_idle)
 				actors_list[i]->fighting=1;
 			else if (frame == frame_ranged)

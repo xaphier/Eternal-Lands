@@ -737,6 +737,7 @@ void unload_texture_cache()
 	}
 }
 
+
 #else	// NEW_TEXTURES
 
 #ifdef FASTER_MAP_LOAD

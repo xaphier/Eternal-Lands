@@ -897,6 +897,11 @@ int root_key_to_input_field (Uint32 key, Uint32 unikey)
 	{
 		do_tab_complete(&input_text_line);
 	}
+	else if (get_show_window(console_root_win))
+	{
+		if (!chat_input_key (input_widget, 0, 0, key, unikey))
+			return 0;
+	}
 	else
 	{
 		return 0;
@@ -961,7 +966,7 @@ int close_chat_handler (window_info *win)
 	// revert to using the tab bar
 	// call the config function to make sure it's done properly
 	change_windowed_chat(&use_windowed_chat, 1);
-	set_var_unsaved("windowed_chat", OPT_MULTI);
+	set_var_unsaved("windowed_chat", INI_FILE_VAR);
 	
 	return 1;
 }
@@ -1225,6 +1230,8 @@ void init_channel_names(void)
 			
 			// Add it.
 			add_spec_chan_name(channelno, channelname, channeldesc);
+			free(channelname);
+			free(channeldesc);
 		} else if ((!xmlStrcmp (cur->name, (const xmlChar *)"channel"))) {
 			// Get the channel.
 			attrib = xmlGetProp (cur, (xmlChar*)"number");
@@ -1278,6 +1285,8 @@ void init_channel_names(void)
 			
 			// Add it.
 			add_chan_name(channelno, channelname, channeldesc);
+			free(channelname);
+			free(channeldesc);
 		} else {
 			LOG_ERROR_OLD (xml_undefined_node, file, (cur->name != NULL && strlen((char*)cur->name) < 100) ? cur->name	: (const xmlChar *)"not a string");
 		}
@@ -1288,6 +1297,7 @@ void init_channel_names(void)
 		LOG_ERROR_OLD(using_builtin_chanlist);
 		generic_chans();
 	}
+	xmlFreeDoc(doc);
 }
 
 void cleanup_chan_names(void)
@@ -2100,21 +2110,6 @@ int command_jlc(char * text, int len)
 		safe_strncpy(text, number, strlen(text));	//could be longer than the name, and hence we may
 	}							//not have enough storage space to replace the name
 	return 0; //note: this change could also put us over the 160-char limit if not checked
-}
-
-void chan_target_name(char * text, int len)
-{
-	unsigned int num;
-	int mylen;
-	char buffer[MAX_TEXT_MESSAGE_LENGTH];
-
-	num = chan_int_from_name(text+2, &mylen);
-	if(num <= 0) {
-		send_input_text_line (text, len);
-		return;
-	}
-	safe_snprintf(buffer, sizeof(buffer), "@@%d%s", num, text+2+mylen);
-	send_input_text_line (buffer, strlen(buffer));
 }
 
 ////////////////////////////////////////////////////////////////////////

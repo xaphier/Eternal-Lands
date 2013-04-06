@@ -21,6 +21,7 @@
 #include "asc.h"
 #include "astrology.h"
 #include "bbox_tree.h"
+#include "books.h"
 #include "buddy.h"
 #include "console.h"
 #include "cursors.h"
@@ -32,7 +33,7 @@
 #include "errors.h"
 #include "events.h"
 #include "gl_init.h"
-#include "hud.h"
+#include "icon_window.h"
 #include "init.h"
 #include "item_lists.h"
 #include "interface.h"
@@ -43,10 +44,12 @@
 #include "questlog.h"
 #include "queue.h"
 #include "rules.h"
+#include "sky.h"
 #include "sound.h"
 #include "text.h"
 #include "timers.h"
 #include "translate.h"
+#include "textures.h"
 #include "url.h"
 #include "weather.h"
 #include "counters.h"
@@ -97,17 +100,20 @@ void cleanup_mem(void)
 	destroy_all_actors();
 	end_actors_lists();
 	cleanup_lights();
-	// Horrible hack >>>>
-	// There's a bug with this call, it appears to make use of memory it's already freed.
-	// Valgrind shows on Linux but I've not seen a crash.
-	// It appears to cause a crash on windows XP.
-	// It appears only to happen when NEW_TEXTURES is enabled.
-	// It is in the code from many weeks back.
-	// Until the bug can be found, just don't do the call.
-	// Hunting the bug continues.... pjbroad/blaup
-	//cache_delete(cache_system);
+
+	/* 2d objects */
+	destroy_all_2d_objects();
+	/* 3d objects */
+	destroy_all_3d_objects();
+	/* caches */
+	cache_e3d->free_item = &destroy_e3d;
+	cache_delete(cache_e3d);
+	cache_e3d = NULL;
+	free_texture_cache();
+	// This should be fixed now  Sir_Odie
+	cache_delete(cache_system);
+
 	cache_system = NULL;
-	// Horrible hack <<<
 	/* map location information */
 	for (i = 0; continent_maps[i].name; i++)
 	{
@@ -242,10 +248,17 @@ int start_rendering()
 	destroy_sound();		// Cleans up physical elements of the sound system and the streams thread
 	clear_sound_data();		// Cleans up the config data
 #endif // NEW_SOUND
+	ec_destroy_all_effects();
+	if (have_a_map)
+	{
+		destroy_map();
+		free_buffers();
+	}
 	unload_questlog();
 	save_item_lists();
 	free_emotes();
-	free_icons();
+	free_actor_defs();
+	free_books();
 	free_vars();
 	cleanup_rules();
 	save_exploration_map();
@@ -254,6 +267,8 @@ int start_rendering()
 	SDL_RemoveTimer(draw_scene_timer);
 	SDL_RemoveTimer(misc_timer);
 	free_astro_buffer();
+	free_translations();
+	free_skybox();
 	/* Destroy our GL context, etc. */
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
 	SDL_QuitSubSystem(SDL_INIT_TIMER);
@@ -275,6 +290,8 @@ int start_rendering()
 
 	destroy_tcp_out_mutex();
 
+	if (use_frame_buffer) free_reflection_framebuffer();
+
 	printf("doing SDL_Quit\n");
 	fflush(stderr);
 	SDL_Quit( );
@@ -283,6 +300,7 @@ int start_rendering()
 	cleanup_mem();
 	xmlCleanupParser();
 	FreeXML();
+
 	exit_engine();
 
 	return(0);
