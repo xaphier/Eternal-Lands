@@ -34,14 +34,14 @@ namespace eternal_lands
 		public:
 			XmlReader();
 			XmlReader(const XmlBufferSharedPtr &buffer);
-			XmlReader(const FileSystemSharedPtr &file_system,
+			XmlReader(const FileSystemConstSharedPtr &file_system,
 				const String &file_name);
 			XmlReader(const String &file_name);
 			~XmlReader() noexcept;
 			xmlNodePtr get_root_node();
 
 			static bool get_xml_reader(
-				const FileSystemSharedPtr &file_system,
+				const FileSystemConstSharedPtr &file_system,
 				const String &file_name,
 				XmlReaderSharedPtr &xml_reader);
 

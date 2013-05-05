@@ -106,7 +106,7 @@ namespace eternal_lands
 				const bool merge_layers);
 
 			static ImageSharedPtr load_image(const String &name,
-				const FileSystemSharedPtr &file_system,
+				const FileSystemConstSharedPtr &file_system,
 				const ImageCompressionTypeSet &compressions,
 				const bool rg_formats, const bool sRGB,
 				const bool merge_layers);
@@ -119,7 +119,7 @@ namespace eternal_lands
 				bool &cube_map, bool &array);
 
 			static void get_image_information(const String &name,
-				const FileSystemSharedPtr &file_system,
+				const FileSystemConstSharedPtr &file_system,
 				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
@@ -129,29 +129,29 @@ namespace eternal_lands
 				StringVector &extensions);
 
 			static void save_image_as_png(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_as_jpeg(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_as_dds(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_as_dds_dxt10(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
 
 			static void save_image_as_png(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const String &name);
 			static void save_image_as_jpeg(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const String &name);
 			static void save_image_as_dds(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const String &name);
 			static void save_image_as_dds_dxt10(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const String &name);
 
 	};

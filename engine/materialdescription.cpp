@@ -56,6 +56,11 @@ namespace eternal_lands
 						it), sampler);
 					set_sRGB(XmlUtil::get_bool_property(it,
 						String(UTF8("sRGB"))), sampler);
+					set_rectangle(
+						XmlUtil::get_bool_property(it,
+							String(UTF8(
+								"rectangle")),
+							false), sampler);
 				}
 			}
 

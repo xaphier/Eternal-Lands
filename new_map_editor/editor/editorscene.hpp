@@ -37,23 +37,25 @@ namespace eternal_lands
 		private:
 			Uint32ObjectSharedPtrMap m_light_objects;
 			Uint32ObjectSharedPtrMap m_light_sphere_objects;
-			Uint32ObjectSharedPtrMap m_heights;
-			boost::scoped_ptr<RStarTree> m_height_tree;
+			Uint32ObjectSharedPtrMap m_walk_heights;
+			boost::scoped_ptr<RStarTree> m_walk_height_tree;
 			MaterialSharedPtr m_selection_material;
 			TerrainRenderingData m_top_down_terrain;
 			ObjectVisitor m_top_down_objects;
 			glm::uvec2 m_depth_selection;
-			double m_depth;
+			float m_terrain_depth;
+			float m_object_depth;
 			Uint32 m_selected_object;
 			bool m_draw_objects;
 			bool m_draw_terrain;
 			bool m_draw_lights;
 			bool m_draw_light_spheres;
-			bool m_draw_heights;
+			bool m_draw_walk_heights;
 			GLuint m_querie_id;
 
 		protected:
-			virtual void depth_read() override;
+			virtual void terrain_depth_read() override;
+			virtual void object_depth_read() override;
 			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const override;
@@ -69,8 +71,8 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			EditorScene(const GlobalVarsSharedPtr &global_vars,
-				const FileSystemSharedPtr &file_system);
+			EditorScene(const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 
 			/**
 			 * Default destructor.
@@ -104,8 +106,10 @@ namespace eternal_lands
 			void update_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
 			void draw_selection(const glm::uvec4 &selection_rect);
+/*
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
+*/
 			void cull_map();
 			void draw_scale_view(const bool depth_only);
 			void set_terrain(
@@ -123,6 +127,9 @@ namespace eternal_lands
 			glm::vec3 get_map_min() const;
 			glm::vec3 get_map_max() const;
 			void set_map_size(const glm::uvec2 &size);
+			void set_walk_height_page(
+				const Uint16MultiArray2 &walk_height_page,
+				const glm::uvec2 &offset);
 
 			inline void deselect_object() noexcept
 			{
@@ -136,9 +143,14 @@ namespace eternal_lands
 				return m_depth_selection;
 			}
 
-			inline double get_depth() const noexcept
+			inline double get_terrain_depth() const noexcept
 			{
-				return m_depth;
+				return m_terrain_depth;
+			}
+
+			inline double get_object_depth() const noexcept
+			{
+				return m_object_depth;
 			}
 
 			inline Uint32 get_selected_object() const noexcept
@@ -178,9 +190,9 @@ namespace eternal_lands
 				return m_draw_light_spheres;
 			}
 
-			inline bool get_draw_heights() const noexcept
+			inline bool get_draw_walk_heights() const noexcept
 			{
-				return m_draw_heights;
+				return m_draw_walk_heights;
 			}
 
 			inline void set_draw_objects(const bool draw_objects)
@@ -207,10 +219,10 @@ namespace eternal_lands
 				m_draw_light_spheres = draw_light_spheres;
 			}
 
-			inline void set_draw_heights(const bool draw_heights)
-				noexcept
+			inline void set_draw_walk_heights(
+				const bool draw_walk_heights) noexcept
 			{
-				m_draw_heights = draw_heights;
+				m_draw_walk_heights = draw_walk_heights;
 			}
 
 	};

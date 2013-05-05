@@ -32,7 +32,7 @@ namespace eternal_lands
 		mit_particles,
 		mit_decals,
 		mit_materials,
-		mit_height_map,
+		mit_walk_height_map,
 		mit_tile_map,
 		mit_walk_map,
 		mit_options,
@@ -55,15 +55,15 @@ namespace eternal_lands
 	class AbstractMapLoader
 	{
 		private:
-			const FileSystemSharedPtr m_file_system;
+			const FileSystemConstSharedPtr m_file_system;
 			const FreeIdsManagerSharedPtr m_free_ids;
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
 			ReaderSharedPtr m_reader;
 			StringVector m_names;
 			StringSet m_harvestables, m_entrables;
 
 		protected:
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const noexcept
 			{
 				return m_file_system;
@@ -74,7 +74,7 @@ namespace eternal_lands
 				return *m_free_ids;
 			}
 
-			inline GlobalVarsSharedPtr get_global_vars() const
+			inline GlobalVarsConstSharedPtr get_global_vars() const
 				noexcept
 			{
 				return m_global_vars;
@@ -133,14 +133,14 @@ namespace eternal_lands
 			void read_names(const Uint32 name_count,
 				const Uint32 name_offset,
 				const MapVersionType version);
-			void read_height_map(const Uint32 height_map_width,
-				const Uint32 height_map_height,
-				const Uint32 height_map_offset,
+			void read_walk_height_map(
+				const Uint32 walk_height_map_width,
+				const Uint32 walk_height_map_height,
+				const Uint32 walk_height_map_offset,
 				const MapVersionType version);
 			void read_old_tile_map(const Uint32 tile_map_width,
 				const Uint32 tile_map_height,
-				const Uint32 tile_map_offset,
-				const MapVersionType version);
+				const Uint32 tile_map_offset);
 			void read_tile_maps(const Uint32 tile_map_width,
 				const Uint32 tile_map_height,
 				const Uint32 tile_map_offset,
@@ -177,27 +177,23 @@ namespace eternal_lands
 			virtual void add_decal(const glm::vec2 &position,
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id) = 0;
-			virtual void set_height(const Uint16 x, const Uint16 y,
-				const Uint16 height) = 0;
 			virtual void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere) = 0;
 			virtual void set_tile_layer_heights(
 				const glm::vec4 &heights) = 0;
 			virtual void set_map_size(const glm::uvec2 &size) = 0;
-			virtual void set_height_map_size(
-				const glm::uvec2 &size) = 0;
-			virtual void set_tile_map_size(const glm::uvec2 &size)
-				= 0;
 			virtual void set_tile_layer(
 				const Uint8MultiArray2 &tile_map,
 				const float z_position, const Uint16 layer) = 0;
+			virtual void set_walk_height_map(
+				const Uint8MultiArray2 &walk_height_map) = 0;
 			virtual void set_dungeon(const bool dungeon) = 0;
 			virtual void instance() = 0;
 			virtual void set_terrain(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
-				const ImageSharedPtr &blend_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
+				const ImageConstSharedPtr &blend_map,
 				const StringVector &albedo_maps,
 				const StringVector &specular_maps,
 				const StringVector &gloss_maps,
@@ -212,9 +208,9 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			AbstractMapLoader(
-				const FileSystemSharedPtr &file_system,
+				const FileSystemConstSharedPtr &file_system,
 				const FreeIdsManagerSharedPtr &free_ids,
-				const GlobalVarsSharedPtr &global_vars);
+				const GlobalVarsConstSharedPtr &global_vars);
 
 			/**
 			 * Default destructor.
@@ -224,9 +220,9 @@ namespace eternal_lands
 			static bool check_format(const Uint8Array8 &id)
 				noexcept;
 			static StringSet load_harvestables(
-				const FileSystemSharedPtr &file_system);
+				const FileSystemConstSharedPtr &file_system);
 			static StringSet load_entrables(
-				const FileSystemSharedPtr &file_system);
+				const FileSystemConstSharedPtr &file_system);
 
 			static inline Sint8Array4 get_magic_number() noexcept
 			{

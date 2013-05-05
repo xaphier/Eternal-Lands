@@ -42,24 +42,25 @@ namespace eternal_lands
 
 	};
 
-	ActorDataCache::ActorDataCache(const MeshBuilderWeakPtr &mesh_builder,
+	ActorDataCache::ActorDataCache(
+		const MeshBuilderConstWeakPtr &mesh_builder,
 		const MaterialCacheWeakPtr &material_cache,
-		const MaterialBuilderWeakPtr &material_builder,
+		const MaterialBuilderConstWeakPtr &material_builder,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars):
+		const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system):
 		m_mesh_builder(mesh_builder), m_material_cache(material_cache),
 		m_material_builder(material_builder),
 		m_material_description_cache(material_description_cache),
-		m_file_system(file_system), m_global_vars(global_vars)
+		m_global_vars(global_vars), m_file_system(file_system)
 	{
 		assert(!m_mesh_builder.expired());
 		assert(!m_material_cache.expired());
 		assert(!m_material_builder.expired());
 		assert(!m_material_description_cache.expired());
-		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
+		assert(m_file_system.get() != nullptr);
 	}
 
 	ActorDataCache::~ActorDataCache() noexcept

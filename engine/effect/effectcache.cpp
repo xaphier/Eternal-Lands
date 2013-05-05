@@ -19,8 +19,8 @@ namespace eternal_lands
 {
 
 	EffectCache::EffectCache(const GlslProgramCacheWeakPtr
-			&glsl_program_cache, const ShaderSourceBuilderWeakPtr
-			&shader_source_builder):
+			&glsl_program_cache,
+		const ShaderSourceBuilderConstWeakPtr &shader_source_builder):
 		m_glsl_program_cache(glsl_program_cache),
 		m_shader_source_builder(shader_source_builder)
 	{
@@ -88,7 +88,8 @@ namespace eternal_lands
 		}
 	}
 
-	void EffectCache::load_effect(const FileSystemSharedPtr &file_system,
+	void EffectCache::load_effect(
+		const FileSystemConstSharedPtr &file_system,
 		const String &file_name)
 	{
 		EffectDescription effect_description;
@@ -130,7 +131,7 @@ namespace eternal_lands
 		}
 	}
 
-	void EffectCache::load_xml(const FileSystemSharedPtr &file_system,
+	void EffectCache::load_xml(const FileSystemConstSharedPtr &file_system,
 		const String &dir)
 	{
 		StringSet files;

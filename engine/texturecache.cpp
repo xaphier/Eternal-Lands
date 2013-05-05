@@ -125,7 +125,8 @@ namespace eternal_lands
 			}
 		}
 
-		TextureSharedPtr build_error_texture() noexcept
+		TextureSharedPtr build_error_texture(const bool rectangle)
+			noexcept
 		{
 			glm::uvec3 size;
 			ImageSharedPtr image;
@@ -143,7 +144,8 @@ namespace eternal_lands
 			texture = boost::make_shared<Texture>(String(UTF8(
 				"error")), image_width, image_height, 0,
 				0xFFFF, 0, image->get_texture_format(),
-				ttt_texture_2d);
+				rectangle ? ttt_texture_rectangle :
+					ttt_texture_2d);
 
 			texture->set_image(image);
 
@@ -152,31 +154,43 @@ namespace eternal_lands
 
 	}
 
-	TextureCache::TextureCache(const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars):
-		m_file_system(file_system), m_global_vars(global_vars)
+	TextureCache::TextureCache(const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system):
+		m_global_vars(global_vars), m_file_system(file_system)
 	{
-		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
+		assert(m_file_system.get() != nullptr);
 	}
 
 	TextureCache::~TextureCache() noexcept
 	{
 	}
 
-	const TextureSharedPtr &TextureCache::get_error_texture()
+	const TextureSharedPtr &TextureCache::get_error_texture(
+		const bool rectangle)
 	{
+		if (rectangle)
+		{
+			if (m_error_texture_rectangle.get() == nullptr)
+			{
+				m_error_texture_rectangle =
+					build_error_texture(true);
+			}
+
+			return m_error_texture_rectangle;
+		}
+
 		if (m_error_texture.get() == nullptr)
 		{
-			m_error_texture = build_error_texture();
+			m_error_texture = build_error_texture(false);
 		}
 
 		return m_error_texture;
 	}
 
 	TextureSharedPtr TextureCache::do_load_texture(const String &name,
-		const String &index, const bool sRGB, const bool merge_layers)
-		const
+		const String &index, const bool sRGB, const bool rectangle,
+		const bool merge_layers) const
 	{
 		ImageSharedPtr image;
 		ReaderSharedPtr reader;
@@ -201,18 +215,27 @@ namespace eternal_lands
 		image = CodecManager::load_image(reader, compressions,
 			rg_formats, sRGB, merge_layers);
 
-		return do_load_texture(image, index);
+		return do_load_texture(image, index, rectangle);
 	}
 
 	TextureSharedPtr TextureCache::do_load_texture(
-		const ImageSharedPtr &image, const String &name) const
+		const ImageConstSharedPtr &image, const String &name,
+		const bool rectangle) const
 	{
 		TextureSharedPtr texture;
+		TextureTargetType target;
+
+		target = image->get_texture_target();
+
+		if (rectangle && ((target == ttt_texture_1d) ||
+			(target == ttt_texture_2d)))
+		{
+			target = ttt_texture_rectangle;
+		}
 
 		texture = boost::make_shared<Texture>(name, image->get_width(),
 			image->get_height(), image->get_depth(), 0xFFFF, 0,
-			image->get_texture_format(),
-			image->get_texture_target());
+			image->get_texture_format(), target);
 
 		texture->set_image(image);
 
@@ -220,11 +243,12 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::load_texture(const String &name,
-		const String &index, const bool sRGB, const bool merge_layers)
+		const String &index, const bool sRGB, const bool rectangle,
+		const bool merge_layers)
 	{
 		try
 		{
-			return do_load_texture(name, index, sRGB,
+			return do_load_texture(name, index, sRGB, rectangle,
 				merge_layers);
 		}
 		catch (const boost::exception &exception)
@@ -236,11 +260,11 @@ namespace eternal_lands
 			LOG_EXCEPTION(exception);
 		}
 
-		return get_error_texture();
+		return get_error_texture(rectangle);
 	}
 
 	const TextureSharedPtr &TextureCache::get_texture(const String &name,
-		const bool sRGB)
+		const bool sRGB, const bool rectangle)
 	{
 		TextureSharedPtr texture;
 		TextureCacheMap::iterator found;
@@ -255,27 +279,28 @@ namespace eternal_lands
 			return found->second;
 		}
 
-		texture = load_texture(name, index, sRGB, false);
+		texture = load_texture(name, index, sRGB, rectangle, false);
 
 		m_texture_cache[index] = texture;
 
 		return m_texture_cache[index];
 	}
 
-	TextureSharedPtr TextureCache::get_texture(const ImageSharedPtr &image)
-		const
+	TextureSharedPtr TextureCache::get_texture(
+		const ImageConstSharedPtr &image, const bool rectangle) const
 	{
-		return do_load_texture(image, image->get_name());
+		return do_load_texture(image, image->get_name(), rectangle);
 	}
 
 	TextureSharedPtr TextureCache::get_texture_array(
-		const ImageSharedPtrVector &images, const String &name) const
+		const ImageConstSharedPtrVector &images, const String &name)
+		const
 	{
 		TextureSharedPtr texture;
 
 		texture = boost::make_shared<Texture>(name,
-			images[0]->get_width(),
-			images[0]->get_height(), images.size(), 0xFFFF, 0,
+			images[0]->get_width(), images[0]->get_height(),
+			images.size(), 0xFFFF, 0,
 			images[0]->get_texture_format(), ttt_texture_2d_array);
 
 		texture->set_images(images);
@@ -288,7 +313,7 @@ namespace eternal_lands
 		const bool sRGB) const
 	{
 		ImageSharedPtr image;
-		ImageSharedPtrVector images;
+		ImageConstSharedPtrVector images;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
 		bool rg_formats;
@@ -323,7 +348,7 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::get_texture_array(
-		const ImageSharedPtr &image, const String &name) const
+		const ImageConstSharedPtr &image, const String &name) const
 	{
 		TextureSharedPtr texture;
 

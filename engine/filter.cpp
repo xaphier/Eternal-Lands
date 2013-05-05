@@ -269,7 +269,7 @@ namespace eternal_lands
 			description);
 	}
 
-	Filter::Filter(const GlobalVarsSharedPtr &global_vars,
+	Filter::Filter(const GlobalVarsConstSharedPtr &global_vars,
 		const GlslProgramCacheSharedPtr &glsl_program_cache,
 		const MeshCacheSharedPtr &mesh_cache)
 	{

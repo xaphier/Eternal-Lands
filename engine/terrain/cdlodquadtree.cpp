@@ -116,9 +116,9 @@ namespace eternal_lands
 	{
 	}
 
-	void CdLodQuadTree::get_min_max_rgb10_a2(const ImageSharedPtr &image,
-		const glm::uvec2 &offset, const Uint32 size, glm::vec3 &min,
-		glm::vec3 &max)
+	void CdLodQuadTree::get_min_max_rgb10_a2(
+		const ImageConstSharedPtr &image, const glm::uvec2 &offset,
+		const Uint32 size, glm::vec3 &min, glm::vec3 &max)
 	{
 		glm::vec3 tmp;
 		glm::uvec2 index, count;
@@ -154,7 +154,7 @@ namespace eternal_lands
 		}
 	}
 
-	void CdLodQuadTree::get_min_max(const ImageSharedPtr &image,
+	void CdLodQuadTree::get_min_max(const ImageConstSharedPtr &image,
 		const glm::uvec2 &offset, const Uint32 size, glm::vec3 &min,
 		glm::vec3 &max)
 	{
@@ -190,7 +190,7 @@ namespace eternal_lands
 		}
 	}
 
-	void CdLodQuadTree::init(const ImageSharedPtr &displacement_map,
+	void CdLodQuadTree::init(const ImageConstSharedPtr &displacement_map,
 		const glm::vec3 &translation, const float patch_scale)
 	{
 		glm::vec3 min, max;
@@ -273,7 +273,7 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::update_level_zero_rgb10_a2(
-		const ImageSharedPtr &displacement_map,
+		const ImageConstSharedPtr &displacement_map,
 		const glm::vec3 &translation, const glm::uvec2 &offset,
 		const glm::uvec2 &size)
 	{
@@ -302,7 +302,7 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::update_level_zero(
-		const ImageSharedPtr &displacement_map,
+		const ImageConstSharedPtr &displacement_map,
 		const glm::vec3 &translation, const glm::uvec2 &offset,
 		const glm::uvec2 &size)
 	{

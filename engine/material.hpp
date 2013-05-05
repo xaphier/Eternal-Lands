@@ -102,7 +102,7 @@ namespace eternal_lands
 			~Material() noexcept;
 			void set_texture(const String &name,
 				const SamplerParameterType sampler,
-				const bool sRGB);
+				const bool sRGB, const bool rectangle);
 			const String &get_texture_name(
 				const SamplerParameterType sampler) const;
 			void set_effect(const String &effect);
@@ -117,8 +117,8 @@ namespace eternal_lands
 			void set_material_script(const String &material_script);
 			bool execute_script(const glm::vec4 &time,
 				asIScriptContext* context);
-			void lock() noexcept;
-			void unlock() noexcept;
+			void lock() const noexcept;
+			void unlock() const noexcept;
 
 			inline const String &get_name() const noexcept
 			{

@@ -110,7 +110,7 @@ namespace eternal_lands
 			case mt_dungeon_changed:
 				return false;
 			case mt_height_changed:
-				editor.set_heights(m_heights);
+				editor.set_walk_heights(m_heights);
 				return false;
 			case mt_tile_value_changed:
 			case mt_tile_layer_height_changed:

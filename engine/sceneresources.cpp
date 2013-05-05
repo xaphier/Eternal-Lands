@@ -27,12 +27,14 @@
 #include "terrainbuilder.hpp"
 #include "thread/threadpool.hpp"
 #include "tilebuilder.hpp"
+#include "walkheightbuilder.hpp"
 
 namespace eternal_lands
 {
 
-	SceneResources::SceneResources(const GlobalVarsSharedPtr &global_vars,
-		const FileSystemSharedPtr &file_system)
+	SceneResources::SceneResources(
+		const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system)
 	{
 		m_thread_pool = boost::make_shared<ThreadPool>(4);
 		m_script_engine = boost::make_shared<ScriptEngine>(file_system);
@@ -57,7 +59,7 @@ namespace eternal_lands
 		m_effect_cache = boost::make_shared<EffectCache>(
 			get_glsl_program_cache(), get_shader_source_builder());
 		m_texture_cache = boost::make_shared<TextureCache>(
-			file_system, global_vars);
+			global_vars, file_system);
 		m_material_description_cache =
 			boost::make_shared<MaterialDescriptionCache>();
 		m_material_builder = boost::make_shared<MaterialBuilder>(
@@ -68,14 +70,14 @@ namespace eternal_lands
 			get_material_builder(),
 			get_material_description_cache());
 		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
-			file_system, global_vars);
+			global_vars, file_system);
 		m_mesh_cache = boost::make_shared<MeshCache>(
 			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
 			get_mesh_builder(), get_material_cache(),
 			get_material_builder(),
-			get_material_description_cache(), file_system,
-			global_vars);
+			get_material_description_cache(), global_vars,
+			file_system);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
 		m_terrain_builder = boost::make_shared<TerrainBuilder>(
@@ -87,6 +89,8 @@ namespace eternal_lands
 			get_glsl_program_cache(), get_mesh_cache());
 		m_tile_builder = boost::make_shared<TileBuilder>(global_vars,
 			get_mesh_builder(), get_material_cache());
+		m_walk_height_builder = boost::make_shared<WalkHeightBuilder>(
+			global_vars, get_mesh_builder());
 	}
 
 	SceneResources::~SceneResources() noexcept
@@ -114,10 +118,12 @@ namespace eternal_lands
 		m_uniform_buffer_description_cache.reset();
 		m_hardware_buffer_mapper.reset();
 		m_terrain_builder.reset();
+		m_tile_builder.reset();
 		m_thread_pool.reset();
+		m_walk_height_builder.reset();
 	}
 
-	void SceneResources::init(const FileSystemSharedPtr &file_system)
+	void SceneResources::init(const FileSystemConstSharedPtr &file_system)
 	{
 		m_shader_source_builder->load_xml(
 			String(UTF8("shaders/shaders.xml")));

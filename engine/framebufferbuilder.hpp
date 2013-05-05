@@ -27,9 +27,9 @@ namespace eternal_lands
 	class FrameBufferBuilder: public boost::noncopyable
 	{
 		private:
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
@@ -37,7 +37,7 @@ namespace eternal_lands
 
 		public:
 			FrameBufferBuilder(
-				const GlobalVarsSharedPtr &global_vars);
+				const GlobalVarsConstSharedPtr &global_vars);
 			~FrameBufferBuilder() noexcept;
 			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,

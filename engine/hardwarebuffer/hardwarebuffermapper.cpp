@@ -17,7 +17,7 @@ namespace eternal_lands
 {
 
 	HardwareBufferMapper::HardwareBufferMapper(
-		const GlobalVarsSharedPtr &global_vars):
+		const GlobalVarsConstSharedPtr &global_vars):
 		m_global_vars(global_vars)
 	{
 	}

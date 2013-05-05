@@ -25,8 +25,28 @@ namespace eternal_lands
 	class TileBuilder
 	{
 		private:
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const MeshBuilderConstWeakPtr m_mesh_builder;
 			const MaterialCacheWeakPtr m_material_cache;
 			AbstractMeshSharedPtr m_mesh;
+
+			inline GlobalVarsConstSharedPtr get_global_vars() const
+				noexcept
+			{
+				return m_global_vars;
+			}
+
+			inline MeshBuilderConstSharedPtr get_mesh_builder() const
+				noexcept
+			{
+				MeshBuilderConstSharedPtr result;
+
+				result = m_mesh_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 			inline MaterialCacheSharedPtr get_material_cache() const
 				noexcept
@@ -39,13 +59,13 @@ namespace eternal_lands
 
 				return result;
 			}
-
+		
 		public:
 			/**
 			 * Default constructor.
 			 */
-			TileBuilder(const GlobalVarsSharedPtr &global_vars,
-				const MeshBuilderSharedPtr &mesh_builder,
+			TileBuilder(const GlobalVarsConstSharedPtr &global_vars,
+				const MeshBuilderConstSharedPtr &mesh_builder,
 				const MaterialCacheSharedPtr &material_cache);
 
 			/**
@@ -56,7 +76,7 @@ namespace eternal_lands
 			void get_tile(const Uint16MultiArray2 &tile_page,
 				AbstractMeshSharedPtr &mesh,
 				MaterialSharedPtrVector &materials,
-				BitSet64 &blend_mask);
+				BitSet64 &blend_mask) const;
 
 			static inline Uint32 get_tile_size() noexcept
 			{

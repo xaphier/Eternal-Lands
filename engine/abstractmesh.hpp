@@ -37,7 +37,7 @@ namespace eternal_lands
 			 */
 			AlignedSint16Vec8Array m_min_max_boxes;
 			SubMeshVector m_sub_meshs;
-			VertexFormatSharedPtr m_vertex_format;
+			VertexFormatConstSharedPtr m_vertex_format;
 			const String m_name;
 			Uint32 m_index_count;
 			Uint32 m_vertex_count;
@@ -99,19 +99,19 @@ namespace eternal_lands
 			/**
 			 * Binds the mesh to OpenGL, using vertex buffers etc.
 			 */
-			virtual void bind(BitSet32 &used_attributes) = 0;
+			virtual void bind(BitSet32 &used_attributes) const = 0;
 
 			/**
 			 * Unbinds the mesh from OpenGL.
 			 */
-			virtual void unbind() = 0;
+			virtual void unbind() const = 0;
 
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
 				const Uint32 instances,
-				const PrimitiveType primitive) = 0;
+				const PrimitiveType primitive) const = 0;
 
 			/**
 			 * Clones the data of the mesh. Used for animated
@@ -148,16 +148,17 @@ namespace eternal_lands
 			/**
 			 * Draws the sub mesh with the given index.
 			 */
-			void draw(const Uint32 index, const Uint32 instances);
+			void draw(const Uint32 index, const Uint32 instances)
+				const;
 
-			void init(const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source,
+			void init(const VertexFormatConstSharedPtr &vertex_format,
+				const MeshDataToolConstSharedPtr &source,
 				const Uint32 instance_count,
 				const bool static_indices = true,
 				const bool static_vertices = true,
 				const bool static_instances = true);
 
-			void init(const VertexFormatSharedPtr &vertex_format,
+			void init(const VertexFormatConstSharedPtr &vertex_format,
 				const Uint32 index_count,
 				const Uint32 vertex_count,
 				const Uint32 instance_count,
@@ -169,7 +170,7 @@ namespace eternal_lands
 			/**
 			 * Inits the vertex buffers.
 			 */
-			void init(const VertexFormatSharedPtr &vertex_format,
+			void init(const VertexFormatConstSharedPtr &vertex_format,
 				const Uint32 vertex_count,
 				const Uint32 instance_count,
 				const bool static_vertices = true,
@@ -193,9 +194,9 @@ namespace eternal_lands
 
 			void get_bounding_box(
 				const Transformation &transformation,
-				BoundingBox &bounding_box);
+				BoundingBox &bounding_box) const;
 
-			inline const VertexFormatSharedPtr &get_vertex_format()
+			inline const VertexFormatConstSharedPtr &get_vertex_format()
 				const noexcept
 			{
 				return m_vertex_format;

@@ -51,7 +51,7 @@ namespace eternal_lands
 	{
 	}
 
-	VertexStream::VertexStream(const VertexFormatSharedPtr &format,
+	VertexStream::VertexStream(const VertexFormatConstSharedPtr &format,
 		const AbstractWriteMemorySharedPtr &buffer,
 		const Uint32 vertex_count, const Uint16 index,
 		const bool use_simd):

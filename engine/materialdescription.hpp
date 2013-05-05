@@ -29,6 +29,7 @@ namespace eternal_lands
 		private:
 			MaterialStringArray m_textures;
 			BitSet64 m_sRGBs;
+			BitSet64 m_rectangles;
 			String m_name;
 			String m_effect;
 			String m_script;
@@ -70,11 +71,26 @@ namespace eternal_lands
 				m_sRGBs[index] = sRGB;
 			}
 
+			inline void set_rectangle(const bool rectangle,
+				const Uint16 index)
+			{
+				assert(index < m_rectangles.size());
+
+				m_rectangles[index] = rectangle;
+			}
+
 			inline bool get_sRGB(const Uint16 index) const
 			{
 				assert(index < m_sRGBs.size());
 
 				return m_sRGBs[index];
+			}
+
+			inline bool get_rectangle(const Uint16 index) const
+			{
+				assert(index < m_rectangles.size());
+
+				return m_rectangles[index];
 			}
 
 			inline const String &get_name() const noexcept

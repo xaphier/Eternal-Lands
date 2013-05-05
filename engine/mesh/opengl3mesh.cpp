@@ -45,7 +45,7 @@ namespace eternal_lands
 		glBindVertexArray(0);
 	}
 
-	OpenGl3Mesh::OpenGl3Mesh(const HardwareBufferMapperWeakPtr
+	OpenGl3Mesh::OpenGl3Mesh(const HardwareBufferMapperConstWeakPtr
 			&hardware_buffer_mapper, const String &name,
 		const bool static_indices, const bool static_vertices,
 		const bool static_instances, const bool use_simd):
@@ -84,7 +84,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl3Mesh::bind(BitSet32 &used_attributes)
+	void OpenGl3Mesh::bind(BitSet32 &used_attributes) const
 	{
 		DEBUG_CHECK_GL_ERROR();
 
@@ -99,7 +99,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl3Mesh::unbind()
+	void OpenGl3Mesh::unbind() const
 	{
 		DEBUG_CHECK_GL_ERROR();
 

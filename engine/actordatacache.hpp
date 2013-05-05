@@ -37,18 +37,18 @@ namespace eternal_lands
 				ActorDataCacheMap;
 
 			ActorDataCacheMap m_actor_data_cache;
-			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshBuilderConstWeakPtr m_mesh_builder;
 			const MaterialCacheWeakPtr m_material_cache;
-			const MaterialBuilderWeakPtr m_material_builder;
+			const MaterialBuilderConstWeakPtr m_material_builder;
 			const MaterialDescriptionCacheWeakPtr
 				m_material_description_cache;
-			const FileSystemSharedPtr m_file_system;
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
 
-			inline MeshBuilderSharedPtr get_mesh_builder() const
-				noexcept
+			inline MeshBuilderConstSharedPtr get_mesh_builder()
+				const noexcept
 			{
-				MeshBuilderSharedPtr result;
+				MeshBuilderConstSharedPtr result;
 
 				result = m_mesh_builder.lock();
 
@@ -69,10 +69,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline MaterialBuilderSharedPtr get_material_builder()
+			inline MaterialBuilderConstSharedPtr get_material_builder()
 				const noexcept
 			{
-				MaterialBuilderSharedPtr result;
+				MaterialBuilderConstSharedPtr result;
 
 				result = m_material_builder.lock();
 
@@ -93,29 +93,30 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline const FileSystemSharedPtr &get_file_system()
-				const noexcept
-			{
-				return m_file_system;
-			}
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
+			}
+
+			inline const FileSystemConstSharedPtr &get_file_system()
+				const noexcept
+			{
+				return m_file_system;
 			}
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			ActorDataCache(const MeshBuilderWeakPtr &mesh_builder,
+			ActorDataCache(
+				const MeshBuilderConstWeakPtr &mesh_builder,
 				const MaterialCacheWeakPtr &material_cache,
-				const MaterialBuilderWeakPtr &material_builder,
+				const MaterialBuilderConstWeakPtr &material_builder,
 				const MaterialDescriptionCacheWeakPtr
 					&material_description_cache,
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars);
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 
 			/**
 			 * Default destructor.

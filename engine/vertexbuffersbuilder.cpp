@@ -14,7 +14,7 @@ namespace eternal_lands
 {
 
 	VertexBuffersSharedPtr VertexBuffersBuilder::get_vertex_buffers(
-		const VertexFormatSharedPtr &vertex_format,
+		const VertexFormatConstSharedPtr &vertex_format,
 		const Uint32 vertex_count, const bool use_simd)
 	{
 		ReadWriteMemorySharedPtr buffer;

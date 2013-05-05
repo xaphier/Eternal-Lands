@@ -34,13 +34,13 @@ namespace eternal_lands
 	{
 		private:
 			const EffectCacheWeakPtr m_effect_cache;
-			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshBuilderConstWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const MaterialCacheWeakPtr m_material_cache;
 			const MaterialDescriptionCacheWeakPtr
 				m_material_description_cache;
-			const TerrainBuilderWeakPtr m_terrain_builder;
+			const TerrainBuilderConstWeakPtr m_terrain_builder;
 			const TextureCacheWeakPtr m_texture_cache;
 			ReaderSharedPtr m_reader;
 			EditorMapData &m_data;
@@ -48,10 +48,10 @@ namespace eternal_lands
 			StringSet m_harvestables, m_entrables;
 
 		protected:
-			inline MeshBuilderSharedPtr get_mesh_builder() const
-				noexcept
+			inline MeshBuilderConstSharedPtr get_mesh_builder()
+				const noexcept
 			{
-				MeshBuilderSharedPtr result;
+				MeshBuilderConstSharedPtr result;
 
 				result = m_mesh_builder.lock();
 
@@ -120,10 +120,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline TerrainBuilderSharedPtr get_terrain_builder()
+			inline TerrainBuilderConstSharedPtr get_terrain_builder()
 				const noexcept
 			{
-				TerrainBuilderSharedPtr result;
+				TerrainBuilderConstSharedPtr result;
 
 				result = m_terrain_builder.lock();
 
@@ -166,28 +166,24 @@ namespace eternal_lands
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id)
 				override;
-			virtual void set_height(const Uint16 x, const Uint16 y,
-				const Uint16 height) override;
 			virtual void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere) override;
 			virtual void set_map_size(const glm::uvec2 &size)
 				override;
 			virtual void set_tile_layer_heights(
 				const glm::vec4 &heights) override;
-			virtual void set_height_map_size(
-				const glm::uvec2 &size) override;
-			virtual void set_tile_map_size(const glm::uvec2 &size)
-				override;
 			virtual void set_tile_layer(
 				const Uint8MultiArray2 &tile_map,
 				const float z_position, const Uint16 layer)
 				override;
+			virtual void set_walk_height_map(
+				const Uint8MultiArray2 &walk_height_map) override;
 			virtual void set_dungeon(const bool dungeon) override;
 			virtual void set_terrain(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
-				const ImageSharedPtr &blend_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
+				const ImageConstSharedPtr &blend_map,
 				const StringVector &albedo_maps,
 				const StringVector &specular_maps,
 				const StringVector &gloss_maps,
@@ -202,14 +198,15 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			EditorMapLoader(const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars,
+			EditorMapLoader(
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system,
 				const EffectCacheWeakPtr &effect_cache,
-				const MeshBuilderWeakPtr &mesh_builder,
+				const MeshBuilderConstWeakPtr &mesh_builder,
 				const MeshCacheWeakPtr &mesh_cache,
 				const MeshDataCacheWeakPtr &mesh_data_cache,
 				const MaterialCacheWeakPtr &material_cache,
-				const TerrainBuilderWeakPtr &terrain_builder,
+				const TerrainBuilderConstWeakPtr &terrain_builder,
 				const TextureCacheWeakPtr &texture_cache,
 				const FreeIdsManagerSharedPtr &free_ids,
 				EditorMapData &data);

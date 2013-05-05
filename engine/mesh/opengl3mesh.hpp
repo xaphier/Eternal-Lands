@@ -49,7 +49,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl3Mesh(const HardwareBufferMapperWeakPtr
+			OpenGl3Mesh(const HardwareBufferMapperConstWeakPtr
 					&hardware_buffer_mapper,
 				const String &name,
 				const bool static_indices,
@@ -62,8 +62,8 @@ namespace eternal_lands
 			 */
 			virtual ~OpenGl3Mesh() noexcept;
 
-			virtual void bind(BitSet32 &used_attributes);
-			virtual void unbind();
+			virtual void bind(BitSet32 &used_attributes) const;
+			virtual void unbind() const;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.

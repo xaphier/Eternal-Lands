@@ -37,8 +37,8 @@ namespace eternal_lands
 	{
 	}
 
-	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
-		const MeshDataToolSharedPtr &source,
+	void AbstractMesh::init(const VertexFormatConstSharedPtr &vertex_format,
+		const MeshDataToolConstSharedPtr &source,
 		const Uint32 instance_count, const bool static_indices,
 		const bool static_vertices, const bool static_instances)
 	{
@@ -123,7 +123,7 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
+	void AbstractMesh::init(const VertexFormatConstSharedPtr &vertex_format,
 		const Uint32 index_count, const Uint32 vertex_count,
 		const Uint32 instance_count, const bool use_16_bit_indices,
 		const bool static_indices, const bool static_vertices,
@@ -163,7 +163,7 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
+	void AbstractMesh::init(const VertexFormatConstSharedPtr &vertex_format,
 		const Uint32 vertex_count, const Uint32 instance_count,
 		const bool static_vertices, const bool static_instances)
 	{
@@ -250,6 +250,7 @@ namespace eternal_lands
 
 	void AbstractMesh::get_bounding_box(
 		const Transformation &transformation, BoundingBox &bounding_box)
+		const
 	{
 		Uint32 i;
 
@@ -271,6 +272,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMesh::draw(const Uint32 index, const Uint32 instances)
+		const
 	{
 		draw(get_sub_meshs()[index], instances, get_primitive());
 	}

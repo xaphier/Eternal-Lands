@@ -91,6 +91,9 @@ namespace eternal_lands
 				const bool elements_only);
 			static bool get_bool_property(const xmlNodePtr node,
 				const String &property);
+			static bool get_bool_property(const xmlNodePtr node,
+				const String &property,
+				const bool default_value);
 			static FloatVector get_float_vector(
 				const xmlNodePtr node);
 			static Sint32Vector get_s32_vector(

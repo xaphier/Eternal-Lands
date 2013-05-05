@@ -52,11 +52,11 @@ namespace eternal_lands
 				const Uint8Array20 &sha1,
 				const Uint32 index);
 			bool remove_archive(const String &file_name);
-			bool get_file_readable(const String &file_name);
-			ReaderSharedPtr get_file(const String &file_name);
+			bool get_file_readable(const String &file_name) const;
+			ReaderSharedPtr get_file(const String &file_name) const;
 			bool get_file_if_readable(const String &file_name,
-				ReaderSharedPtr &reader);
-			String get_file_string(const String &file_name);
+				ReaderSharedPtr &reader) const;
+			String get_file_string(const String &file_name) const;
 			StringSet get_files(const String &dir,
 				const String &pattern) const;
 			void clear();

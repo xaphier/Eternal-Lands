@@ -42,7 +42,7 @@ namespace eternal_lands
 			void init();
 
 		public:
-			VertexStream(const VertexFormatSharedPtr &format,
+			VertexStream(const VertexFormatConstSharedPtr &format,
 				const AbstractWriteMemorySharedPtr &buffer,
 				const Uint32 vertex_count, const Uint16 index,
 				const bool use_simd);

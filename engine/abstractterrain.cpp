@@ -30,9 +30,9 @@ namespace eternal_lands
 	}
 
 	AbstractTerrain::AbstractTerrain(
-		const GlobalVarsSharedPtr &global_vars,
+		const GlobalVarsConstSharedPtr &global_vars,
 		const EffectCacheSharedPtr &effect_cache,
-		const MaterialBuilderSharedPtr &material_builder,
+		const MaterialBuilderConstSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
 		const StringArray3 &material, const String &effect):
 		m_global_vars(global_vars), m_low_quality_terrain(
@@ -127,9 +127,9 @@ namespace eternal_lands
 	}
 
 	void AbstractTerrain::set_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
-		const ImageSharedPtr &dudv_map,
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_map,
+		const ImageConstSharedPtr &dudv_map,
 		const glm::vec3 &translation)
 	{
 		String texture_format_str, rgb10_a2_str;
@@ -154,7 +154,7 @@ namespace eternal_lands
 	}
 
 	void AbstractTerrain::set_blend_map(
-		const ImageSharedPtr &blend_map,
+		const ImageConstSharedPtr &blend_map,
 		const TextureCacheSharedPtr &texture_cache)
 	{
 		TextureSharedPtr texture;
@@ -207,9 +207,10 @@ namespace eternal_lands
 	}
 
 	void AbstractTerrain::update_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
-		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_map,
+		const ImageConstSharedPtr &dudv_map,
+		const glm::vec3 &translation)
 	{
 		String texture_format_str, rgb10_a2_str;
 
@@ -233,7 +234,7 @@ namespace eternal_lands
 	}
 
 	void AbstractTerrain::update_blend_map(
-		const ImageSharedPtr &blend_image, const BitSet64 &layers)
+		const ImageConstSharedPtr &blend_image, const BitSet64 &layers)
 	{
 		glm::uvec3 offset, size;
 		Uint32 i, count;
@@ -375,7 +376,7 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			texture = texture_cache->get_texture(albedo_maps[i],
-				true);
+				true, false);
 
 			set_clipmap_material_texture(texture, 
 				ShaderSourceTerrain::get_albedo_sampler(i));

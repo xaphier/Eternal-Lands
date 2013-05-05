@@ -2536,7 +2536,7 @@ namespace eternal_lands
 			String(UTF8("A32B32G32R32F")), 128, rg_formats);
 	}
 
-	void DdsImage::save_image(const ImageSharedPtr &image,
+	void DdsImage::save_image(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		dds::DdsHeader header;
@@ -2632,7 +2632,7 @@ namespace eternal_lands
 		}
 	}
 
-	void DdsImage::save_image_dxt10(const ImageSharedPtr &image,
+	void DdsImage::save_image_dxt10(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		dds::DdsHeader header;
@@ -2723,7 +2723,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool DdsImage::can_save(const ImageSharedPtr &image)
+	bool DdsImage::can_save(const ImageConstSharedPtr &image)
 	{
 		glm::uvec4 masks;
 		GLenum type, format;
@@ -2741,7 +2741,7 @@ namespace eternal_lands
 					!integer_format);
 	}
 
-	bool DdsImage::can_save_dxt10(const ImageSharedPtr &image)
+	bool DdsImage::can_save_dxt10(const ImageConstSharedPtr &image)
 	{
 		glm::uvec4 position;
 		TextureFormatType texture_format;

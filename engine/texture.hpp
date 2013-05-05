@@ -91,33 +91,33 @@ namespace eternal_lands
 
 			void set_texture_image_1d(const Uint32 width,
 				const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_2d(const Uint32 width,
 				const Uint32 height, const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_3d(const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_cube_map(const Uint32 width,
 				const Uint32 height, const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_cube_map_face(const Uint32 width,
 				const Uint32 height, const Uint16 mipmap,
 				const CubeMapFaceType face,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_cube_map(const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_cube_map_face(const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const Uint16 mipmap, const CubeMapFaceType face,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_2d_layer(const Uint32 width,
 				const Uint32 height, const Uint32 layer,
 				const Uint16 mipmap,
-				const ImageSharedPtr &image);
+				const ImageConstSharedPtr &image);
 			void set_texture_image_1d(const String &name,
 				const void* buffer, const glm::uvec3 &offset,
 				const glm::uvec3 &size,
@@ -171,7 +171,7 @@ namespace eternal_lands
 				const CubeMapFaceType face);
 			void set_texture_image_2d_multisample();
 			void set_texture_image_3d_multisample();
-			void get_image_size(const ImageSharedPtr &image,
+			void get_image_size(const ImageConstSharedPtr &image,
 				Uint32 &width, Uint32 &height, Uint32 &depth,
 				Uint32 &mipmap_count, Uint32 &layer_count)
 				const;
@@ -190,8 +190,8 @@ namespace eternal_lands
 				const CubeMapFaceType face, const GLenum format,
 				const GLenum type, const Uint16 mipmap,
 				const bool compressed);
-			void do_set_image(const ImageSharedPtr &image);
-			void do_set_images(const ImageSharedPtrVector &images);
+			void do_set_image(const ImageConstSharedPtr &image);
+			void do_set_images(const ImageConstSharedPtrVector &images);
 			void do_init(const Uint32 width, const Uint32 height,
 				const Uint32 depth, const Uint16 mipmap_count,
 				const Uint16 samples = 0);
@@ -393,22 +393,22 @@ namespace eternal_lands
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 
-			void set_image(const ImageSharedPtr &image);
-			void set_images(const ImageSharedPtrVector &images);
+			void set_image(const ImageConstSharedPtr &image);
+			void set_images(const ImageConstSharedPtrVector &images);
 			void sub_texture(const String &name,
-				const AbstractReadMemorySharedPtr &buffer,
+				const AbstractReadMemoryConstSharedPtr &buffer,
 				const glm::uvec3 &offset,
 				const glm::uvec3 &size,
 				const CubeMapFaceType face,
 				const GLenum format, const GLenum type,
 				const Uint16 mipmap, const bool compressed);
 			void sub_texture(const ImageUpdate &image_update);
-			void update_image(const ImageSharedPtr &image,
+			void update_image(const ImageConstSharedPtr &image,
 				const BitSet16 &faces =
 					std::numeric_limits<Uint16>::max(),
 				const BitSet16 &mipmaps =
 					std::numeric_limits<Uint16>::max());
-			void update_image_layer(const ImageSharedPtr &image,
+			void update_image_layer(const ImageConstSharedPtr &image,
 				const BitSet16 &faces, const BitSet16 &mipmaps,
 				const Uint16 layer);
 			void init(const Uint32 width, const Uint32 height,

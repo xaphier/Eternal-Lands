@@ -297,10 +297,10 @@ namespace eternal_lands
 				ImageValuesVector &blend_values) const;
 			void get_all_blend_values(const Uint16 layer,
 				ImageValueVector &blend_values) const;
-			void set(const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
-				const ImageSharedPtr &blend_map,
+			void set(const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
+				const ImageConstSharedPtr &blend_map,
 				const StringVector &albedo_maps,
 				const StringVector &specular_maps,
 				const StringVector &gloss_maps,
@@ -312,9 +312,11 @@ namespace eternal_lands
 			void relax_uv(
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd);
-			void import_blend_map(const ImageSharedPtr &blend_map);
+			void import_blend_map(
+				const ImageConstSharedPtr &blend_map);
 			void rebuild_normal_tangent_map();
-			void import_dudv_map(const ImageSharedPtr &dudv_map,
+			void import_dudv_map(
+				const ImageConstSharedPtr &dudv_map,
 				const glm::vec4 &dudv_scale_offset);
 			void get_layer_usage(Uint32Vector &use_layer_pixels,
 				Uint32 &pixels) const;

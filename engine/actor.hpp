@@ -64,8 +64,8 @@ namespace eternal_lands
 			void add_mesh(const Uint32 id);
 			void remove_mesh(const Uint32 id);
 			void init_enhanced_actor(
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars);
+				const FileSystemConstSharedPtr &file_system,
+				const GlobalVarsConstSharedPtr &global_vars);
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);
 

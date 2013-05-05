@@ -27,7 +27,7 @@ namespace eternal_lands
 	{
 		public:
 			static VertexBuffersSharedPtr get_vertex_buffers(
-				const VertexFormatSharedPtr &vertex_format,
+				const VertexFormatConstSharedPtr &vertex_format,
 				const Uint32 vertex_count, const bool use_simd);
 
 	};

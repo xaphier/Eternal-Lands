@@ -26,11 +26,11 @@ namespace eternal_lands
 	class VertexBuffers: public VertexStreams
 	{
 		private:
-			const VertexFormatSharedPtr m_format;
+			const VertexFormatConstSharedPtr m_format;
 			AbstractReadWriteMemorySharedPtrVector m_buffers;
 
 		public:
-			VertexBuffers(const VertexFormatSharedPtr &format,
+			VertexBuffers(const VertexFormatConstSharedPtr &format,
 				const AbstractReadWriteMemorySharedPtrVector
 					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
@@ -43,7 +43,7 @@ namespace eternal_lands
 			}
 
 			inline const AbstractReadWriteMemorySharedPtr
-				&get_buffer(const Uint32 index) const
+				&get_buffer(const Uint32 index)
 			{
 				RANGE_CECK_MAX(index, m_buffers.size(),
 					UTF8("index value too big"));

@@ -29,7 +29,7 @@ namespace eternal_lands
 	{
 		private:
 			const GlslProgramCacheWeakPtr m_glsl_program_cache;
-			const ShaderSourceBuilderWeakPtr
+			const ShaderSourceBuilderConstWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
 			boost::array<GlslProgramSharedPtr, 6> m_programs;
@@ -50,10 +50,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline ShaderSourceBuilderSharedPtr
+			inline ShaderSourceBuilderConstSharedPtr
 				get_shader_source_builder() const noexcept
 			{
-				ShaderSourceBuilderSharedPtr result;
+				ShaderSourceBuilderConstSharedPtr result;
 
 				result = m_shader_source_builder.lock();
 
@@ -67,7 +67,7 @@ namespace eternal_lands
 				&glsl_program_cache);
 			Effect(const GlslProgramCacheWeakPtr
 					&glsl_program_cache,
-				const ShaderSourceBuilderWeakPtr
+				const ShaderSourceBuilderConstWeakPtr
 					&shader_source_builder,
 				const EffectDescription &description);
 			~Effect() noexcept;

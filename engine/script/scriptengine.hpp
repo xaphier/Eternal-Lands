@@ -27,9 +27,9 @@ namespace eternal_lands
 		private:
 			asIScriptEngine* m_engine;
 
-			const FileSystemSharedPtr m_file_system;
+			const FileSystemConstSharedPtr m_file_system;
 
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const
 			{
 				return m_file_system;
@@ -47,7 +47,8 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			ScriptEngine(const FileSystemSharedPtr &file_system);
+			ScriptEngine(
+				const FileSystemConstSharedPtr &file_system);
 
 			/**
 			 * Default destructor.

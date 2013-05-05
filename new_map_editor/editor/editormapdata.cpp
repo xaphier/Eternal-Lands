@@ -25,6 +25,7 @@
 #include "filesystem.hpp"
 #include "imageupdate.hpp"
 #include "tilebuilder.hpp"
+#include "walkheightbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -101,7 +102,7 @@ namespace eternal_lands
 
 	}
 
-	EditorMapData::EditorMapData(const GlobalVarsSharedPtr &global_vars,
+	EditorMapData::EditorMapData(const GlobalVarsConstSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
 		m_id(std::numeric_limits<Uint32>::max()), m_renderable(rt_none)
 	{
@@ -138,9 +139,9 @@ namespace eternal_lands
 		m_scene->set_draw_light_spheres(draw_light_spheres);
 	}
 
-	void EditorMapData::set_draw_heights(const bool draw_heights)
+	void EditorMapData::set_draw_walk_heights(const bool draw_walk_heights)
 	{
-		m_scene->set_draw_heights(draw_heights);
+		m_scene->set_draw_walk_heights(draw_walk_heights);
 	}
 
 	void EditorMapData::set_lights_enabled(const bool enabled)
@@ -563,8 +564,6 @@ namespace eternal_lands
 
 		tile_page.resize(boost::extents[tile_size][tile_size]);
 
-		std::set<Uint16> tiles;
-
 		for (y = 0; y < tile_size; y++)
 		{
 			for (x = 0; x < tile_size; x++)
@@ -589,7 +588,6 @@ namespace eternal_lands
 				}
 
 				tile_page[x][y] = tile;
-				tiles.insert(tile);
 			}
 		}
 
@@ -694,6 +692,53 @@ namespace eternal_lands
 		}
 	}
 
+	void EditorMapData::set_walk_height_map(
+		const Uint8MultiArray2 &walk_height_map)
+	{
+		Uint32 x, y, height, width;
+
+		assert(m_walk_height_map.shape()[0] == walk_height_map.shape()[0]);
+		assert(m_walk_height_map.shape()[1] == walk_height_map.shape()[1]);
+
+		width = m_walk_height_map.shape()[0];
+		height = m_walk_height_map.shape()[1];
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				m_walk_height_map[x][y] = walk_height_map[x][y];
+			}
+		}
+
+		update_walk_height_map();
+	}
+
+	void EditorMapData::update_walk_height_map()
+	{
+		glm::uvec2 offset;
+		Uint32 x, y, width, height, walk_height_size;
+
+		width = m_walk_height_map.shape()[0];
+		height = m_walk_height_map.shape()[1];
+
+		walk_height_size = WalkHeightBuilder::get_walk_height_size();
+
+		width = (width + walk_height_size - 1) / walk_height_size;
+		height = (height + walk_height_size - 1) / walk_height_size;
+
+		for (y = 0; y < height; y++)
+		{
+			for (x = 0; x < width; x++)
+			{
+				offset.x = x;
+				offset.y = y;
+
+				update_walk_height_page(offset);
+			}
+		}
+	}
+
 	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y,
 		const Uint16 layer) const
 	{
@@ -714,36 +759,132 @@ namespace eternal_lands
 			glm::vec2(get_tile_map_size())));
 	}
 
-	void EditorMapData::set_height(const Uint16 x, const Uint16 y,
-		const Uint16 height)
+	Uint16 EditorMapData::get_walk_height(const Uint16 x, const Uint16 y)
+		const
 	{
-		RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
+		RANGE_CECK_MAX(x, m_walk_height_map.shape()[0] - 1,
 			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
+		RANGE_CECK_MAX(y, m_walk_height_map.shape()[1] - 1,
 			UTF8("index value too big"));
 
-		m_scene->set_height(x, y, height);
-
-		m_height_map[x][y] = height;
+		return m_walk_height_map[x][y];
 	}
 
-	Uint16 EditorMapData::get_height(const Uint16 x, const Uint16 y) const
+	void EditorMapData::set_walk_heights(const HeightVector &walk_heights)
 	{
-		RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
-			UTF8("index value too big"));
-		RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
-			UTF8("index value too big"));
+		std::set<Uint16Uint16Pair> values;
+		glm::uvec2 offset;
+		Uint32 x, y, walk_height_size;
 
-		return m_height_map[x][y];
-	}
+		walk_height_size = WalkHeightBuilder::get_walk_height_size();
 
-	void EditorMapData::set_heights(const HeightVector &heights)
-	{
-		BOOST_FOREACH(const Height &height, heights)
+		BOOST_FOREACH(const Height &walk_height, walk_heights)
 		{
-			set_height(height.get_x(), height.get_y(),
-				height.get_value());
+			x = walk_height.get_x();
+			y = walk_height.get_y();
+
+			RANGE_CECK_MAX(x, m_walk_height_map.shape()[0] - 1,
+				UTF8("x value too big"));
+			RANGE_CECK_MAX(y, m_walk_height_map.shape()[1] - 1,
+				UTF8("y value too big"));
+
+			m_walk_height_map[x][y] = walk_height.get_value();
+
+			x = x / walk_height_size;
+			y = y / walk_height_size;
+
+			values.insert(std::pair<Uint16, Uint16>(x, y));
 		}
+
+		BOOST_FOREACH(const Uint16Uint16Pair &value, values)
+		{
+			offset.x = value.first;
+			offset.y = value.second;
+
+			update_walk_height_page(offset);
+		}
+	}
+
+	void EditorMapData::get_walk_heights(const glm::uvec2 &offset,
+		const Uint16 size, HeightVector &walk_heights)
+	{
+		Uint32 x, y, min_x, min_y, max_x, max_y, width, height;
+
+		walk_heights.clear();
+
+		width = m_walk_height_map.shape()[0];
+		height = m_walk_height_map.shape()[1];
+
+		min_x = 0;
+		max_x = std::min(offset.x + size, width - 1);
+		min_y = 0;
+		max_y = std::min(offset.y + size, height - 1);
+
+		if (offset.x > size)
+		{
+			min_x = offset.x - size;
+		}
+
+		if (offset.y > size)
+		{
+			min_y = offset.y - size;
+		}
+
+		for (y = min_y; y <= max_y; ++y)
+		{
+			for (x = min_x; x <= max_x; ++x)
+			{
+				Height walk_height(x, y);
+
+				walk_height.set_value(
+					m_walk_height_map[x][y]);
+
+				walk_heights.push_back(walk_height);
+			}
+		}
+	}
+
+	void EditorMapData::update_walk_height_page(const glm::uvec2 &offset)
+	{
+		Uint16MultiArray2 walk_height_page;
+		Uint32 x, y, xx, yy, width, height, walk_height_size, value;
+
+		width = m_walk_height_map.shape()[0];
+		height = m_walk_height_map.shape()[1];
+
+		walk_height_size = WalkHeightBuilder::get_walk_height_size();
+
+		walk_height_page.resize(
+			boost::extents[walk_height_size][walk_height_size]);
+
+		for (y = 0; y < walk_height_size; y++)
+		{
+			for (x = 0; x < walk_height_size; x++)
+			{
+				xx = x + offset.x * walk_height_size;
+				yy = y + offset.y * walk_height_size;
+
+				if ((xx < width) && (yy < height))
+				{
+					value = m_walk_height_map[xx][yy];
+
+					if (value >= 0xFF)
+					{
+						value = std::numeric_limits<
+							Uint16>::max();
+					}
+				}
+				else
+				{
+					value = std::numeric_limits<
+						Uint16>::max();
+				}
+
+				walk_height_page[x][y] = value;
+			}
+		}
+
+		m_scene->set_walk_height_page(walk_height_page, offset);
 	}
 
 	void EditorMapData::set_terrain_displacement_values(
@@ -1105,9 +1246,14 @@ namespace eternal_lands
 		return result;
 	}
 
-	double EditorMapData::get_depth() const
+	float EditorMapData::get_terrain_depth() const
 	{
-		return m_scene->get_depth();
+		return m_scene->get_terrain_depth();
+	}
+
+	float EditorMapData::get_object_depth() const
+	{
+		return m_scene->get_object_depth();
 	}
 
 	void EditorMapData::set_depth_selection(const glm::uvec2 &position)
@@ -1162,10 +1308,11 @@ namespace eternal_lands
 			m_terrain_editor.get_blend_map());
 	}
 
-	void EditorMapData::set_terrain(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
-		const ImageSharedPtr &blend_map,
+	void EditorMapData::set_terrain(
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const ImageConstSharedPtr &blend_map,
 		const StringVector &albedo_maps,
 		const StringVector &specular_maps,
 		const StringVector &gloss_maps,
@@ -1284,7 +1431,7 @@ namespace eternal_lands
 		Uint32 x, y, i, id, count, position;
 		Uint32 material_count, material_index;
 		Uint32 tile_map_offset;
-		Uint32 height_map_offset;
+		Uint32 walk_height_map_offset;
 		Uint32 obj_3d_size;
 		Uint32 obj_3d_count;
 		Uint32 obj_3d_offset;
@@ -1402,13 +1549,13 @@ namespace eternal_lands
 			}
 		}
 
-		height_map_offset = writer->get_position();
+		walk_height_map_offset = writer->get_position();
 
 		for (y = 0; y < size.y; ++y)
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				writer->write_u8(get_height(x, y));
+				writer->write_u8(get_walk_height(x, y));
 			}
 		}
 
@@ -1769,7 +1916,7 @@ namespace eternal_lands
 		writer->write_u32_le(tile_map_width);
 		writer->write_u32_le(tile_map_height);
 		writer->write_u32_le(tile_map_offset);
-		writer->write_u32_le(height_map_offset);
+		writer->write_u32_le(walk_height_map_offset);
 
 		writer->write_u32_le(obj_3d_size);
 		writer->write_u32_le(obj_3d_count);

@@ -532,7 +532,7 @@ void ELGLWidget::mouse_click_action()
 				break;
 			case tpt_displacement:
 				if (!m_editor->get_terrain_displacement(
-					m_world_position, displacement))
+					m_terrain_world_position, displacement))
 				{
 					break;
 				}
@@ -543,7 +543,7 @@ void ELGLWidget::mouse_click_action()
 				break;
 			case tpt_normal:
 				if (!m_editor->get_terrain_normal(
-					m_world_position, normal))
+					m_terrain_world_position, normal))
 				{
 					break;
 				}
@@ -565,9 +565,16 @@ void ELGLWidget::mouse_click_action()
 		return;
 	}
 
+	if (get_walk_height_editing())
+	{
+		emit walk_height_edit();
+
+		return;
+	}
+
 	if (get_object_adding())
 	{
-		m_editor->add_3d_object(m_world_position, m_object_name,
+		m_editor->add_3d_object(m_terrain_world_position, m_object_name,
 			st_select);
 		emit update_object(false);
 		emit can_undo(m_editor->get_can_undo());
@@ -577,7 +584,7 @@ void ELGLWidget::mouse_click_action()
 
 	if (get_light_adding())
 	{
-		m_editor->add_light(m_world_position, m_light_radius);
+		m_editor->add_light(m_terrain_world_position, m_light_radius);
 		emit update_light(false);
 		emit can_undo(m_editor->get_can_undo());
 
@@ -666,6 +673,13 @@ void ELGLWidget::mouse_move_action()
 		return;
 	}
 
+	if (get_walk_height_editing())
+	{
+		emit walk_height_edit();
+
+		return;
+	}
+
 	if (get_object_adding() || get_light_adding())
 	{
 		return;
@@ -737,7 +751,7 @@ void ELGLWidget::mouse_move_action()
 	if (!m_grab_world_position_valid)
 	{
 		m_grab_world_position_valid = true;
-		m_grab_world_position = m_world_position;
+		m_grab_world_position = m_terrain_world_position;
 
 		switch (m_editor->get_renderable())
 		{
@@ -765,7 +779,7 @@ void ELGLWidget::mouse_move_action()
 	if (m_grab_world_position_valid)
 	{
 		position = m_move_offset;
-		position += (m_world_position - m_grab_world_position) *
+		position += (m_terrain_world_position - m_grab_world_position) *
 			glm::vec3(get_moving_mask());
 
 		switch (m_editor->get_renderable())
@@ -845,7 +859,8 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 	m_select_pos.y = height() - event->y();
 
 	m_select = !(get_terrain_editing() || get_tile_editing() ||
-		get_object_adding() || get_light_adding());
+		get_walk_height_editing() || get_object_adding() ||
+		get_light_adding());
 	m_select_depth = true;
 	m_mouse_click_action = true;
 	m_grab_world_position_valid = false;
@@ -943,7 +958,7 @@ void ELGLWidget::change_terrain_displacement_values(const QVector3D &data,
 	const QVector2D &size, const float attenuation_size, const int mask,
 	const int attenuation, const int shape, const int effect)
 {
-	m_editor->change_terrain_displacement_values(m_world_position,
+	m_editor->change_terrain_displacement_values(m_terrain_world_position,
 		glm::vec3(data.x(), data.y(), data.z()),
 		glm::bvec3((mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0),
 		glm::vec2(size.x(), size.y()), attenuation_size, attenuation,
@@ -957,7 +972,7 @@ void ELGLWidget::change_terrain_blend_values(const QVector2D &size,
 	const int attenuation, const int shape, const int effect,
 	const int layer)
 {
-	m_editor->change_terrain_blend_values(m_world_position,
+	m_editor->change_terrain_blend_values(m_terrain_world_position,
 		glm::vec2(size.x(), size.y()), attenuation_size, strength,
 		attenuation, shape, effect, layer);
 
@@ -975,6 +990,24 @@ void ELGLWidget::set_tile(const int layer, const int size, const int tile)
 	}
 
 	m_editor->set_tile(offset, size, tile);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_walk_height(const int size, const float height,
+	const bool depth_height)
+{
+	glm::uvec2 offset;
+	Uint16 walk_height;
+
+	if (!m_editor->get_walk_height_edit(glm::vec2(m_object_world_position),
+		depth_height ? m_object_world_position.z : height, offset,
+		walk_height))
+	{
+		return;
+	}
+
+	m_editor->set_walk_height(offset, size, walk_height);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -1003,13 +1036,6 @@ void ELGLWidget::set_tile_layer_height_2(const double value)
 void ELGLWidget::set_tile_layer_height_3(const double value)
 {
 	m_editor->set_tile_layer_height(value, 3);
-
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::height_edit(const int height)
-{
-	m_editor->height_edit(m_world_position, height);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -1189,7 +1215,8 @@ void ELGLWidget::paintGL()
 	if (m_select)
 	{
 		assert(!(get_terrain_editing() || get_tile_editing() ||
-			get_object_adding() || get_light_adding()));
+			get_walk_height_editing() || get_object_adding() ||
+			get_light_adding()));
 
 		m_select = false;
 
@@ -1224,15 +1251,22 @@ void ELGLWidget::paintGL()
 			m_editor->draw();
 		}
 
-		selected_depth = m_editor->get_depth();
-
 		view_port[0] = 0;
 		view_port[1] = 0;
 		view_port[2] = width();
 		view_port[3] = height();
 
-		m_world_position = glm::unProject(glm::dvec3(m_select_pos,
-			selected_depth), glm::dmat4(view),
+		selected_depth = m_editor->get_terrain_depth();
+
+		m_terrain_world_position = glm::unProject(glm::dvec3(
+			m_select_pos, selected_depth), glm::dmat4(view),
+			glm::dmat4(m_editor->get_projection_matrix()),
+			view_port);
+
+		selected_depth = m_editor->get_object_depth();
+
+		m_object_world_position = glm::unProject(glm::dvec3(
+			m_select_pos, selected_depth), glm::dmat4(view),
 			glm::dmat4(m_editor->get_projection_matrix()),
 			view_port);
 
@@ -1705,6 +1739,20 @@ void ELGLWidget::set_tile_editing(const bool enabled)
 	}
 }
 
+void ELGLWidget::set_walk_height_editing(const bool enabled)
+{
+	if (enabled)
+	{
+		m_editing = et_walk_height_editing;
+	}
+	else
+	{
+		m_editing = et_nothing;
+	}
+
+	m_editor->set_draw_walk_heights(enabled);
+}
+
 void ELGLWidget::set_terrain_type_index(const int index)
 {
 	m_terrain_type_index = std::max(index, 0);
@@ -1973,11 +2021,6 @@ void ELGLWidget::set_draw_lights(const bool draw_lights)
 void ELGLWidget::set_draw_light_spheres(const bool draw_light_spheres)
 {
 	m_editor->set_draw_light_spheres(draw_light_spheres);
-}
-
-void ELGLWidget::set_draw_heights(const bool draw_heights)
-{
-	m_editor->set_draw_heights(draw_heights);
 }
 
 void ELGLWidget::set_lights_enabled(const bool enabled)

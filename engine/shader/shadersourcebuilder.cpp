@@ -1095,8 +1095,8 @@ namespace eternal_lands
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
-		const GlobalVarsSharedPtr &global_vars,
-		const FileSystemSharedPtr &file_system,
+		const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system,
 		const UniformBufferDescriptionCacheWeakPtr
 			&uniform_buffer_description_cache):
 		m_global_vars(global_vars), m_file_system(file_system),

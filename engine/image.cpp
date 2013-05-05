@@ -1610,6 +1610,49 @@ namespace eternal_lands
 		return shared_from_this();
 	}
 
+	ImageConstSharedPtr Image::decompress(const bool copy,
+		const bool rg_formats, const bool merge_layers) const
+	{
+		ReaderSharedPtr reader;
+
+		if (get_compressed())
+		{
+			reader = boost::make_shared<Reader>(get_buffer(),
+				get_name());
+
+			return Dxt::uncompress(reader, get_name(), get_size(),
+				get_texture_format(), get_mipmap_count(),
+				get_cube_map(), get_array(), rg_formats,
+				get_sRGB(), merge_layers);
+		}
+
+		if (copy)
+		{
+			return boost::make_shared<Image>(*this);
+		}
+
+		return shared_from_this();
+	}
+
+	ImageSharedPtr Image::decompressed_copy(const bool rg_formats,
+		const bool merge_layers) const
+	{
+		ReaderSharedPtr reader;
+
+		if (get_compressed())
+		{
+			reader = boost::make_shared<Reader>(get_buffer(),
+				get_name());
+
+			return Dxt::uncompress(reader, get_name(), get_size(),
+				get_texture_format(), get_mipmap_count(),
+				get_cube_map(), get_array(), rg_formats,
+				get_sRGB(), merge_layers);
+		}
+
+		return boost::make_shared<Image>(*this);
+	}
+
 	void Image::read_framebuffer(const Uint32 x, const Uint32 y)
 	{
 		glReadPixels(x, y, get_width(), get_height(), get_format(),

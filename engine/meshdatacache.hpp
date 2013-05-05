@@ -35,17 +35,17 @@ namespace eternal_lands
 			typedef std::map<String, MeshDataCacheItem>
 				MeshDataCacheMap;
 
-			const FileSystemSharedPtr m_file_system;
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
 			MeshDataCacheMap m_mesh_data_cache;
 
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const noexcept
 			{
 				return m_file_system;
 			}
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
@@ -59,8 +59,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			MeshDataCache(const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars);
+			MeshDataCache(
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 
 			/**
 			 * Default destructor.

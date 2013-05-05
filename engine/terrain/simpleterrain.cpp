@@ -33,8 +33,9 @@ namespace eternal_lands
 	namespace
 	{
 
-		glm::vec4 get_low_quality_pixel_3(const ImageSharedPtr &image,
-			const Uint32 x, const Uint32 y)
+		glm::vec4 get_low_quality_pixel_3(
+			const ImageConstSharedPtr &image, const Uint32 x,
+			const Uint32 y)
 		{
 			glm::vec4 result;
 			Uint32 x0, y0, x1, y1;
@@ -52,8 +53,9 @@ namespace eternal_lands
 			return result * 0.25f;
 		}
 
-		glm::vec2 get_low_quality_pixel_2(const ImageSharedPtr &image,
-			const Uint32 x, const Uint32 y)
+		glm::vec2 get_low_quality_pixel_2(
+			const ImageConstSharedPtr &image, const Uint32 x,
+			const Uint32 y)
 		{
 			glm::vec2 result;
 			Uint32 x0, y0, x1, y1;
@@ -76,10 +78,11 @@ namespace eternal_lands
 
 	}
 
-	SimpleTerrain::SimpleTerrain(const GlobalVarsSharedPtr &global_vars,
+	SimpleTerrain::SimpleTerrain(
+		const GlobalVarsConstSharedPtr &global_vars,
 		const EffectCacheSharedPtr &effect_cache,
-		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialBuilderSharedPtr &material_builder,
+		const MeshBuilderConstSharedPtr &mesh_builder,
+		const MaterialBuilderConstSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
 		const StringArray3 &material, const String &effect):
 		AbstractTerrain(global_vars, effect_cache, material_builder,
@@ -95,9 +98,9 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::set_terrain_page(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
 		const glm::vec2 &position_scale)
@@ -171,9 +174,9 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::set_terrain_page_low_quality(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
 		const glm::vec2 &position_scale)
@@ -246,7 +249,8 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::init_terrain_pages(
-		const MeshBuilderSharedPtr &mesh_builder, const bool use_simd)
+		const MeshBuilderConstSharedPtr &mesh_builder,
+		const bool use_simd)
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
 		Transformation transformation;
@@ -325,9 +329,9 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::add_terrain_page(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
 		const glm::uvec2 &position)
 	{
 		MaterialSharedPtrVector materials;
@@ -425,12 +429,12 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::do_set_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map)
 	{
-		ImageSharedPtr displacement_map_tmp, normal_tangent_map_tmp;
-		ImageSharedPtr dudv_map_tmp;
+		ImageConstSharedPtr displacement_map_tmp;
+		ImageConstSharedPtr normal_tangent_map_tmp, dudv_map_tmp;
 		Uint32 x, y, height, width;
 
 		m_object_tree->clear();
@@ -461,13 +465,13 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::do_update_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map)
 	{
 		
-		ImageSharedPtr displacement_map_tmp, normal_tangent_map_tmp;
-		ImageSharedPtr dudv_map_tmp;
+		ImageConstSharedPtr displacement_map_tmp;
+		ImageConstSharedPtr normal_tangent_map_tmp, dudv_map_tmp;
 		Uint32 x, y, height, width;
 
 		m_object_tree->clear();

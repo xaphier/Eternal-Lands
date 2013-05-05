@@ -23,6 +23,7 @@
 #include "shader/uniformbuffer.hpp"
 #include "globalvars.hpp"
 #include "abstractmesh.hpp"
+#include "walkheightbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -49,13 +50,14 @@ namespace eternal_lands
 	while (false)
 #endif
 
-	EditorScene::EditorScene(const GlobalVarsSharedPtr &global_vars,
-		const FileSystemSharedPtr &file_system):
-		Scene(global_vars, file_system), m_depth(-1.0f),
+	EditorScene::EditorScene(const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system):
+		Scene(global_vars, file_system), m_terrain_depth(-1.0f),
+		m_object_depth(-1.0f),
 		m_selected_object(std::numeric_limits<Uint32>::max()),
 		m_draw_objects(true), m_draw_terrain(true),
 		m_draw_lights(false), m_draw_light_spheres(false),
-		m_draw_heights(false), m_querie_id(0)
+		m_draw_walk_heights(false), m_querie_id(0)
 	{
 		MaterialDescription material_description;
 
@@ -71,7 +73,7 @@ namespace eternal_lands
 			).get_material_builder()->get_material(
 				material_description);
 
-		m_height_tree.reset(new RStarTree());
+		m_walk_height_tree.reset(new RStarTree());
 
 		glGenQueries(1, &m_querie_id);
 
@@ -143,69 +145,71 @@ namespace eternal_lands
 		Scene::add_light(light_data);
 	}
 
-	void EditorScene::set_height(const Uint16 x, const Uint16 y,
-		const Uint16 height)
+	void EditorScene::set_walk_height_page(
+		const Uint16MultiArray2 &walk_height_page,
+		const glm::uvec2 &offset)
 	{
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		Uint32ObjectSharedPtrMap::iterator found;
-		ObjectData object_data;
+		Transformation transformation;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
 		MaterialSharedPtrVector materials;
 		MaterialDescription material_description;
-		Transformation transformation;
-		glm::vec3 offset;
+		StringStream str;
+		BitSet64 blend_mask;
 		Uint32 id;
 
-		id = x + (y << 10);
+		id = offset.x + (offset.y << 12);
 
-		found = m_heights.find(id);
+		found = m_walk_heights.find(id);
 
-		if (found != m_heights.end())
+		if (found != m_walk_heights.end())
 		{
-			m_height_tree->remove(found->second);
+			m_walk_height_tree->remove(found->second);
 
-			m_heights.erase(found);
+			m_walk_heights.erase(found);
 		}
 
-		offset.x = x * 0.5f;
-		offset.y = y * 0.5f;
-		offset.z = height * 0.2f - 2.2f;
+		str << UTF8("walk_tile_") << offset.x << UTF8("x") << offset.y;
 
-		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
-			glm::vec3(1e7f))));
+		if (!get_scene_resources().get_walk_height_builder(
+			)->get_walk_height(walk_height_page, mesh))
+		{
+			return;
+		}
 
-		transformation.set_translation(offset);
-		transformation.set_scale(glm::vec3(0.5f, 0.5f, 1.0f));
+		transformation.set_translation(glm::vec3(glm::vec2(offset *
+			WalkHeightBuilder::get_walk_height_size()) *
+			WalkHeightBuilder::get_walk_height_world_scale(),
+				0.0f));
 
-		object_data.set_name(String(UTF8("plane_2")));
-		object_data.set_selection(st_none);
-		object_data.set_world_transformation(transformation);
-		object_data.set_transparency(0.5f);
-		object_data.set_blend(bt_alpha_transparency_value);
-		object_data.set_id(id);
+		assert(glm::all(glm::lessThanEqual(offset,
+			glm::uvec2(1048576))));
+
 		material_description.set_cast_shadows(false);
-
-		get_scene_resources().get_mesh_cache()->get_mesh(
-			object_data.get_name(), mesh);
+		material_description.set_culling(false);
 
 		material_description.set_color(
 			glm::vec4(0.0f, 1.0f, 0.3f, 1.0f));
 		material_description.set_name(String(UTF8("height")));
 		material_description.set_effect(String(UTF8("light-index")));
 
+		materials.clear();
+
 		materials.push_back(get_scene_resources().get_material_builder(
 			)->get_material(material_description));
 
-		object = boost::make_shared<Object>(object_data, mesh,
-			materials);
+		object = boost::make_shared<Object>(ObjectData(transformation,
+			String(str.str()), all_bits_set, 0.5f, 0.0f, id,
+			st_none, bt_alpha_transparency_value), mesh, materials);
 
-		temp = m_heights.insert(Uint32ObjectSharedPtrMap::value_type(
-			object_data.get_id(), object));
+		temp = m_walk_heights.insert(
+			Uint32ObjectSharedPtrMap::value_type(id, object));
 
 		assert(temp.second);
 
-		m_height_tree->add(object);
+		m_walk_height_tree->add(object);
 	}
 
 	void EditorScene::remove_light(const Uint32 id)
@@ -260,14 +264,14 @@ namespace eternal_lands
 		float transparency;
 		BlendType blend;
 
+		if (get_draw_walk_heights() && !shadow)
+		{
+			m_walk_height_tree->intersect(frustum, visitor);
+		}
+
 		if (get_draw_objects())
 		{
 			Scene::intersect(frustum, shadow, visitor);
-		}
-
-		if (get_draw_heights() && !shadow)
-		{
-			m_height_tree->intersect(frustum, visitor);
 		}
 
 		if (!get_draw_lights() || shadow)
@@ -311,11 +315,11 @@ namespace eternal_lands
 		clear();
 		m_light_objects.clear();
 		m_light_sphere_objects.clear();
-		m_heights.clear();
-		m_height_tree->clear();
+		m_walk_heights.clear();
+		m_walk_height_tree->clear();
 
-		map_loader.reset(new EditorMapLoader(get_file_system(),
-			get_global_vars(),
+		map_loader.reset(new EditorMapLoader(get_global_vars(),
+			get_file_system(),
 			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
@@ -407,9 +411,14 @@ namespace eternal_lands
 		map_changed();
 	}
 
-	void EditorScene::depth_read()
+	void EditorScene::terrain_depth_read()
 	{
-		m_depth = Scene::get_depth(m_depth_selection);
+		m_terrain_depth = Scene::get_depth(m_depth_selection);
+	}
+
+	void EditorScene::object_depth_read()
+	{
+		m_object_depth = Scene::get_depth(m_depth_selection);
 	}
 
 	void EditorScene::draw_selection(const glm::uvec4 &selection_rect)

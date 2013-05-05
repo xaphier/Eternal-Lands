@@ -68,7 +68,7 @@ namespace eternal_lands
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
-			Uint16MultiArray2 m_height_map;
+			Uint16MultiArray2 m_walk_height_map;
 			boost::multi_array<Uint8Array4, 2> m_tile_maps;
 			glm::vec4 m_tile_layer_heights;
 			Uint32Set m_ids;
@@ -87,9 +87,10 @@ namespace eternal_lands
 			void set_tile_page(const Uint16MultiArray2 &tiles,
 				const glm::uvec2 &offset,
 				const float z_position, const Uint16 layer);
+			void update_walk_height_page(const glm::uvec2 &offset);
 
 		public:
-			EditorMapData(const GlobalVarsSharedPtr &global_vars,
+			EditorMapData(const GlobalVarsConstSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			~EditorMapData() throw();
 			void add_object(const EditorObjectDescription &object,
@@ -133,10 +134,11 @@ namespace eternal_lands
 				const Uint16 layer) const;
 			glm::uvec2 get_tile_offset(const glm::vec2 &point)
 				const; 
-			Uint16 get_height(const Uint16 x, const Uint16 y) const;
-			void set_height(const Uint16 x, const Uint16 y,
-				const Uint16 height);
-			void set_heights(const HeightVector &heights);
+			Uint16 get_walk_height(const Uint16 x, const Uint16 y)
+				const;
+			void set_walk_heights(const HeightVector &heights);
+			void get_walk_heights(const glm::uvec2 &offset,
+				const Uint16 size, HeightVector &walk_heights);
 			void set_terrain_displacement_values(
 				const DisplacementValueVector
 					&displacement_values);
@@ -178,7 +180,8 @@ namespace eternal_lands
 			void set_draw_objects(const bool draw_objects);
 			void set_draw_terrain(const bool draw_terrain);
 			void set_draw_lights(const bool draw_lights);
-			void set_draw_heights(const bool draw_heights);
+			void set_draw_walk_heights(
+				const bool draw_walk_heights);
 			void set_draw_light_spheres(
 				const bool draw_light_spheres);
 			void set_lights_enabled(const bool enabled);
@@ -223,7 +226,8 @@ namespace eternal_lands
 			void set_focus(const glm::vec3 &focus) noexcept;
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
-			double get_depth() const;
+			float get_terrain_depth() const;
+			float get_object_depth() const;
 			void save(const AbstractProgressSharedPtr &progress,
 				const String &file_name) const;
 			void draw_selection(const glm::uvec4 &selection_rect);
@@ -233,10 +237,10 @@ namespace eternal_lands
 			void import_terrain_height_map(const String &name);
 			void import_terrain_blend_map(const String &name);
 			void set_terrain(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
-				const ImageSharedPtr &blend_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
+				const ImageConstSharedPtr &blend_map,
 				const StringVector &albedo_maps,
 				const StringVector &specular_maps,
 				const StringVector &gloss_maps,
@@ -263,6 +267,9 @@ namespace eternal_lands
 			void set_tile_layer(const Uint8MultiArray2 &tile_map,
 				const Uint16 layer);
 			void update_tile_layer(const Uint16 layer);
+			void set_walk_height_map(
+				const Uint8MultiArray2 &walk_height_map);
+			void update_walk_height_map();
 			void set_tile_map_size(const glm::uvec2 &size);
 			void swap_terrain_blend_layers(const Uint16 idx0,
 				const Uint16 idx1);
@@ -468,10 +475,10 @@ namespace eternal_lands
 				return TerrainEditor::get_terrain_offset_max();
 			}
 
-			inline void set_height_map_size(const glm::uvec2 &size)
+			inline void set_walk_height_map_size(const glm::uvec2 &size)
 				noexcept
 			{
-				m_height_map.resize(
+				m_walk_height_map.resize(
 					boost::extents[size.x][size.y]);
 			}
 
@@ -479,6 +486,12 @@ namespace eternal_lands
 			{
 				return glm::uvec2(m_tile_maps.shape()[0],
 					m_tile_maps.shape()[1]);
+			}
+
+			inline glm::uvec2 get_walk_height_map_size() const noexcept
+			{
+				return glm::uvec2(m_walk_height_map.shape()[0],
+					m_walk_height_map.shape()[1]);
 			}
 
 			inline Uint32 get_id() const noexcept

@@ -30,44 +30,45 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_mesh;
 
 			void init_terrain_pages(
-				const MeshBuilderSharedPtr &mesh_builder,
+				const MeshBuilderConstSharedPtr &mesh_builder,
 				const bool use_simd);
 			void set_terrain_page(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			void set_terrain_page_low_quality(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			virtual void do_set_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) override;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) override;
 			virtual void do_update_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) override;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) override;
 
 		protected:
 			void add_terrain_page(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const glm::uvec2 &position);
 			void remove_terrain_page(const glm::uvec2 &position);
 
 		public:
-			SimpleTerrain(const GlobalVarsSharedPtr &global_vars,
+			SimpleTerrain(
+				const GlobalVarsConstSharedPtr &global_vars,
 				const EffectCacheSharedPtr &effect_cache,
-				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialBuilderSharedPtr
+				const MeshBuilderConstSharedPtr &mesh_builder,
+				const MaterialBuilderConstSharedPtr
 					&material_builder,
 				const MaterialCacheSharedPtr &material_cache,
 				const StringArray3 &material,

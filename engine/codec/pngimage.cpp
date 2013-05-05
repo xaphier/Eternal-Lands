@@ -309,16 +309,16 @@ namespace eternal_lands
 				png_infop m_info_ptr;
 
 				static Uint32 get_png_color_type(
-					const ImageSharedPtr &image);
+					const ImageConstSharedPtr &image);
 				static Uint32 get_png_bit_depth(
-					const ImageSharedPtr &image);
+					const ImageConstSharedPtr &image);
 
 			public:
 				PngCompress(const WriterSharedPtr &writer);
 				~PngCompress();
-				void set_image(const ImageSharedPtr &image);
+				void set_image(const ImageConstSharedPtr &image);
 				static bool can_save(
-					const ImageSharedPtr &image);
+					const ImageConstSharedPtr &image);
 
 		};
 
@@ -355,7 +355,7 @@ namespace eternal_lands
 			}
 		}
 
-		void PngCompress::set_image(const ImageSharedPtr &image)
+		void PngCompress::set_image(const ImageConstSharedPtr &image)
 		{
 			boost::scoped_array<png_bytep> row_pointers;
 			Uint32 bit_depth, color_type, i;
@@ -408,7 +408,7 @@ namespace eternal_lands
 			png_write_end(m_png_ptr, m_info_ptr);
 		}
 
-		bool PngCompress::can_save(const ImageSharedPtr &image)
+		bool PngCompress::can_save(const ImageConstSharedPtr &image)
 		{
 			if ((image->get_type() != GL_UNSIGNED_BYTE) &&
 				(image->get_type() != GL_UNSIGNED_SHORT))
@@ -441,7 +441,7 @@ namespace eternal_lands
 		}
 
 		Uint32 PngCompress::get_png_color_type(
-			const ImageSharedPtr &image)
+			const ImageConstSharedPtr &image)
 		{
 			switch (image->get_format())
 			{
@@ -471,7 +471,7 @@ namespace eternal_lands
 		}
 
 		Uint32 PngCompress::get_png_bit_depth(
-			const ImageSharedPtr &image)
+			const ImageConstSharedPtr &image)
 		{
 			switch (image->get_type())
 			{
@@ -520,7 +520,7 @@ namespace eternal_lands
 		return String(UTF8("png-image"));
 	}
 
-	void PngImage::save_image(const ImageSharedPtr &image,
+	void PngImage::save_image(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		try
@@ -536,7 +536,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool PngImage::can_save(const ImageSharedPtr &image)
+	bool PngImage::can_save(const ImageConstSharedPtr &image)
 	{
 		return PngCompress::can_save(image);
 	}

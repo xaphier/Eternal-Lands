@@ -188,8 +188,8 @@ namespace eternal_lands
 
 	}
 
-	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
-		const FileSystemSharedPtr &file_system):
+	Scene::Scene(const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system):
 		m_global_vars(global_vars), m_file_system(file_system),
 		m_scene_resources(global_vars, file_system),
 		m_clipmap_terrain(m_scene_resources.get_material_builder()),
@@ -1381,7 +1381,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::do_draw_object(const ObjectSharedPtr &object,
+	void Scene::do_draw_object(const ObjectConstSharedPtr &object,
 		const BitSet64 visibility_mask, const BitSet64 blend_mask,
 		const EffectProgramType type, const Uint16 instances,
 		const Uint16 distance, const bool flip_face_culling)
@@ -1397,7 +1397,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		count = object->get_materials().size();
+		count = object->get_material_count();
 
 		object_data_set = false;
 
@@ -1415,7 +1415,7 @@ namespace eternal_lands
 
 			get_state_manager().switch_blend(blend_mask[i]);
 
-			MaterialLock material(object->get_materials()[i]);
+			MaterialLock material(object->get_material(i));
 
 			if (switch_program(material->get_effect()->get_program(
 				type)))
@@ -1450,7 +1450,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::do_draw_object_old_lights(const ObjectSharedPtr &object,
+	void Scene::do_draw_object_old_lights(const ObjectConstSharedPtr &object,
 		const BitSet64 visibility_mask, const BitSet64 blend_mask,
 		const EffectProgramType type, const Uint16 instances,
 		const Uint16 distance, const bool flip_face_culling)
@@ -1466,7 +1466,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		count = object->get_materials().size();
+		count = object->get_material_count();
 
 		get_lights(object->get_bounding_box(), lights_count);
 
@@ -1486,7 +1486,7 @@ namespace eternal_lands
 
 			get_state_manager().switch_blend(blend_mask[i]);
 
-			MaterialLock material(object->get_materials()[i]);
+			MaterialLock material(object->get_material(i));
 
 			if (switch_program(material->get_effect()->get_program(
 				type)))
@@ -1529,7 +1529,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_object_old_lights(const ObjectSharedPtr &object,
+	void Scene::draw_object_old_lights(const ObjectConstSharedPtr &object,
 		const BitSet64 visibility_mask, const BitSet64 blend_mask,
 		const EffectProgramType type, const Uint16 instances,
 		const Uint16 distance, const bool flip_face_culling)
@@ -1573,7 +1573,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_object(const ObjectSharedPtr &object,
+	void Scene::draw_object(const ObjectConstSharedPtr &object,
 		const BitSet64 visibility_mask, const BitSet64 blend_mask,
 		const EffectProgramType type, const Uint16 instances,
 		const Uint16 distance, const bool flip_face_culling)
@@ -1810,7 +1810,7 @@ namespace eternal_lands
 			draw_terrain(m_visible_terrain, ept_depth, false);
 		}
 
-		depth_read();
+		terrain_depth_read();
 
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -1835,6 +1835,8 @@ namespace eternal_lands
 
 			index++;
 		}
+
+		object_depth_read();
 
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -2064,7 +2066,11 @@ namespace eternal_lands
 			UTF8("done"));
 	}
 
-	void Scene::depth_read()
+	void Scene::terrain_depth_read()
+	{
+	}
+
+	void Scene::object_depth_read()
 	{
 	}
 
@@ -3334,9 +3340,9 @@ namespace eternal_lands
 		return m_map->get_particles();
 	}
 
-	Uint16 Scene::get_height(const Uint16 x, const Uint16 y) const
+	Uint16 Scene::get_walk_height(const Uint16 x, const Uint16 y) const
 	{
-		return m_map->get_height(x, y);
+		return m_map->get_walk_height(x, y);
 	}
 
 	Uint16 Scene::get_tile(const Uint16 x, const Uint16 y) const
@@ -3347,11 +3353,6 @@ namespace eternal_lands
 	glm::uvec2 Scene::get_walk_height_map_size() const
 	{
 		return m_map->get_walk_height_map_size();
-	}
-
-	glm::uvec2 Scene::get_height_map_size() const
-	{
-		return m_map->get_height_map_size();
 	}
 
 	glm::uvec2 Scene::get_tile_map_size() const
@@ -3377,11 +3378,6 @@ namespace eternal_lands
 	void Scene::set_ground_hemisphere(const glm::vec4 &ground_hemisphere)
 	{
 		m_map->set_ground_hemisphere(ground_hemisphere);
-	}
-
-	float Scene::get_walk_height(const Uint16 x, const Uint16 y) const
-	{
-		return m_map->get_walk_height(x, y);
 	}
 
 	bool Scene::get_terrain() const

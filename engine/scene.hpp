@@ -45,8 +45,8 @@ namespace eternal_lands
 				PairUint32SelectionTypeVector;
 
 			boost::array<GLuint, 0x40000> m_querie_ids;
-			GlobalVarsSharedPtr m_global_vars;
-			FileSystemSharedPtr m_file_system;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
 			SceneResources m_scene_resources;
 			ClipmapTerrain m_clipmap_terrain;
 			StateManager m_state_manager;
@@ -101,13 +101,13 @@ namespace eternal_lands
 			void get_lights(const BoundingBox &bounding_box,
 				Uint16 &lights_count);
 			void do_draw_object_old_lights(
-				const ObjectSharedPtr &object,
+				const ObjectConstSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
-			void do_draw_object(const ObjectSharedPtr &object,
+			void do_draw_object(const ObjectConstSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const BitSet64 blend_mask,
 				const EffectProgramType type,
@@ -163,7 +163,8 @@ namespace eternal_lands
 				const;
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
-			virtual void depth_read();
+			virtual void terrain_depth_read();
+			virtual void object_depth_read();
 			virtual void map_changed();
 			bool switch_program(
 				const GlslProgramSharedPtr &program);
@@ -180,14 +181,14 @@ namespace eternal_lands
 				const TerrainRenderingData &terrain_data,
 				const EffectProgramType type,
 				const bool lights);
-			void draw_object(const ObjectSharedPtr &object,
+			void draw_object(const ObjectConstSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const BitSet64 blend_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool flip_face_culling);
 			void draw_object_old_lights(
-				const ObjectSharedPtr &object,
+				const ObjectConstSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const BitSet64 blend_mask,
 				const EffectProgramType type,
@@ -254,8 +255,8 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			Scene(const GlobalVarsSharedPtr &global_vars,
-				const FileSystemSharedPtr &file_system);
+			Scene(const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 
 			/**
 			 * Default destructor.
@@ -296,18 +297,16 @@ namespace eternal_lands
 			double get_depth(const glm::uvec2 &offset);
 			void load(const String &name);
 			const ParticleDataVector &get_particles() const;
-			Uint16 get_height(const Uint16 x, const Uint16 y) const;
+			Uint16 get_walk_height(const Uint16 x, const Uint16 y)
+				const;
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
 			glm::uvec2 get_walk_height_map_size() const;
-			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
 			void set_ground_hemisphere(
 				const glm::vec4 &ground_hemisphere);
 			const glm::vec4 &get_ground_hemisphere() const;
-			float get_walk_height(const Uint16 x, const Uint16 y)
-				const;
 			bool get_terrain() const;
 			void set_view_port(const glm::uvec4 &view_port);
 			void update_light_system();
@@ -445,13 +444,13 @@ namespace eternal_lands
 				return m_free_ids;
 			}
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
 			}
 
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const noexcept
 			{
 				return m_file_system;

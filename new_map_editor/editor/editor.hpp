@@ -62,7 +62,7 @@ namespace eternal_lands
 				const ModificationType type);
 
 		public:
-			Editor(const GlobalVarsSharedPtr &global_vars,
+			Editor(const GlobalVarsConstSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			bool undo();
 			void set_terrain_material(const String &albedo_map,
@@ -80,6 +80,8 @@ namespace eternal_lands
 				const Uint16 index);
 			void set_tile(const glm::uvec3 &offset,
 				const Uint16 size, const Uint16 tile);
+			void set_walk_height(const glm::uvec2 &offset,
+				const Uint16 size, const Uint16 walk_height);
 			void add_3d_object(const glm::vec3 &position,
 				const String &name,
 				const SelectionType selection);
@@ -93,8 +95,10 @@ namespace eternal_lands
 			bool get_tile_edit(const glm::vec3 &min_position,
 				const glm::vec3 &max_position,
 				const Uint16 layer, glm::uvec3 &offset) const;
-			void height_edit(const glm::vec3 &point,
-				const Uint8 height);
+			bool get_walk_height_edit(
+				const glm::vec2 &world_position,
+				const float world_height, glm::uvec2 &offset,
+				Uint16 &walk_height) const;
 			void remove_object(const Uint32 id);
 			void remove_all_copies_of_object(const Uint32 id);
 			void load_map(const String &name,
@@ -105,7 +109,7 @@ namespace eternal_lands
 				const bool load_materials,
 				const bool load_height_map,
 				const bool load_tile_map,
-				const bool load_walk_map,
+				const bool load_walk_height_map,
 				const bool load_terrain);
 			void set_object_transparency(const Uint32 id,
 				const float transparency);
@@ -384,9 +388,10 @@ namespace eternal_lands
 					draw_light_spheres);
 			}
 
-			inline void set_draw_heights(const bool draw_heights)
+			inline void set_draw_walk_heights(
+				const bool draw_walk_heights)
 			{
-				m_data.set_draw_heights(draw_heights);
+				m_data.set_draw_walk_heights(draw_walk_heights);
 			}
 
 			inline void set_lights_enabled(const bool enabled)
@@ -960,9 +965,14 @@ namespace eternal_lands
 				m_data.set_depth_selection(position);
 			}
 
-			inline double get_depth() const
+			inline float get_terrain_depth() const
 			{
-				return m_data.get_depth();
+				return m_data.get_terrain_depth();
+			}
+
+			inline float get_object_depth() const
+			{
+				return m_data.get_object_depth();
 			}
 
 			inline Uint32 get_id() const

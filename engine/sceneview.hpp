@@ -36,7 +36,7 @@ namespace eternal_lands
 	class SceneView
 	{
 		private:
-			GlobalVarsSharedPtr m_global_vars;
+			GlobalVarsConstSharedPtr m_global_vars;
 			glm::mat4x4 m_view_matrix;
 			glm::mat4x4 m_projection_matrix;
 			glm::mat4x4 m_projection_view_matrix;
@@ -70,7 +70,7 @@ namespace eternal_lands
 			glm::mat4 build_projection_matrix(const float z_near,
 				const float z_far) const;
 
-			inline GlobalVarsSharedPtr get_global_vars() const
+			inline GlobalVarsConstSharedPtr get_global_vars() const
 				noexcept
 			{
 				return m_global_vars;
@@ -80,7 +80,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			SceneView(const GlobalVarsSharedPtr &global_vars);
+			SceneView(const GlobalVarsConstSharedPtr &global_vars);
 
 			/**
 			 * Default destructor.

@@ -308,10 +308,10 @@ namespace eternal_lands
 			public:
 				JpegCompress();
 				~JpegCompress();
-				void set_image(const ImageSharedPtr &image,
+				void set_image(const ImageConstSharedPtr &image,
 					const WriterSharedPtr &writer);
 				static bool can_save(
-					const ImageSharedPtr &image);
+					const ImageConstSharedPtr &image);
 
 		};
 
@@ -331,7 +331,7 @@ namespace eternal_lands
 			jpeg_destroy_compress(&m_cinfo);
 		}
 
-		void JpegCompress::set_image(const ImageSharedPtr &image,
+		void JpegCompress::set_image(const ImageConstSharedPtr &image,
 			const WriterSharedPtr &writer)
 		{
 			boost::scoped_array<JSAMPROW> row_pointers;
@@ -384,7 +384,7 @@ namespace eternal_lands
 			writer->write(buffer, size);
 		}
 
-		bool JpegCompress::can_save(const ImageSharedPtr &image)
+		bool JpegCompress::can_save(const ImageConstSharedPtr &image)
 		{
 			if (image->get_type() != GL_UNSIGNED_BYTE)
 			{
@@ -439,7 +439,7 @@ namespace eternal_lands
 		return String(UTF8("jpeg-image"));
 	}
 
-	void JpegImage::save_image(const ImageSharedPtr &image,
+	void JpegImage::save_image(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		try
@@ -455,7 +455,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool JpegImage::can_save(const ImageSharedPtr &image)
+	bool JpegImage::can_save(const ImageConstSharedPtr &image)
 	{
 		return JpegCompress::can_save(image);
 	}

@@ -114,10 +114,10 @@ namespace eternal_lands
 			/**
 			 * @brief Returns decompressed image.
 			 * Returns a decompressed copy of the image if the
-			 * image is compressed, else a copy if the image
-			 * itself is returned.
+			 * image is compressed, else the image itself is
+			 * returned.
 			 * @param copy Returns a copy of the image if the image
-			 * is uncompressed else just a copy of the handle.
+			 * is uncompressed.
 			 * @param rg_formats Use RG and R as format for
 			 * uncompressed image.
 			 * @param merge_layers Merge multiple layers (two or
@@ -126,6 +126,37 @@ namespace eternal_lands
 			 */
 			ImageSharedPtr decompress(const bool copy,
 				const bool rg_formats, const bool merge_layers);
+
+			/**
+			 * @brief Returns decompressed image.
+			 * Returns a decompressed copy of the image if the
+			 * image is compressed, else the image itself is
+			 * returned.
+			 * @param copy Returns a copy of the image if the image
+			 * is uncompressed.
+			 * @param rg_formats Use RG and R as format for
+			 * uncompressed image.
+			 * @param merge_layers Merge multiple layers (two or
+			 * four) of a red or red-green into in a rgba format.
+			 * @return the uncompressed image.
+			 */
+			ImageConstSharedPtr decompress(const bool copy,
+				const bool rg_formats, const bool merge_layers)
+				const;
+
+			/**
+			 * @brief Returns decompressed image.
+			 * Returns a decompressed copy of the image if the
+			 * image is compressed, else a copy if the image
+			 * itself is returned.
+			 * @param rg_formats Use RG and R as format for
+			 * uncompressed image.
+			 * @param merge_layers Merge multiple layers (two or
+			 * four) of a red or red-green into in a rgba format.
+			 * @return the uncompressed image.
+			 */
+			ImageSharedPtr decompressed_copy(const bool rg_formats,
+				const bool merge_layers) const;
 
 			void read_framebuffer(const Uint32 x, const Uint32 y);
 
@@ -186,6 +217,33 @@ namespace eternal_lands
 				}
 
 				return static_cast<Uint8*>(get_buffer(
+					)->get_ptr()) + get_pixel_offset(x, y,
+						z, face, mipmap);
+			}
+
+			/**
+			 * Returns the pointer to the data of the given
+			 * location.
+			 * @param x The x position.
+			 * @param y The y position.
+			 * @param z The z position.
+			 * @param face The face to use.
+			 * @param mipmap The mipmap level to use.
+			 * @return The pointer to the data.
+			 */
+			inline const void* const get_data(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap) const
+			{
+				if (get_compressed())
+				{
+					return static_cast<const Uint8*>(
+						get_buffer()->get_ptr()) +
+						get_block_offset(x, y,z, face,
+							mipmap);
+				}
+
+				return static_cast<const Uint8*>(get_buffer(
 					)->get_ptr()) + get_pixel_offset(x, y,
 						z, face, mipmap);
 			}

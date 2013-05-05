@@ -520,12 +520,13 @@ namespace eternal_lands
 			StringVector m_materials;
 	};
 
-	MeshDataCache::MeshDataCache(const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars):
-		m_file_system(file_system), m_global_vars(global_vars)
+	MeshDataCache::MeshDataCache(
+		const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system):
+		m_global_vars(global_vars), m_file_system(file_system)
 	{
-		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
+		assert(m_file_system.get() != nullptr);
 	}
 
 	MeshDataCache::~MeshDataCache() noexcept

@@ -37,7 +37,7 @@ namespace eternal_lands
 				vertex_stream_count>
 					HardwareBufferSharedPtrArray;
 
-			const HardwareBufferMapperWeakPtr
+			const HardwareBufferMapperConstWeakPtr
 				m_hardware_buffer_mapper;
 			HardwareBufferSharedPtrArray m_vertex_data;
 			HardwareBufferSharedPtr m_index_data;
@@ -67,10 +67,10 @@ namespace eternal_lands
 				BitSet32 &used_attributes);
 
 		protected:
-			inline HardwareBufferMapperSharedPtr
+			inline HardwareBufferMapperConstSharedPtr
 				get_hardware_buffer_mapper() const noexcept
 			{
-				HardwareBufferMapperSharedPtr result;
+				HardwareBufferMapperConstSharedPtr result;
 
 				result = m_hardware_buffer_mapper.lock();
 
@@ -83,10 +83,11 @@ namespace eternal_lands
 				const VertexStreamBitset shared_vertex_datas,
 				const bool shared_index_data,
 				OpenGl2Mesh &mesh) const;
-			void bind_vertex_buffers(BitSet32 &used_attributes);
-			void unbind_vertex_buffers();
-			void bind_index_buffer();
-			void unbind_index_buffer();
+			void bind_vertex_buffers(BitSet32 &used_attributes)
+				const;
+			void unbind_vertex_buffers() const;
+			void bind_index_buffer() const;
+			void unbind_index_buffer() const;
 
 			inline bool get_has_index_data() const
 			{
@@ -96,7 +97,7 @@ namespace eternal_lands
 			virtual AbstractWriteMemorySharedPtr
 				get_vertex_buffer(const Uint16 index);
 			virtual void set_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
+				const AbstractReadMemoryConstSharedPtr &buffer,
 				const Uint16 index);
 			virtual AbstractWriteMemorySharedPtr get_index_buffer();
 			virtual void init_vertex_buffers(
@@ -107,7 +108,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl2Mesh(const HardwareBufferMapperWeakPtr
+			OpenGl2Mesh(const HardwareBufferMapperConstWeakPtr
 					&hardware_buffer_mapper,
 				const String &name,
 				const bool static_indices,
@@ -120,15 +121,15 @@ namespace eternal_lands
 			 */
 			virtual ~OpenGl2Mesh() noexcept;
 
-			virtual void bind(BitSet32 &used_attributes);
-			virtual void unbind();
+			virtual void bind(BitSet32 &used_attributes) const;
+			virtual void unbind() const;
 
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
 				const Uint32 instances,
-				const PrimitiveType primitive);
+				const PrimitiveType primitive) const;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.
@@ -142,7 +143,7 @@ namespace eternal_lands
 				const VertexStreamBitset shared_vertex_datas,
 				const bool shared_index_data) const;
 			virtual void update_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
+				const AbstractReadMemoryConstSharedPtr &buffer,
 				 const Uint16 index);
 			virtual bool get_supports_base_vertex() const;
 			virtual bool get_supports_restart_index() const;

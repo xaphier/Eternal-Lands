@@ -31,7 +31,7 @@ namespace eternal_lands
 {
 
 	StringSet AbstractMapLoader::load_harvestables(
-		const FileSystemSharedPtr &file_system)
+		const FileSystemConstSharedPtr &file_system)
 	{
 		std::vector<std::string> lines, line;
 		std::vector<std::string>::iterator it;
@@ -68,7 +68,7 @@ namespace eternal_lands
 	}
 
 	StringSet AbstractMapLoader::load_entrables(
-		const FileSystemSharedPtr &file_system)
+		const FileSystemConstSharedPtr &file_system)
 	{
 		std::vector<std::string> lines, line;
 		std::vector<std::string>::iterator it;
@@ -105,9 +105,9 @@ namespace eternal_lands
 	}
 
 	AbstractMapLoader::AbstractMapLoader(
-		const FileSystemSharedPtr &file_system,
+		const FileSystemConstSharedPtr &file_system,
 		const FreeIdsManagerSharedPtr &free_ids,
-		const GlobalVarsSharedPtr &global_vars):
+		const GlobalVarsConstSharedPtr &global_vars):
 		m_file_system(file_system), m_free_ids(free_ids),
 		m_global_vars(global_vars)
 	{
@@ -736,25 +736,33 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_height_map(const Uint32 height_map_width,
-		const Uint32 height_map_height, const Uint32 height_map_offset,
+	void AbstractMapLoader::read_walk_height_map(
+		const Uint32 walk_height_map_width,
+		const Uint32 walk_height_map_height,
+		const Uint32 walk_height_map_offset,
 		const MapVersionType version)
 	{
-		Uint32 x, y;
+		Uint8MultiArray2 walk_height_map;
+		Uint32 x, y, walk_height;
 
 		LOG_DEBUG(lt_map_loader, UTF8("Height size <%1%, %2%>."),
-			height_map_width % height_map_height);
+			walk_height_map_width % walk_height_map_height);
 
-		get_reader()->set_position(height_map_offset);
+		get_reader()->set_position(walk_height_map_offset);
 
-		for (y = 0; y < height_map_height; y++)
+		walk_height_map.resize(
+			boost::extents[walk_height_map_width]
+				[walk_height_map_height]);
+
+		for (y = 0; y < walk_height_map_height; y++)
 		{
-			for (x = 0; x < height_map_width; x++)
+			for (x = 0; x < walk_height_map_width; x++)
 			{
 				try
 				{
-					set_height(x, y,
-						get_reader()->read_u8());
+					walk_height = get_reader()->read_u8();
+
+					walk_height_map[x][y] = walk_height;
 				}
 				catch (boost::exception &exception)
 				{
@@ -768,6 +776,8 @@ namespace eternal_lands
 				}
 			}
 		}
+
+		set_walk_height_map(walk_height_map);
 	}
 
 	void AbstractMapLoader::read_tile_map(const Uint32 width,
@@ -813,8 +823,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_old_tile_map(const Uint32 tile_map_width,
-		const Uint32 tile_map_height, const Uint32 tile_map_offset,
-		const MapVersionType version)
+		const Uint32 tile_map_height, const Uint32 tile_map_offset)
 	{
 		Uint8MultiArray2 tile_map, water_map;
 		Uint32 i, j, x, y, tile, water, data, no_tile;
@@ -959,9 +968,9 @@ namespace eternal_lands
 		MapItemsTypeSet skip_items)
 	{
 		glm::vec4 ground_hemisphere;
-		glm::uvec2 height_map_size, map_size, tile_map_size;
+		glm::uvec2 walk_height_map_size, map_size, tile_map_size;
 		Uint32 tile_map_offset;
-		Uint32 height_map_offset;
+		Uint32 walk_height_map_offset;
 		Uint32 obj_3d_size;
 		Uint32 obj_3d_count;
 		Uint32 obj_3d_offset;
@@ -1005,7 +1014,7 @@ namespace eternal_lands
 		tile_map_size.x = get_reader()->read_u32_le();
 		tile_map_size.y = get_reader()->read_u32_le();
 		tile_map_offset = get_reader()->read_u32_le();
-		height_map_offset = get_reader()->read_u32_le();
+		walk_height_map_offset = get_reader()->read_u32_le();
 		obj_3d_size = get_reader()->read_u32_le();
 		obj_3d_count = get_reader()->read_u32_le();
 		obj_3d_offset = get_reader()->read_u32_le();
@@ -1082,20 +1091,18 @@ namespace eternal_lands
 			name_offset = 0;
 
 			map_size = tile_map_size * 6u;
-			height_map_size = tile_map_size * 6u;
+			walk_height_map_size = tile_map_size * 6u;
 		}
 		else
 		{
 			map_size = tile_map_size;
-			height_map_size = tile_map_size;
+			walk_height_map_size = tile_map_size;
 		}
 
 		LOG_DEBUG(lt_map_loader, UTF8("map size <%1%, %2%>."),
 			map_size.x % map_size.y);
 
 		set_map_size(map_size);
-		set_tile_map_size(tile_map_size);
-		set_height_map_size(height_map_size);
 
 		if (obj_3d_size != get_3d_object_size())
 		{
@@ -1176,10 +1183,11 @@ namespace eternal_lands
 				particle_offset, version);
 		}
 
-		if (skip_items.count(mit_height_map) == 0)
+		if (skip_items.count(mit_walk_height_map) == 0)
 		{
-			read_height_map(height_map_size.x, height_map_size.y,
-				height_map_offset, version);
+			read_walk_height_map(walk_height_map_size.x,
+				walk_height_map_size.y, walk_height_map_offset,
+				version);
 		}
 
 		if (skip_items.count(mit_tile_map) == 0)
@@ -1187,8 +1195,7 @@ namespace eternal_lands
 			if (version == mvt_1_0)
 			{
 				read_old_tile_map(tile_map_size.x,
-					tile_map_size.y, tile_map_offset,
-					version);
+					tile_map_size.y, tile_map_offset);
 			}
 			else
 			{

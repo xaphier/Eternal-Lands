@@ -39,11 +39,11 @@
 namespace eternal_lands
 {
 
-	Map::Map(const GlobalVarsSharedPtr &global_vars,
-		const MeshBuilderSharedPtr &mesh_builder,
+	Map::Map(const GlobalVarsConstSharedPtr &global_vars,
+		const MeshBuilderConstSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache,
-		const TerrainBuilderWeakPtr &terrain_builder,
+		const TerrainBuilderConstWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache):
 		m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
@@ -61,56 +61,6 @@ namespace eternal_lands
 
 	Map::~Map() noexcept
 	{
-	}
-
-	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map,
-		const glm::vec3 &translation)
-	{
-		glm::uvec2 size;
-		Uint32 x, y;
-		float scale, z;
-
-		size = glm::uvec2(displacement_map->get_size());
-
-		scale = AbstractTerrain::get_vector_scale().z;
-
-		m_walk_height_map.resize(boost::extents[size.x][size.y]);
-
-		for (y = 0; y < size.y; ++y)
-		{
-			for (x = 0; x < size.x; ++x)
-			{
-				z = displacement_map->get_pixel(x, y, 0, 0,
-					0).z;
-
-				m_walk_height_map[x][y] = z * scale +
-					translation.z;
-			}
-		}
-
-		size /= 2;
-
-		set_height_map_size(size);
-
-		for (y = 0; y < size.y; ++y)
-		{
-			for (x = 0; x < size.x; ++x)
-			{
-				m_height_map[x][y] = 11;
-			}
-		}
-
-		size /= 6;
-
-		set_tile_map_size(size);
-
-		for (y = 0; y < size.y; ++y)
-		{
-			for (x = 0; x < size.x; ++x)
-			{
-				m_tile_map[x][y] = 255;
-			}
-		}
 	}
 
 	void Map::add_object(const ObjectDescription &object_description)
@@ -376,32 +326,31 @@ namespace eternal_lands
 	}
 
 	void Map::set_terrain_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const glm::vec3 &translation)
 	{
 		m_terrain->set_geometry_maps(displacement_map,
 			normal_tangent_map, dudv_map, translation);
-
-		init_walk_height_map(displacement_map->decompress(false, true,
-			false), translation);
 	}
 
-	void Map::set_terrain_blend_map(const ImageSharedPtr &blend_map)
+	void Map::set_terrain_blend_map(const ImageConstSharedPtr &blend_map)
 	{
 		m_terrain->set_blend_map(blend_map, get_texture_cache());
 	}
 
 	void Map::update_terrain_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map, const glm::vec3 &translation)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const glm::vec3 &translation)
 	{
 		m_terrain->update_geometry_maps(displacement_map,
 			normal_tangent_map, dudv_map, translation);
 	}
 
-	void Map::update_terrain_blend_map(const ImageSharedPtr &blend_map,
+	void Map::update_terrain_blend_map(const ImageConstSharedPtr &blend_map,
 		const BitSet64 &layers)
 	{
 		m_terrain->update_blend_map(blend_map, layers);

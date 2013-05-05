@@ -54,10 +54,10 @@ namespace eternal_lands
 	{
 		private:
 			typedef std::map<VertexFormatType,
-				VertexFormatSharedPtr> VertexFormatsMap;
+				VertexFormatConstSharedPtr> VertexFormatsMap;
 
-			const GlobalVarsSharedPtr m_global_vars;
-			const HardwareBufferMapperWeakPtr
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const HardwareBufferMapperConstWeakPtr
 				m_hardware_buffer_mapper;
 			VertexFormatsMap m_vertex_formats;
 
@@ -67,21 +67,21 @@ namespace eternal_lands
 			void set_format(const VertexFormatType format,
 				const VertexElementsVector &elements);
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
 			}
 
-			inline const HardwareBufferMapperWeakPtr
+			inline const HardwareBufferMapperConstWeakPtr
 				&get_hardware_buffer_mapper() const noexcept
 			{
 				return m_hardware_buffer_mapper;
 			}
 
 		public:
-			MeshBuilder(const GlobalVarsSharedPtr &global_vars,
-				const HardwareBufferMapperWeakPtr
+			MeshBuilder(const GlobalVarsConstSharedPtr &global_vars,
+				const HardwareBufferMapperConstWeakPtr
 					&hardware_buffer_mapper);
 			~MeshBuilder() noexcept;
 			AbstractMeshSharedPtr get_mesh(const String &name,
@@ -98,7 +98,7 @@ namespace eternal_lands
 			VertexBuffersSharedPtr get_vertex_buffers(
 				const VertexFormatType vertex_format,
 				const Uint32 vertex_count) const;
-			VertexFormatSharedPtr get_vertex_format(
+			VertexFormatConstSharedPtr get_vertex_format(
 				const VertexFormatType vertex_format) const;
 			static const String &get_str(
 				const VertexFormatType type);

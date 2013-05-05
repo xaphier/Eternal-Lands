@@ -16,7 +16,7 @@
 namespace eternal_lands
 {
 
-	StateManager::StateManager(const GlobalVarsSharedPtr &global_vars):
+	StateManager::StateManager(const GlobalVarsConstSharedPtr &global_vars):
 		m_global_vars(global_vars)
 	{
 		m_program_used_texture_units.set();
@@ -67,7 +67,7 @@ namespace eternal_lands
 		set_view_port(m_state_set.get_view_port());
 	}
 
-	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)
+	void StateManager::set_mesh(const AbstractMeshConstSharedPtr &mesh)
 	{
 		m_mesh = mesh;
 

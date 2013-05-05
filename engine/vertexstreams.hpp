@@ -27,16 +27,16 @@ namespace eternal_lands
 	class VertexStreams: public boost::noncopyable
 	{
 		private:
-			const VertexFormatSharedPtr m_format;
+			const VertexFormatConstSharedPtr m_format;
 			VertexStreamVector m_streams;
 			const Uint32 m_vertex_count;
 
 		public:
-			VertexStreams(const VertexFormatSharedPtr &format,
+			VertexStreams(const VertexFormatConstSharedPtr &format,
 				const AbstractWriteMemorySharedPtrArray
 					&memory, const Uint32 vertex_count,
 					const bool use_simd);
-			VertexStreams(const VertexFormatSharedPtr &format,
+			VertexStreams(const VertexFormatConstSharedPtr &format,
 				const AbstractReadWriteMemorySharedPtrVector
 					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
@@ -46,8 +46,8 @@ namespace eternal_lands
 			void reset() noexcept;
 			void push_vertex() noexcept;
 
-			inline const VertexFormatSharedPtr &get_format() const
-				noexcept
+			inline const VertexFormatConstSharedPtr &get_format()
+				const noexcept
 			{
 				return m_format;
 			}

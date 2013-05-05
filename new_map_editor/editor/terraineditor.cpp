@@ -1196,10 +1196,10 @@ namespace eternal_lands
 		}
 	}
 
-	void TerrainEditor::set(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
-		const ImageSharedPtr &blend_map,
+	void TerrainEditor::set(const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const ImageConstSharedPtr &blend_map,
 		const StringVector &albedo_maps,
 		const StringVector &specular_maps,
 		const StringVector &gloss_maps,
@@ -1231,8 +1231,8 @@ namespace eternal_lands
 					displacement_map->get_name()));
 		}
 
-		m_displacement_map = displacement_map->decompress(false,
-			true, false);
+		m_displacement_map = displacement_map->decompressed_copy(true,
+			false);
 
 		m_uv_tool.reset(new UvTool(m_displacement_map));
 
@@ -1257,9 +1257,10 @@ namespace eternal_lands
 		m_enabled = true;
 	}
 
-	void TerrainEditor::import_blend_map(const ImageSharedPtr &blend_map)
+	void TerrainEditor::import_blend_map(
+		const ImageConstSharedPtr &blend_map)
 	{
-		ImageSharedPtr blend_image;
+		ImageConstSharedPtr blend_image;
 		glm::vec4 value;
 		glm::uvec3 size;
 		Uint32 x, y, z;
@@ -1319,10 +1320,10 @@ namespace eternal_lands
 		}
 	}
 
-	void TerrainEditor::import_dudv_map(const ImageSharedPtr &dudv_map,
+	void TerrainEditor::import_dudv_map(const ImageConstSharedPtr &dudv_map,
 		const glm::vec4 &dudv_scale_offset)
 	{
-		ImageSharedPtr dudv_image;
+		ImageConstSharedPtr dudv_image;
 		glm::vec4 value;
 		glm::uvec3 size;
 		Uint32 x, y;

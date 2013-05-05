@@ -21,26 +21,29 @@ namespace eternal_lands
 	class MaterialLock
 	{
 		private:
-			const MaterialSharedPtr m_material;
+			const MaterialConstSharedPtr m_material;
 
 		public:
-			inline MaterialLock(const MaterialSharedPtr &material):
+			inline MaterialLock(
+				const MaterialConstSharedPtr &material):
 				m_material(material)
 			{
 				m_material->lock();
 			}
 
-			inline ~MaterialLock()
+			inline ~MaterialLock() noexcept
 			{
 				m_material->unlock();
 			}
 
-			inline const MaterialSharedPtr &operator->() const
+			inline const MaterialConstSharedPtr &operator->() const
+				noexcept
 			{
 				return m_material;
 			}
 
-			inline const MaterialSharedPtr &get_material() const
+			inline const MaterialConstSharedPtr &get_material()
+				const noexcept
 			{
 				return m_material;
 			}

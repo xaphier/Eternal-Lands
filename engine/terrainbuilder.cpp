@@ -18,11 +18,12 @@
 namespace eternal_lands
 {
 
-	TerrainBuilder::TerrainBuilder(const GlobalVarsSharedPtr &global_vars,
+	TerrainBuilder::TerrainBuilder(
+		const GlobalVarsConstSharedPtr &global_vars,
 		const EffectCacheWeakPtr &effect_cache,
-		const MaterialBuilderWeakPtr &material_builder,
+		const MaterialBuilderConstWeakPtr &material_builder,
 		const MaterialCacheWeakPtr &material_cache,
-		const MeshBuilderWeakPtr &mesh_builder,
+		const MeshBuilderConstWeakPtr &mesh_builder,
 		const MeshCacheWeakPtr &mesh_cache,
 		const MeshDataCacheWeakPtr &mesh_data_cache,
 		const TextureCacheWeakPtr &texture_cache):

@@ -25,11 +25,11 @@ namespace eternal_lands
 	class TerrainBuilder: public boost::noncopyable
 	{
 		private:
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
 			const EffectCacheWeakPtr m_effect_cache;
-			const MaterialBuilderWeakPtr m_material_builder;
+			const MaterialBuilderConstWeakPtr m_material_builder;
 			const MaterialCacheWeakPtr m_material_cache;
-			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshBuilderConstWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const TextureCacheWeakPtr m_texture_cache;
@@ -37,7 +37,7 @@ namespace eternal_lands
 			StringArray3 m_simple_terrain_material_name;
 			String m_clipmap_terrain_effect_name;
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
@@ -55,10 +55,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline MaterialBuilderSharedPtr get_material_builder()
+			inline MaterialBuilderConstSharedPtr get_material_builder()
 				const noexcept
 			{
-				MaterialBuilderSharedPtr result;
+				MaterialBuilderConstSharedPtr result;
 
 				result = m_material_builder.lock();
 
@@ -79,10 +79,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline MeshBuilderSharedPtr get_mesh_builder() const
-				noexcept
+			inline MeshBuilderConstSharedPtr get_mesh_builder()
+				const noexcept
 			{
-				MeshBuilderSharedPtr result;
+				MeshBuilderConstSharedPtr result;
 
 				result = m_mesh_builder.lock();
 
@@ -128,11 +128,12 @@ namespace eternal_lands
 			}
 
 		public:
-			TerrainBuilder(const GlobalVarsSharedPtr &global_vars,
+			TerrainBuilder(
+				const GlobalVarsConstSharedPtr &global_vars,
 				const EffectCacheWeakPtr &effect_cache,
-				const MaterialBuilderWeakPtr &material_builder,
+				const MaterialBuilderConstWeakPtr &material_builder,
 				const MaterialCacheWeakPtr &material_cache,
-				const MeshBuilderWeakPtr &mesh_builder,
+				const MeshBuilderConstWeakPtr &mesh_builder,
 				const MeshCacheWeakPtr &mesh_cache,
 				const MeshDataCacheWeakPtr &mesh_data_cache,
 				const TextureCacheWeakPtr &texture_cache);

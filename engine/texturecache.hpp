@@ -30,50 +30,55 @@ namespace eternal_lands
 				TextureCacheMap;
 
 			TextureCacheMap m_texture_cache;
-			const FileSystemSharedPtr m_file_system;
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
 			TextureSharedPtr m_error_texture;
+			TextureSharedPtr m_error_texture_rectangle;
 
 			TextureSharedPtr load_texture(const String &name,
 				const String &index, const bool sRGB,
-				const bool merge_layers);
+				const bool rectangle, const bool merge_layers);
 			TextureSharedPtr do_load_texture(const String &name,
 				const String &index, const bool sRGB,
-				const bool merge_layers) const;
+				const bool rectangle, const bool merge_layers)
+				const;
 			TextureSharedPtr do_load_texture(
-				const ImageSharedPtr &image,
-				const String &name) const;
+				const ImageConstSharedPtr &image,
+				const String &name, const bool rectangle) const;
 
-			inline const FileSystemSharedPtr &get_file_system()
-				const noexcept
-			{
-				return m_file_system;
-			}
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
 			}
 
+			inline const FileSystemConstSharedPtr &get_file_system()
+				const noexcept
+			{
+				return m_file_system;
+			}
+
 		public:
-			TextureCache(const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars);
+			TextureCache(
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 			~TextureCache() noexcept;
 			const TextureSharedPtr &get_texture(const String &name,
-				const bool sRGB);
-			const TextureSharedPtr &get_error_texture();
+				const bool sRGB, const bool rectangle);
+			const TextureSharedPtr &get_error_texture(
+				const bool rectangle);
 			TextureSharedPtr get_texture(
-				const ImageSharedPtr &image) const;
+				const ImageConstSharedPtr &image,
+				const bool rectangle) const;
 			TextureSharedPtr get_texture_array(
 				const StringVector &image_names,
 				const String &name, const bool sRGB) const;
 			TextureSharedPtr get_texture_array(
-				const ImageSharedPtrVector &images,
+				const ImageConstSharedPtrVector &images,
 				const String &name) const;
 			TextureSharedPtr get_texture_array(
-				const ImageSharedPtr &image, const String &name)
-				const;
+				const ImageConstSharedPtr &image,
+				const String &name) const;
 
 	};
 

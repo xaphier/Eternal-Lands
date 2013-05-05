@@ -43,7 +43,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl33Mesh(const HardwareBufferMapperWeakPtr
+			OpenGl33Mesh(const HardwareBufferMapperConstWeakPtr
 					&hardware_buffer_mapper,
 				const String &name,
 				const bool static_indices,

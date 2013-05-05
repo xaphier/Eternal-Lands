@@ -71,20 +71,20 @@ namespace eternal_lands
 			ActorPartTextureTypeStringMap m_parts;
 			ImageSharedPtr m_image;
 			TextureSharedPtr m_texture;
-			const FileSystemSharedPtr m_file_system;
-			const GlobalVarsSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
+			const GlobalVarsConstSharedPtr m_global_vars;
 			Uint32 m_size;
 			Uint16 m_scale;
 			BitSet16 m_alphas;
 			bool m_compression;
 
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const noexcept
 			{
 				return m_file_system;
 			}
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
@@ -92,8 +92,8 @@ namespace eternal_lands
 
 		public:
 			ActorTextureBuilder(
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system,
+				const GlobalVarsConstSharedPtr &global_vars,
 				const String &name);
 			~ActorTextureBuilder() noexcept;
 			void set_parts(
@@ -102,8 +102,7 @@ namespace eternal_lands
 			void build_actor_texture();
 			String get_effect() const noexcept;
 
-			inline const TextureSharedPtr &get_texture() const
-				noexcept
+			inline const TextureSharedPtr &get_texture() noexcept
 			{
 				return m_texture;
 			}

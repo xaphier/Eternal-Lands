@@ -49,139 +49,145 @@ namespace eternal_lands
 			ThreadPoolSharedPtr m_thread_pool;
 			FilterSharedPtr m_filter;
 			TileBuilderSharedPtr m_tile_builder;
+			WalkHeightBuilderSharedPtr m_walk_height_builder;
 
 		public:
-			SceneResources(const GlobalVarsSharedPtr &global_vars,
-				const FileSystemSharedPtr &file_system);
+			SceneResources(
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system);
 			~SceneResources() noexcept;
 			void clear();
-			void init(const FileSystemSharedPtr &file_system);
+			void init(const FileSystemConstSharedPtr &file_system);
 
 			inline const MeshBuilderSharedPtr &get_mesh_builder()
-				const noexcept
+				noexcept
 			{
 				return m_mesh_builder;
 			}
 
-			inline const MeshCacheSharedPtr &get_mesh_cache() const
+			inline const MeshCacheSharedPtr &get_mesh_cache()
 				noexcept
 			{
 				return m_mesh_cache;
 			}
 
 			inline const EffectCacheSharedPtr &get_effect_cache()
-				const noexcept
+				noexcept
 			{
 				return m_effect_cache;
 			}
 
 			inline const TextureCacheSharedPtr &get_texture_cache()
-				const noexcept
+				noexcept
 			{
 				return m_texture_cache;
 			}
 
 			inline const MeshDataCacheSharedPtr
-				&get_mesh_data_cache() const noexcept
+				&get_mesh_data_cache() noexcept
 			{
 				return m_mesh_data_cache;
 			}
 
 			inline const ActorDataCacheSharedPtr
-				&get_actor_data_cache() const noexcept
+				&get_actor_data_cache() noexcept
 			{
 				return m_actor_data_cache;
 			}
 
 			inline const ShaderSourceBuilderSharedPtr
-				&get_shader_source_builder() const noexcept
+				&get_shader_source_builder() noexcept
 			{
 				return m_shader_source_builder;
 			}
 
 			inline const FrameBufferBuilderSharedPtr
-				&get_framebuffer_builder() const noexcept
+				&get_framebuffer_builder() noexcept
 			{
 				return m_framebuffer_builder;
 			}
 
 			inline const MaterialBuilderSharedPtr
-				&get_material_builder() const noexcept
+				&get_material_builder() noexcept
 			{
 				return m_material_builder;
 			}
 
 			inline const MaterialCacheSharedPtr
-				&get_material_cache() const noexcept
+				&get_material_cache() noexcept
 			{
 				return m_material_cache;
 			}
 
 			inline const MaterialDescriptionCacheSharedPtr
-				&get_material_description_cache() const noexcept
+				&get_material_description_cache() noexcept
 			{
 				return m_material_description_cache;
 			}
 
 			inline const MaterialScriptCacheSharedPtr
-				&get_material_script_cache() const noexcept
+				&get_material_script_cache() noexcept
 			{
 				return m_material_script_cache;
 			}
 
 			inline const MaterialScriptManagerSharedPtr
-				&get_material_script_manager() const noexcept
+				&get_material_script_manager() noexcept
 			{
 				return m_material_script_manager;
 			}
 
 			inline const ScriptEngineSharedPtr
-				&get_script_engine() const noexcept
+				&get_script_engine() noexcept
 			{
 				return m_script_engine;
 			}
 
 			inline const GlslProgramCacheSharedPtr
-				&get_glsl_program_cache() const noexcept
+				&get_glsl_program_cache() noexcept
 			{
 				return m_glsl_program_cache;
 			}
 
 			inline const UniformBufferDescriptionCacheSharedPtr
-				&get_uniform_buffer_description_cache() const
-				noexcept
+				&get_uniform_buffer_description_cache() noexcept
 			{
 				return m_uniform_buffer_description_cache;
 			}
 
 			inline const HardwareBufferMapperSharedPtr
-				&get_hardware_buffer_mapper() const noexcept
+				&get_hardware_buffer_mapper() noexcept
 			{
 				return m_hardware_buffer_mapper;
 			}
 
 			inline const TerrainBuilderSharedPtr
-				&get_terrain_builder() const noexcept
+				&get_terrain_builder() noexcept
 			{
 				return m_terrain_builder;;
 			}
 
 			inline const ThreadPoolSharedPtr &get_thread_pool()
-				const noexcept
+				noexcept
 			{
 				return m_thread_pool;
 			}
 
-			inline const FilterSharedPtr &get_filter() const
-				noexcept
+			inline const FilterSharedPtr &get_filter() noexcept
 			{
 				return m_filter;
 			}
 
 			inline const TileBuilderSharedPtr &get_tile_builder()
-				const noexcept
+				noexcept
 			{
 				return m_tile_builder;
+			}
+
+			inline const WalkHeightBuilderSharedPtr
+				&get_walk_height_builder() noexcept
+			{
+				return m_walk_height_builder;
 			}
 
 	};

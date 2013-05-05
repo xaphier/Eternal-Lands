@@ -26,18 +26,18 @@
 namespace eternal_lands
 {
 
-	MapLoader::MapLoader(const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars,
+	MapLoader::MapLoader(const FileSystemConstSharedPtr &file_system,
+		const GlobalVarsConstSharedPtr &global_vars,
 		const EffectCacheWeakPtr &effect_cache,
-		const MeshBuilderWeakPtr &mesh_builder,
+		const MeshBuilderConstWeakPtr &mesh_builder,
 		const MeshCacheWeakPtr &mesh_cache,
 		const MeshDataCacheWeakPtr &mesh_data_cache,
 		const MaterialCacheWeakPtr &material_cache,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
-		const TerrainBuilderWeakPtr &terrain_builder,
+		const TerrainBuilderConstWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
-		const TileBuilderWeakPtr &tile_builder,
+		const TileBuilderConstWeakPtr &tile_builder,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids, global_vars),
 		m_effect_cache(effect_cache),m_mesh_builder(mesh_builder),
@@ -200,10 +200,10 @@ namespace eternal_lands
 			bt_alpha_transparency_source_value), mesh, materials);
 	}
 
-	void MapLoader::set_height(const Uint16 x, const Uint16 y,
-		const Uint16 height)
+	void MapLoader::set_walk_height_map(
+		const Uint8MultiArray2 &walk_height_map)
 	{
-		m_map->set_height(x, y, height);
+		m_map->set_walk_height_map(walk_height_map);
 	}
 
 	void MapLoader::set_ground_hemisphere(
@@ -215,16 +215,6 @@ namespace eternal_lands
 	void MapLoader::set_map_size(const glm::uvec2 &size)
 	{
 		m_map->set_size(size);
-	}
-
-	void MapLoader::set_height_map_size(const glm::uvec2 &size)
-	{
-		m_map->set_height_map_size(size);
-	}
-
-	void MapLoader::set_tile_map_size(const glm::uvec2 &size)
-	{
-		m_map->set_tile_map_size(size);
 	}
 
 	void MapLoader::set_tile_layer_heights(const glm::vec4 &heights)
@@ -311,10 +301,11 @@ namespace eternal_lands
 		m_map->set_dungeon(dungeon);
 	}
 
-	void MapLoader::set_terrain(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
-		const ImageSharedPtr &blend_map,
+	void MapLoader::set_terrain(
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const ImageConstSharedPtr &blend_map,
 		const StringVector &albedo_maps,
 		const StringVector &specular_maps,
 		const StringVector &gloss_maps,

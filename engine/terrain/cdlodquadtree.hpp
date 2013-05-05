@@ -44,10 +44,11 @@ namespace eternal_lands
 			void init_min_max(const glm::uvec2 &position,
 				const Uint16 level, glm::vec3 &min,
 				glm::vec3 &max);
-			void get_min_max_rgb10_a2(const ImageSharedPtr &image,
+			void get_min_max_rgb10_a2(
+				const ImageConstSharedPtr &image,
 				const glm::uvec2 &offset, const Uint32 size,
 				glm::vec3 &min, glm::vec3 &max);
-			void get_min_max(const ImageSharedPtr &image,
+			void get_min_max(const ImageConstSharedPtr &image,
 				const glm::uvec2 &offset, const Uint32 size,
 				glm::vec3 &min, glm::vec3 &max);
 			void calculate_lod_params();
@@ -73,12 +74,12 @@ namespace eternal_lands
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 			void update_level_zero(
-				const ImageSharedPtr &displacement_map,
+				const ImageConstSharedPtr &displacement_map,
 				const glm::vec3 &translation,
 				const glm::uvec2 &offset,
 				const glm::uvec2 &size);
 			void update_level_zero_rgb10_a2(
-				const ImageSharedPtr &displacement_map,
+				const ImageConstSharedPtr &displacement_map,
 				const glm::vec3 &translation,
 				const glm::uvec2 &offset,
 				const glm::uvec2 &size);
@@ -107,7 +108,7 @@ namespace eternal_lands
 				const glm::vec3 &camera,
 				const Uint16 max_instances,
 				BoundingBox &bounding_box) const;
-			void init(const ImageSharedPtr &displacement_map,
+			void init(const ImageConstSharedPtr &displacement_map,
 				const glm::vec3 &translation,
 				const float patch_scale);
 			void clear();

@@ -29,11 +29,12 @@
 #include "logging.hpp"
 #include "image.hpp"
 #include "tilebuilder.hpp"
+#include "walkheightbuilder.hpp"
 
 namespace eternal_lands
 {
 
-	Editor::Editor(const GlobalVarsSharedPtr &global_vars,
+	Editor::Editor(const GlobalVarsConstSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
 		m_data(global_vars, file_system), m_undo(1000),
 		m_uni_dist(0.0f, 1.0f), m_random(m_gen, m_uni_dist)
@@ -413,22 +414,60 @@ namespace eternal_lands
 		m_data.set_tile_layer_height(value, layer);
 	}
 
-	void Editor::height_edit(const glm::vec3 &point, const Uint8 height)
+	void Editor::set_walk_height(const glm::uvec2 &offset,
+		const Uint16 size, const Uint16 walk_height)
 	{
-/*		Ray ray;
+		HeightVector walk_height_values;
 
-		ray = Ray(p0, glm::normalize(p1 - p0));
+		m_data.get_walk_heights(offset, size, walk_height_values);
 
+		ModificationAutoPtr modification(new HeightModification(
+			walk_height_values, get_edit_id()));
+
+		m_undo.add(modification);
+
+		BOOST_FOREACH(Height &walk_height_value, walk_height_values)
 		{
-
-			get_scene().set_view_changed();
+			walk_height_value.set_value(walk_height);
 		}
-*/	}
+
+		m_data.set_walk_heights(walk_height_values);
+	}
+
+	bool Editor::get_walk_height_edit(const glm::vec2 &world_position,
+		const float world_height, glm::uvec2 &offset,
+		Uint16 &walk_height) const
+	{
+		glm::uvec2 pos;
+		float tmp;
+
+		if (glm::any(glm::lessThan(world_position, glm::vec2(0.0f))))
+		{
+			return false;
+		}
+
+		pos = world_position /
+			WalkHeightBuilder::get_walk_height_world_scale();
+
+		if (glm::any(glm::greaterThan(pos,
+			m_data.get_walk_height_map_size())))
+		{
+			return false;
+		}
+
+		tmp = world_height;
+		tmp -= WalkHeightBuilder::get_walk_height_world_offset_z();
+		tmp /= WalkHeightBuilder::get_walk_height_world_scale_z();
+		walk_height = std::min(std::max(tmp, 0.0f), 127.0f) + 0.5f;
+		offset = pos;
+
+		return true;
+	}
 
 	void Editor::load_map(const String &name, const bool load_2d_objects,
 		const bool load_3d_objects, const bool load_lights,
 		const bool load_particles, const bool load_materials,
-		const bool load_height_map, const bool load_tile_map,
+		const bool load_walk_height_map, const bool load_tile_map,
 		const bool load_walk_map, const bool load_terrain)
 	{
 		MapItemsTypeSet skip_items;
@@ -458,9 +497,9 @@ namespace eternal_lands
 			skip_items.insert(mit_materials);
 		}
 
-		if (!load_height_map)
+		if (!load_walk_height_map)
 		{
-			skip_items.insert(mit_height_map);
+			skip_items.insert(mit_walk_height_map);
 		}
 
 		if (!load_tile_map)

@@ -21,9 +21,9 @@ namespace eternal_lands
 		CalCoreModel* core_model): Object(object_data, mesh,
 			materials, core_model), m_index_source(index_source)
 	{       
-        get_materials()[0]->set_texture(String(UTF8("textures/rim.png")), spt_effect_1, false);
-        get_materials()[0]->set_texture(String(UTF8("textures/wrap.png")), spt_effect_2, false);
-    }
+		materials[0]->set_texture(String(UTF8("textures/rim.png")), spt_effect_1, false, false);
+		materials[0]->set_texture(String(UTF8("textures/wrap.png")), spt_effect_2, false, false);
+	}
 
 	Actor::Actor(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
@@ -65,8 +65,9 @@ namespace eternal_lands
 		}
 	}
 
-	void Actor::init_enhanced_actor(const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars)
+	void Actor::init_enhanced_actor(
+		const FileSystemConstSharedPtr &file_system,
+		const GlobalVarsConstSharedPtr &global_vars)
 	{
 		assert(m_index_source.get() != nullptr);
 

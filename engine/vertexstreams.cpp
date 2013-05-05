@@ -14,7 +14,7 @@
 namespace eternal_lands
 {
 
-	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
+	VertexStreams::VertexStreams(const VertexFormatConstSharedPtr &format,
 		const AbstractWriteMemorySharedPtrArray &memory,
 		const Uint32 vertex_count, const bool use_simd):
 		m_format(format), m_vertex_count(vertex_count)
@@ -33,7 +33,7 @@ namespace eternal_lands
 		}
 	}
 
-	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
+	VertexStreams::VertexStreams(const VertexFormatConstSharedPtr &format,
 		const AbstractReadWriteMemorySharedPtrVector &buffers,
 		const Uint32 vertex_count, const bool use_simd):
 		m_format(format), m_vertex_count(vertex_count)

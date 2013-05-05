@@ -126,9 +126,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
 		SLOT(terrain_edit()));
-
 	QObject::connect(el_gl_widget, SIGNAL(tile_edit()), this,
 		SLOT(tile_edit()));
+	QObject::connect(el_gl_widget, SIGNAL(walk_height_edit()), this,
+		SLOT(walk_height_edit()));
 
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(action_undo, SIGNAL(triggered()), this, SLOT(update_terrain_layers()));
@@ -139,6 +140,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(action_tile_mode, SIGNAL(toggled(bool)), this, SLOT(tile_mode(bool)));
 	QObject::connect(action_tile_mode, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_tile_editing(bool)));
+
+	QObject::connect(action_walk_height_mode, SIGNAL(toggled(bool)), this, SLOT(walk_height_mode(bool)));
+	QObject::connect(action_walk_height_mode, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_walk_height_editing(bool)));
 
 	QObject::connect(action_delete_mode, SIGNAL(toggled(bool)), this, SLOT(delete_mode(bool)));
 
@@ -177,9 +181,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		el_gl_widget, SLOT(set_draw_light_spheres(bool)));
 	QObject::connect(action_lights_enabled, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_lights_enabled(bool)));
-
-	QObject::connect(action_heights, SIGNAL(toggled(bool)),
-		el_gl_widget, SLOT(set_draw_heights(bool)));
 
 	m_object_selection_mapper = new QSignalMapper(this);
 	m_object_selection_mapper->setMapping(selection_type_0, int(0));
@@ -1658,6 +1659,7 @@ void MainWindow::add_objects(const bool value)
 		action_delete_mode->setChecked(false);
 		action_terrain_mode->setChecked(false);
 		action_tile_mode->setChecked(false);
+		action_walk_height_mode->setChecked(false);
 
 		set_default_mode();
 
@@ -1705,6 +1707,7 @@ void MainWindow::add_lights(const bool value)
 		action_delete_mode->setChecked(false);
 		action_terrain_mode->setChecked(false);
 		action_tile_mode->setChecked(false);
+		action_walk_height_mode->setChecked(false);
 
 		return;
 	}
@@ -1794,6 +1797,7 @@ void MainWindow::terrain_mode(const bool checked)
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
 	action_tile_mode->setChecked(false);
+	action_walk_height_mode->setChecked(false);
 
 	terrain_page->setEnabled(checked);
 	object_dock->widget()->setEnabled(false);
@@ -1822,6 +1826,7 @@ void MainWindow::tile_mode(const bool checked)
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
 	action_terrain_mode->setChecked(false);
+	action_walk_height_mode->setChecked(false);
 
 	tile_page->setEnabled(checked);
 	object_dock->widget()->setEnabled(false);
@@ -1833,6 +1838,35 @@ void MainWindow::tile_mode(const bool checked)
 	transformations_stack->setCurrentWidget(tile_page);
 }
 
+void MainWindow::walk_height_mode(const bool checked)
+{
+	if (!checked)
+	{
+		set_default_mode();
+
+		return;
+	}
+
+	action_remove->setEnabled(false);
+	action_remove_all_copies_of_object->setEnabled(false);
+	action_replace_all_copies_of_object->setEnabled(false);
+
+	action_add_objects->setChecked(false);
+	action_add_lights->setChecked(false);
+	action_delete_mode->setChecked(false);
+	action_terrain_mode->setChecked(false);
+	action_tile_mode->setChecked(false);
+
+	walk_height_page->setEnabled(checked);
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_page->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	randomize_page->setEnabled(false);
+	transformations_dock->raise();
+	transformations_stack->setCurrentWidget(walk_height_page);
+}
+
 void MainWindow::delete_mode(const bool checked)
 {
 	if (checked)
@@ -1841,6 +1875,7 @@ void MainWindow::delete_mode(const bool checked)
 		action_add_lights->setChecked(false);
 		action_terrain_mode->setChecked(false);
 		action_tile_mode->setChecked(false);
+		action_walk_height_mode->setChecked(false);
 
 		object_dock->widget()->setEnabled(false);
 		materials_dock->widget()->setEnabled(false);
@@ -1893,6 +1928,7 @@ void MainWindow::open_map()
 	action_delete_mode->setChecked(false);
 	action_terrain_mode->setChecked(false);
 	action_tile_mode->setChecked(false);
+	action_walk_height_mode->setChecked(false);
 
 	action_dungeon->blockSignals(true);
 	action_dungeon->setChecked(el_gl_widget->get_dungeon());
@@ -2721,6 +2757,40 @@ void MainWindow::tile_edit()
 	tile = item->data(Qt::UserRole).toInt();
 
 	el_gl_widget->set_tile(layer, size, tile);
+}
+
+void MainWindow::walk_height_edit()
+{
+	float walk_height;
+	int size;
+	bool depth_height;
+
+	size = -1;
+
+	if (walk_height_size_0->isChecked())
+	{
+		size = 0;
+	}
+
+	if (walk_height_size_1->isChecked())
+	{
+		size = 1;
+	}
+
+	if (walk_height_size_2->isChecked())
+	{
+		size = 2;
+	}
+
+	if (size == -1)
+	{
+		return;
+	}
+
+	walk_height = fixed_height->value();
+	depth_height = depth_height_button->isChecked();
+
+	el_gl_widget->set_walk_height(size, walk_height, depth_height);
 }
 
 void MainWindow::about_el()

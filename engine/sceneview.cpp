@@ -31,7 +31,7 @@ namespace eternal_lands
 
 	}
 
-	SceneView::SceneView(const GlobalVarsSharedPtr &global_vars):
+	SceneView::SceneView(const GlobalVarsConstSharedPtr &global_vars):
 		m_global_vars(global_vars), m_fov(40.0f),
 		m_aspect(4.0f / 3.0f), m_z_near(0.5f),
 		m_shadow_map_count(1), m_layer_count(4),

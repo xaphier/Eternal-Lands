@@ -31,8 +31,8 @@ namespace eternal_lands
 	class StateManager: public boost::noncopyable
 	{
 		private:
-			const GlobalVarsSharedPtr m_global_vars;
-			AbstractMeshSharedPtr m_mesh;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			AbstractMeshConstSharedPtr m_mesh;
 			GlslProgramSharedPtr m_program;
 			TextureSharedPtrArray32 m_textures;
 			glm::vec4 m_screen_size;
@@ -41,8 +41,8 @@ namespace eternal_lands
 			BitSet32 m_used_attributes;
 			StateSet m_state_set;
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -51,7 +51,7 @@ namespace eternal_lands
 			void gl_error_check();
 
 			bool switch_texture_unit(const Uint16 texture_unit);
-			void set_mesh(const AbstractMeshSharedPtr &mesh);
+			void set_mesh(const AbstractMeshConstSharedPtr &mesh);
 			void set_program(
 				const GlslProgramSharedPtr &program);
 			void set_texture(const Uint16 texture_unit,
@@ -85,7 +85,8 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			StateManager(const GlobalVarsSharedPtr &global_vars);
+			StateManager(
+				const GlobalVarsConstSharedPtr &global_vars);
 
 			/**
 			 * Default destructor.
@@ -99,7 +100,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_mesh(
-				const AbstractMeshSharedPtr &mesh)
+				const AbstractMeshConstSharedPtr &mesh)
 			{
 				if (m_mesh == mesh)
 				{

@@ -21,12 +21,12 @@
 namespace eternal_lands
 {
 
-	CdLodTerrain::CdLodTerrain(const GlobalVarsSharedPtr &global_vars,
+	CdLodTerrain::CdLodTerrain(const GlobalVarsConstSharedPtr &global_vars,
 		const EffectCacheSharedPtr &effect_cache,
-		const MeshBuilderSharedPtr &mesh_builder,
+		const MeshBuilderConstSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MeshDataCacheSharedPtr &mesh_data_cache,
-		const MaterialBuilderSharedPtr &material_builder,
+		const MaterialBuilderConstSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
 		const StringArray3 &material, const String &effect):
 		AbstractTerrain(global_vars, effect_cache, material_builder,
@@ -108,9 +108,9 @@ namespace eternal_lands
 	}
 
 	void CdLodTerrain::do_set_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map)
 	{
 		glm::vec3 min, max;
 		float patch_scale;
@@ -191,9 +191,9 @@ namespace eternal_lands
 	}
 
 	void CdLodTerrain::do_update_geometry_maps(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map)
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map)
 	{
 		glm::vec3 min, max;
 		float patch_scale;

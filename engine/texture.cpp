@@ -184,7 +184,7 @@ namespace eternal_lands
 	}
 
 	void Texture::set_texture_image_1d(const Uint32 width,
-		const Uint16 mipmap, const ImageSharedPtr &image)
+		const Uint16 mipmap, const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		Uint64 size;
@@ -225,7 +225,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_2d(const Uint32 width,
 		const Uint32 height, const Uint16 mipmap,
-		const ImageSharedPtr &image)
+		const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		Uint64 size;
@@ -267,7 +267,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_3d(const Uint32 width,
 		const Uint32 height, const Uint32 depth, const Uint16 mipmap,
-		const ImageSharedPtr &image)
+		const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -310,7 +310,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_cube_map(const Uint32 width,
 		const Uint32 height, const Uint16 mipmap,
-		const ImageSharedPtr &image)
+		const ImageConstSharedPtr &image)
 	{
 		Uint32 i;
 		bool compressed;
@@ -334,7 +334,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_cube_map_face(const Uint32 width,
 		const Uint32 height, const Uint16 mipmap,
-		const CubeMapFaceType face, const ImageSharedPtr &image)
+		const CubeMapFaceType face, const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		GLenum gl_face;
@@ -371,7 +371,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_cube_map(const Uint32 width,
 		const Uint32 height, const Uint32 depth, const Uint16 mipmap,
-		const ImageSharedPtr &image)
+		const ImageConstSharedPtr &image)
 	{
 		Uint32 i;
 		bool compressed;
@@ -397,7 +397,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_cube_map_face(const Uint32 width,
 		const Uint32 height, const Uint32 depth, const Uint16 mipmap,
-		const CubeMapFaceType face, const ImageSharedPtr &image)
+		const CubeMapFaceType face, const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -433,7 +433,7 @@ namespace eternal_lands
 
 	void Texture::set_texture_image_2d_layer(const Uint32 width,
 		const Uint32 height, const Uint32 layer, const Uint16 mipmap,
-		const ImageSharedPtr &image)
+		const ImageConstSharedPtr &image)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -881,7 +881,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::get_image_size(const ImageSharedPtr &image,
+	void Texture::get_image_size(const ImageConstSharedPtr &image,
 		Uint32 &width, Uint32 &height, Uint32 &depth,
 		Uint32 &mipmap_count, Uint32 &layer_count) const
 	{
@@ -1230,7 +1230,7 @@ namespace eternal_lands
 			get_target(), InvalidParameterException());
 	}
 
-	void Texture::do_set_image(const ImageSharedPtr &image)
+	void Texture::do_set_image(const ImageConstSharedPtr &image)
 	{
 		Uint32 width, height, depth, mip, level, mipmap_count;
 		Uint32 layer_count;
@@ -1359,7 +1359,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::do_set_images(const ImageSharedPtrVector &images)
+	void Texture::do_set_images(const ImageConstSharedPtrVector &images)
 	{
 		Uint32 i, width, height, depth, mip, level, mipmap_count;
 		Uint32 layer_count;
@@ -1382,7 +1382,7 @@ namespace eternal_lands
 		set_height(height);
 		set_depth(depth);
 
-		BOOST_FOREACH(const ImageSharedPtr &image, images)
+		BOOST_FOREACH(const ImageConstSharedPtr &image, images)
 		{
 			if (get_width() != image->get_width())
 			{
@@ -1872,7 +1872,7 @@ namespace eternal_lands
 	}
 
 	void Texture::sub_texture(const String &name,
-		const AbstractReadMemorySharedPtr &buffer,
+		const AbstractReadMemoryConstSharedPtr &buffer,
 		const glm::uvec3 &offset, const glm::uvec3 &size,
 		const CubeMapFaceType face, const GLenum format, const GLenum type,
 		const Uint16 mipmap, const bool compressed)
@@ -1922,7 +1922,7 @@ namespace eternal_lands
 			image_update.get_compressed());
 	}
 
-	void Texture::update_image(const ImageSharedPtr &image,
+	void Texture::update_image(const ImageConstSharedPtr &image,
 		const BitSet16 &faces, const BitSet16 &mipmaps)
 	{
 		glm::uvec3 size;
@@ -1961,7 +1961,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Texture::update_image_layer(const ImageSharedPtr &image,
+	void Texture::update_image_layer(const ImageConstSharedPtr &image,
 		const BitSet16 &faces, const BitSet16 &mipmaps,
 		const Uint16 layer)
 	{
@@ -2030,7 +2030,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Texture::set_image(const ImageSharedPtr &image)
+	void Texture::set_image(const ImageConstSharedPtr &image)
 	{
 		String name;
 
@@ -2072,12 +2072,12 @@ namespace eternal_lands
 			"%3%"), get_name() % name % UTF8("done"));
 	}
 
-	void Texture::set_images(const ImageSharedPtrVector &images)
+	void Texture::set_images(const ImageConstSharedPtrVector &images)
 	{
 		StringStream str;
 		String name;
 
-		BOOST_FOREACH(const ImageSharedPtr &image, images)
+		BOOST_FOREACH(const ImageConstSharedPtr &image, images)
 		{
 			if (image.get() != nullptr)
 			{

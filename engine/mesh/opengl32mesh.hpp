@@ -37,7 +37,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl32Mesh(const HardwareBufferMapperWeakPtr
+			OpenGl32Mesh(const HardwareBufferMapperConstWeakPtr
 					&hardware_buffer_mapper,
 				const String &name,
 				const bool static_indices,
@@ -68,7 +68,7 @@ namespace eternal_lands
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
 				const Uint32 instances,
-				const PrimitiveType primitive);
+				const PrimitiveType primitive) const;
 
 	};
 

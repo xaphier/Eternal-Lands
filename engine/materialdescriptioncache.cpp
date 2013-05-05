@@ -86,7 +86,8 @@ namespace eternal_lands
 	}
 
 	void MaterialDescriptionCache::load_xml(
-		const FileSystemSharedPtr &file_system, const String &file_name)
+		const FileSystemConstSharedPtr &file_system,
+		const String &file_name)
 	{
 		XmlReaderSharedPtr xml_reader;
 

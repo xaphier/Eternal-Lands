@@ -32,11 +32,11 @@ namespace eternal_lands
 	class Map
 	{
 		private:
-			const GlobalVarsSharedPtr m_global_vars;
-			const MeshBuilderWeakPtr m_mesh_builder;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const MeshBuilderConstWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MaterialCacheWeakPtr m_material_cache;
-			const TerrainBuilderWeakPtr m_terrain_builder;
+			const TerrainBuilderConstWeakPtr m_terrain_builder;
 			const TextureCacheWeakPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
@@ -44,9 +44,8 @@ namespace eternal_lands
 			AbstractTerrainSharedPtr m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
-			Uint16MultiArray2 m_height_map;
+			Uint16MultiArray2 m_walk_height_map;
 			Uint16MultiArray2 m_tile_map;
-			FloatMultiArray2 m_walk_height_map;
 			ParticleDataVector m_particles;
 			glm::vec4 m_ground_hemisphere;
 			glm::uvec2 m_size;
@@ -54,16 +53,16 @@ namespace eternal_lands
 			Uint32 m_id;
 			bool m_dungeon;
 
-			inline GlobalVarsSharedPtr get_global_vars() const
+			inline GlobalVarsConstSharedPtr get_global_vars() const
 				noexcept
 			{
 				return m_global_vars;
 			}
 
-			inline MeshBuilderSharedPtr get_mesh_builder() const
+			inline MeshBuilderConstSharedPtr get_mesh_builder() const
 				noexcept
 			{
-				MeshBuilderSharedPtr result;
+				MeshBuilderConstSharedPtr result;
 
 				result = m_mesh_builder.lock();
 
@@ -96,10 +95,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline TerrainBuilderSharedPtr get_terrain_builder()
+			inline TerrainBuilderConstSharedPtr get_terrain_builder()
 				const noexcept
 			{
-				TerrainBuilderSharedPtr result;
+				TerrainBuilderConstSharedPtr result;
 
 				result = m_terrain_builder.lock();
 
@@ -120,19 +119,15 @@ namespace eternal_lands
 				return result;
 			}
 
-			void init_walk_height_map(
-				const ImageSharedPtr &displacement_map,
-				const glm::vec3 &translation);
-
 		public:
 			/**
 			 * Default constructor.
 			 */
-			Map(const GlobalVarsSharedPtr &global_vars,
-				const MeshBuilderSharedPtr &mesh_builder,
+			Map(const GlobalVarsConstSharedPtr &global_vars,
+				const MeshBuilderConstSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache,
-				const TerrainBuilderWeakPtr &terrain_builder,
+				const TerrainBuilderConstWeakPtr &terrain_builder,
 				const TextureCacheWeakPtr &texture_cache);
 
 			/**
@@ -178,19 +173,19 @@ namespace eternal_lands
 			void set_clipmap_terrain_normal_texture(
 				const TextureSharedPtr &texture);
 			void set_terrain_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_map,
+				const ImageConstSharedPtr &dudv_map,
 				const glm::vec3 &translation);
 			void set_terrain_blend_map(
-				const ImageSharedPtr &blend_map);
+				const ImageConstSharedPtr &blend_map);
 			void update_terrain_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const glm::vec3 &translation);
 			void update_terrain_blend_map(
-				const ImageSharedPtr &blend_map,
+				const ImageConstSharedPtr &blend_map,
 				const BitSet64 &layers);
 			void set_terrain_material(
 				const StringVector &albedo_maps,
@@ -219,16 +214,6 @@ namespace eternal_lands
 				return m_lights;
 			}
 
-			inline glm::uvec2 get_height_map_size() const noexcept
-			{
-				glm::uvec2 result;
-
-				result.x = m_height_map.shape()[0];
-				result.y = m_height_map.shape()[1];
-
-				return result;
-			}
-
 			inline glm::uvec2 get_walk_height_map_size() const
 				noexcept
 			{
@@ -240,35 +225,33 @@ namespace eternal_lands
 				return result;
 			}
 
-			void set_height_map_size(const glm::uvec2 &size)
+			inline void set_walk_height_map_size(
+				const glm::uvec2 &size)
 			{
-				m_height_map.resize(
+				m_walk_height_map.resize(
 					boost::extents[size.x][size.y]);
 			}
 
-			inline void set_height(const Uint16 x, const Uint16 y,
-				const Uint16 height)
+			inline void set_walk_height_map(
+				const Uint8MultiArray2 &walk_height_map)
 			{
-				RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
-					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
-					UTF8("index value too big"));
-
-				m_height_map[x][y] = height;
+				m_walk_height_map = walk_height_map;
 			}
 
-			inline Uint16 get_height(const Uint16 x, const Uint16 y)
-				const
+			inline void set_walk_height(const Uint16 x,
+				const Uint16 y, const Uint16 walk_height)
 			{
-				RANGE_CECK_MAX(x, m_height_map.shape()[0] - 1,
+				RANGE_CECK_MAX(x,
+					m_walk_height_map.shape()[0] - 1,
 					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_height_map.shape()[1] - 1,
+				RANGE_CECK_MAX(y,
+					m_walk_height_map.shape()[1] - 1,
 					UTF8("index value too big"));
 
-				return m_height_map[x][y];
+				m_walk_height_map[x][y] = walk_height;
 			}
 
-			inline float get_walk_height(const Uint16 x,
+			inline Uint16 get_walk_height(const Uint16 x,
 				const Uint16 y) const
 			{
 				RANGE_CECK_MAX(x,

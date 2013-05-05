@@ -840,9 +840,9 @@ namespace eternal_lands
 	}
 
 	ActorTextureBuilder::ActorTextureBuilder(
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars, const String &name):
-		m_name(name), m_file_system(file_system),
+		const FileSystemConstSharedPtr &file_system,
+		const GlobalVarsConstSharedPtr &global_vars,
+		const String &name): m_name(name), m_file_system(file_system),
 		m_global_vars(global_vars)
 	{
 		TextureFormatType texture_format;

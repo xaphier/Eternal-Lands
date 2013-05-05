@@ -61,18 +61,18 @@ namespace eternal_lands
 				return true;
 			}
 
-			if ((rod0.get_object()->get_materials().size() == 0) ||
-				(rod1.get_object()->get_materials().size()
+			if ((rod0.get_object()->get_material_count() == 0) ||
+				(rod1.get_object()->get_material_count()
 					== 0))
 			{
 				return distance0 < distance1;
 			}
 
-			if (rod0.get_object()->get_materials()[0] !=
-				rod1.get_object()->get_materials()[0])
+			if (rod0.get_object()->get_material(0) !=
+				rod1.get_object()->get_material(0))
 			{
-				return rod0.get_object()->get_materials()[0] <
-					rod1.get_object()->get_materials()[0];
+				return rod0.get_object()->get_material(0) <
+					rod1.get_object()->get_material(0);
 			}
 
 			return distance0 < distance1;
@@ -155,7 +155,7 @@ namespace eternal_lands
 	}
 
 	BitSet64 ObjectVisitor::get_visibility_mask(
-		const ObjectSharedPtr &object) const
+		const ObjectConstSharedPtr &object) const
 	{
 		if (get_cpu_rasterizer().get() == nullptr)
 		{

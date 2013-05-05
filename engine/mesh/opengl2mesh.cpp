@@ -15,7 +15,7 @@
 namespace eternal_lands
 {
 
-	OpenGl2Mesh::OpenGl2Mesh(const HardwareBufferMapperWeakPtr
+	OpenGl2Mesh::OpenGl2Mesh(const HardwareBufferMapperConstWeakPtr
 			&hardware_buffer_mapper, const String &name,
 		const bool static_indices, const bool static_vertices,
 		const bool static_instances, const bool use_simd):
@@ -47,7 +47,8 @@ namespace eternal_lands
 	}
 
 	void OpenGl2Mesh::set_vertex_buffer(
-		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
+		const AbstractReadMemoryConstSharedPtr &buffer,
+		const Uint16 index)
 	{
 		m_vertex_data[index]->bind(btt_vertex);
 		m_vertex_data[index]->set(btt_vertex, *buffer,
@@ -55,7 +56,8 @@ namespace eternal_lands
 	}
 
 	void OpenGl2Mesh::update_vertex_buffer(
-		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
+		const AbstractReadMemoryConstSharedPtr &buffer,
+		const Uint16 index)
 	{
 		m_vertex_data[index]->bind(btt_vertex);
 		m_vertex_data[index]->update(btt_vertex, *buffer);
@@ -190,7 +192,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl2Mesh::bind_vertex_buffers(BitSet32 &used_attributes)
+	void OpenGl2Mesh::bind_vertex_buffers(BitSet32 &used_attributes) const
 	{
 		BitSet32 attributes;
 		Uint32 i;
@@ -223,7 +225,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl2Mesh::unbind_vertex_buffers()
+	void OpenGl2Mesh::unbind_vertex_buffers() const
 	{
 		Uint16 i;
 
@@ -241,7 +243,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl2Mesh::bind_index_buffer()
+	void OpenGl2Mesh::bind_index_buffer() const
 	{
 		if (m_index_data.get() != nullptr)
 		{
@@ -249,25 +251,25 @@ namespace eternal_lands
 		}
 	}
 
-	void OpenGl2Mesh::unbind_index_buffer()
+	void OpenGl2Mesh::unbind_index_buffer() const
 	{
 		HardwareBuffer::unbind(btt_index);
 	}
 
-	void OpenGl2Mesh::bind(BitSet32 &used_attributes)
+	void OpenGl2Mesh::bind(BitSet32 &used_attributes) const
 	{
 		bind_vertex_buffers(used_attributes);
 		bind_index_buffer();
 	}
 
-	void OpenGl2Mesh::unbind()
+	void OpenGl2Mesh::unbind() const
 	{
 		unbind_vertex_buffers();
 		unbind_index_buffer();
 	}
 
 	void OpenGl2Mesh::draw(const MeshDrawData &draw_data,
-		const Uint32 instances, const PrimitiveType primitive)
+		const Uint32 instances, const PrimitiveType primitive) const
 	{
 		assert(instances == 1);
 		assert(draw_data.get_base_vertex() == 0);

@@ -50,8 +50,8 @@ namespace eternal_lands
 
 	}
 
-	MeshBuilder::MeshBuilder(const GlobalVarsSharedPtr &global_vars,
-		const HardwareBufferMapperWeakPtr &hardware_buffer_mapper):
+	MeshBuilder::MeshBuilder(const GlobalVarsConstSharedPtr &global_vars,
+		const HardwareBufferMapperConstWeakPtr &hardware_buffer_mapper):
 		m_global_vars(global_vars),
 		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
@@ -324,7 +324,7 @@ namespace eternal_lands
 		return result;
 	}
 
-	VertexFormatSharedPtr MeshBuilder::get_vertex_format(
+	VertexFormatConstSharedPtr MeshBuilder::get_vertex_format(
 		const VertexFormatType vertex_format) const
 	{
 		VertexFormatsMap::const_iterator found;

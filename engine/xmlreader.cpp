@@ -31,7 +31,7 @@ namespace eternal_lands
 		}
 	}
 
-	XmlReader::XmlReader(const FileSystemSharedPtr &file_system,
+	XmlReader::XmlReader(const FileSystemConstSharedPtr &file_system,
 		const String &file_name)
 	{
 		ReaderSharedPtr reader;
@@ -115,7 +115,8 @@ namespace eternal_lands
 		return xmlDocGetRootElement(m_doc);
 	}
 
-	bool XmlReader::get_xml_reader(const FileSystemSharedPtr &file_system,
+	bool XmlReader::get_xml_reader(
+		const FileSystemConstSharedPtr &file_system,
 		const String &file_name, XmlReaderSharedPtr &xml_reader)
 	{
 		ReaderSharedPtr reader;

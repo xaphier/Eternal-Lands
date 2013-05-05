@@ -42,8 +42,8 @@ namespace eternal_lands
 
 			ShaderSourceSharedPrMap m_shader_sources;
 			ShaderSourceTypeStringMap m_default_sources;
-			const GlobalVarsSharedPtr m_global_vars;
-			const FileSystemSharedPtr m_file_system;
+			const GlobalVarsConstSharedPtr m_global_vars;
+			const FileSystemConstSharedPtr m_file_system;
 			const UniformBufferDescriptionCacheWeakPtr
 				m_uniform_buffer_description_cache;
 			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
@@ -53,13 +53,13 @@ namespace eternal_lands
 			Uint16 m_bones_count;
 			bool m_dynamic_lights_count;
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
 			}
 
-			inline const FileSystemSharedPtr &get_file_system()
+			inline const FileSystemConstSharedPtr &get_file_system()
 				const noexcept
 			{
 				return m_file_system;
@@ -189,8 +189,8 @@ namespace eternal_lands
 
 		public:
 			ShaderSourceBuilder(
-				const GlobalVarsSharedPtr &global_vars,
-				const FileSystemSharedPtr &file_system,
+				const GlobalVarsConstSharedPtr &global_vars,
+				const FileSystemConstSharedPtr &file_system,
 				const UniformBufferDescriptionCacheWeakPtr
 					&uniform_buffer_description_cache);
 			~ShaderSourceBuilder() noexcept;

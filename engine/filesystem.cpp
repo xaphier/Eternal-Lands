@@ -642,7 +642,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	bool FileSystem::get_file_readable(const String &file_name)
+	bool FileSystem::get_file_readable(const String &file_name) const
 	{
 		AbstractArchiveVector::const_reverse_iterator it, end;
 		String name;
@@ -663,7 +663,7 @@ namespace eternal_lands
 	}
 
 	bool FileSystem::get_file_if_readable(const String &file_name,
-		ReaderSharedPtr &reader)
+		ReaderSharedPtr &reader) const
 	{
 		AbstractArchiveVector::const_reverse_iterator it, end;
 		String name;
@@ -699,7 +699,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	ReaderSharedPtr FileSystem::get_file(const String &file_name)
+	ReaderSharedPtr FileSystem::get_file(const String &file_name) const
 	{
 		AbstractArchiveVector::const_reverse_iterator it, end;
 		StringUint8Array20Map::const_iterator found;
@@ -760,7 +760,7 @@ namespace eternal_lands
 			<< boost::errinfo_file_name(file_name));
 	}
 
-	String FileSystem::get_file_string(const String &file_name)
+	String FileSystem::get_file_string(const String &file_name) const
 	{
 		ReaderSharedPtr reader;
 		String str;

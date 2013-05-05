@@ -89,16 +89,19 @@ namespace eternal_lands
 		m_glsl_program_cache(glsl_program_cache),
 		m_debug_shader(sbt_debug_uv)
 	{
+		assert(!m_glsl_program_cache.expired());
+
 		error_load();
 	}
 
 	Effect::Effect(const GlslProgramCacheWeakPtr &glsl_program_cache,
-		const ShaderSourceBuilderWeakPtr &shader_source_builder,
+		const ShaderSourceBuilderConstWeakPtr &shader_source_builder,
 		const EffectDescription &description):
 		m_glsl_program_cache(glsl_program_cache),
 		m_shader_source_builder(shader_source_builder),
 		m_description(description), m_debug_shader(sbt_debug_uv)
 	{
+		assert(!m_glsl_program_cache.expired());
 		assert(!m_shader_source_builder.expired());
 
 		load();

@@ -40,13 +40,14 @@ namespace eternal_lands
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
 			static void save_image(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_dxt10(
-				const ImageSharedPtr &image,
+				const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
-			static bool can_save(const ImageSharedPtr &image);
-			static bool can_save_dxt10(const ImageSharedPtr &image);
+			static bool can_save(const ImageConstSharedPtr &image);
+			static bool can_save_dxt10(
+				const ImageConstSharedPtr &image);
 			static void check_all_fourcc_support(
 				const bool rg_formats);
 			static void get_dxt10_formats(

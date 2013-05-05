@@ -124,14 +124,30 @@ namespace eternal_lands
 				return m_object_data.get_name();
 			}
 
-			inline const AbstractMeshSharedPtr &get_mesh() const
+			inline Uint32 get_material_count() const noexcept
+			{
+				return m_materials.size();
+			}
+
+			inline const AbstractMeshSharedPtr &get_mesh() noexcept
+			{
+				return m_mesh;
+			}
+
+			inline AbstractMeshConstSharedPtr get_mesh() const
 				noexcept
 			{
 				return m_mesh;
 			}
 
+			inline MaterialConstSharedPtr get_material(
+				const Uint32 index) const
+			{
+				return m_materials[index];
+			}
+
 			inline const MaterialSharedPtrVector &get_materials()
-				const noexcept
+				noexcept
 			{
 				return m_materials;
 			}

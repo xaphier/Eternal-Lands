@@ -36,7 +36,7 @@ namespace eternal_lands
 
 			EffectCacheMap m_effect_cache;
 			const GlslProgramCacheWeakPtr m_glsl_program_cache;
-			const ShaderSourceBuilderWeakPtr
+			const ShaderSourceBuilderConstWeakPtr
 				m_shader_source_builder;
 			EffectSharedPtr m_simple_effect;
 
@@ -46,14 +46,14 @@ namespace eternal_lands
 				return m_glsl_program_cache;
 			}
 
-			inline const ShaderSourceBuilderWeakPtr
+			inline const ShaderSourceBuilderConstWeakPtr
 				&get_shader_source_builder() const noexcept
 			{
 				return m_shader_source_builder;
 			}
 
 			void load_effect(
-				const FileSystemSharedPtr &file_system,
+				const FileSystemConstSharedPtr &file_system,
 				const String &file_name);
 
 		public:
@@ -62,7 +62,7 @@ namespace eternal_lands
 			 */
 			EffectCache(const GlslProgramCacheWeakPtr
 					&glsl_program_cache,
-				const ShaderSourceBuilderWeakPtr
+				const ShaderSourceBuilderConstWeakPtr
 					&shader_source_builder);
 
 			/**
@@ -73,7 +73,8 @@ namespace eternal_lands
 			const EffectSharedPtr &get_simple_effect();
 			void reload();
 			void set_debug_shader(const ShaderBuildType debug);
-			void load_xml(const FileSystemSharedPtr &file_system,
+			void load_xml(
+				const FileSystemConstSharedPtr &file_system,
 				const String &dir);
 			StringVector get_effect_names() const;
 			void add_effect(

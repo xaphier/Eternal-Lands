@@ -33,21 +33,22 @@ namespace eternal_lands
 			TextureSharedPtr m_dudv_texture;
 
 			virtual void do_set_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) override;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) override;
 			virtual void do_update_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) override;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) override;
 
 		public:
-			CdLodTerrain(const GlobalVarsSharedPtr &global_vars,
+			CdLodTerrain(
+				const GlobalVarsConstSharedPtr &global_vars,
 				const EffectCacheSharedPtr &effect_cache,
-				const MeshBuilderSharedPtr &mesh_builder,
+				const MeshBuilderConstSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const MaterialBuilderSharedPtr
+				const MaterialBuilderConstSharedPtr
 					&material_builder,
 				const MaterialCacheSharedPtr &material_cache,
 				const StringArray3 &material,

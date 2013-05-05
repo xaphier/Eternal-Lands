@@ -169,7 +169,7 @@ namespace eternal_lands
 			}
 
 		public:
-			Filter(const GlobalVarsSharedPtr &global_vars,
+			Filter(const GlobalVarsConstSharedPtr &global_vars,
 				const GlslProgramCacheSharedPtr
 					&glsl_program_cache,
 				const MeshCacheSharedPtr &mesh_cache);

@@ -620,7 +620,7 @@ extern "C" Uint32 engine_load_map(const char* name)
 			}
 		}
 
-		size = scene->get_height_map_size();
+		size = scene->get_walk_height_map_size();
 
 		height_map = (Uint8*)calloc(size.x * size.y, 1);
 
@@ -629,7 +629,7 @@ extern "C" Uint32 engine_load_map(const char* name)
 			for (x = 0; x < size.x; ++x)
 			{
 				height_map[x + y * size.x] =
-					scene->get_height(x, y);
+					scene->get_walk_height(x, y);
 			}
 		}
 
@@ -1867,17 +1867,7 @@ extern "C" float get_tile_height(const int x, const int y)
 		return 0.0f;
 	}
 
-	if (scene.get() == nullptr)
-	{
-		return get_tile_height_old(x, y);
-	}
-
-	if (!scene->get_terrain())
-	{
-		return get_tile_height_old(x, y);
-	}
-
-	return scene->get_walk_height(x * 2, y * 2);
+	return get_tile_height_old(x, y);
 }
 
 extern "C" float get_tile_height_linear(const float x, const float y)

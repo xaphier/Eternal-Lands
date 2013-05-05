@@ -82,7 +82,7 @@ namespace eternal_lands
 
 	}
 
-	ScriptEngine::ScriptEngine(const FileSystemSharedPtr &file_system):
+	ScriptEngine::ScriptEngine(const FileSystemConstSharedPtr &file_system):
 		m_file_system(file_system)
 	{
 		Sint32 r;

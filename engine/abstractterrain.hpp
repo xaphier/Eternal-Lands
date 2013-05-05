@@ -28,7 +28,7 @@ namespace eternal_lands
 	class AbstractTerrain: public boost::noncopyable
 	{
 		private:
-			const GlobalVarsSharedPtr m_global_vars;
+			const GlobalVarsConstSharedPtr m_global_vars;
 			BoundingBox m_bounding_box;
 			MaterialSharedPtrArray3 m_materials;
 			MaterialSharedPtrArray4 m_clipmap_materials;
@@ -37,13 +37,13 @@ namespace eternal_lands
 			const bool m_low_quality_terrain;
 
 			virtual void do_set_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) = 0;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) = 0;
 			virtual void do_update_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map) = 0;
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map) = 0;
 			void set_albedo_maps(const StringVector &albedo_maps,
 				const BitSet64 &blend_size_textures,
 				const TextureCacheSharedPtr &texture_cache);
@@ -71,9 +71,10 @@ namespace eternal_lands
 			}				
 
 		protected:
-			AbstractTerrain(const GlobalVarsSharedPtr &global_vars,
+			AbstractTerrain(
+				const GlobalVarsConstSharedPtr &global_vars,
 				const EffectCacheSharedPtr &effect_cache,
-				const MaterialBuilderSharedPtr
+				const MaterialBuilderConstSharedPtr
 					&material_builder,
 				const MaterialCacheSharedPtr &material_cache,
 				const StringArray3 &material,
@@ -82,7 +83,7 @@ namespace eternal_lands
 				const TextureSharedPtr &texture,
 				const SamplerParameterType sampler);
 
-			inline const GlobalVarsSharedPtr &get_global_vars()
+			inline const GlobalVarsConstSharedPtr &get_global_vars()
 				const noexcept
 			{
 				return m_global_vars;
@@ -119,19 +120,19 @@ namespace eternal_lands
 			void set_clipmap_normal_texture(
 				const TextureSharedPtr &texture);
 			void set_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const glm::vec3 &translation);
-			void set_blend_map(const ImageSharedPtr &blend_map,
+			void set_blend_map(const ImageConstSharedPtr &blend_map,
 				const TextureCacheSharedPtr &texture_cache);
 			void update_geometry_maps(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_tangent_map,
-				const ImageSharedPtr &dudv_map,
+				const ImageConstSharedPtr &displacement_map,
+				const ImageConstSharedPtr &normal_tangent_map,
+				const ImageConstSharedPtr &dudv_map,
 				const glm::vec3 &translation);
 			void update_blend_map(
-				const ImageSharedPtr &blend_map,
+				const ImageConstSharedPtr &blend_map,
 				const BitSet64 &layers);
 			void set_texture_maps(const StringVector &albedo_maps,
 				const StringVector &height_maps,

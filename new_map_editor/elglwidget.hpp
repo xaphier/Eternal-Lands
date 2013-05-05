@@ -31,6 +31,7 @@ enum EditingType
 	et_nothing,
 	et_terrain_editing,
 	et_tile_editing,
+	et_walk_height_editing,
 	et_object_adding,
 	et_light_adding
 };
@@ -50,7 +51,8 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_dir;
 		glm::vec3 m_min_position;
 		glm::vec3 m_max_position;
-		glm::vec3 m_world_position;
+		glm::vec3 m_terrain_world_position;
+		glm::vec3 m_object_world_position;
 		glm::vec3 m_grab_world_position;
 		glm::vec3 m_move_offset;
 		glm::vec3 m_rotation_offset;
@@ -106,6 +108,11 @@ class ELGLWidget: public QGLWidget
 		inline bool get_tile_editing() const
 		{
 			return m_editing == et_tile_editing;
+		}
+
+		inline bool get_walk_height_editing() const
+		{
+			return m_editing == et_walk_height_editing;
 		}
 
 		inline bool get_object_adding() const
@@ -230,7 +237,8 @@ class ELGLWidget: public QGLWidget
 			const int attenuation, const int shape,
 			const int effect, const int layer);
 		void set_tile(const int layer, const int size, const int tile);
-		void height_edit(const int height);
+		void set_walk_height(const int size, const float height,
+			const bool depth_height);
 		void set_debug_mode(const int value);
 		void change_terrain_displacement_values(const QVector3D &data,
 			const QVector2D &size, const float attenuation_size,
@@ -494,6 +502,7 @@ class ELGLWidget: public QGLWidget
 			const QStringList textures);
 		void set_terrain_editing(const bool enabled);
 		void set_tile_editing(const bool enabled);
+		void set_walk_height_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);
 		void set_random_translation_x(const bool value);
@@ -525,7 +534,6 @@ class ELGLWidget: public QGLWidget
 		void set_draw_terrain(const bool draw_terrain);
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
-		void set_draw_heights(const bool draw_heights);
 		void set_lights_enabled(const bool enabled);
 		void init_terrain(const QVector3D &translation,
 			const QSize &size, const TerrainTextureData &data);
@@ -569,6 +577,7 @@ class ELGLWidget: public QGLWidget
 		void can_undo(const bool undo);
 		void terrain_edit();
 		void tile_edit();
+		void walk_height_edit();
 		void initialized();
 		void changed_camera_yaw(const int yaw);
 		void changed_camera_roll(const int roll);

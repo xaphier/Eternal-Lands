@@ -37,7 +37,7 @@ namespace eternal_lands
 
 			void clear();
 			BitSet64 get_visibility_mask(
-				const ObjectSharedPtr &object) const;
+				const ObjectConstSharedPtr &object) const;
 
 		public:
 			ObjectVisitor();

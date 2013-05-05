@@ -12,7 +12,7 @@
 namespace eternal_lands
 {
 
-	OpenGl33Mesh::OpenGl33Mesh(const HardwareBufferMapperWeakPtr
+	OpenGl33Mesh::OpenGl33Mesh(const HardwareBufferMapperConstWeakPtr
 			&hardware_buffer_mapper, const String &name,
 		const bool static_indices, const bool static_vertices,
 		const bool static_instances,

@@ -367,7 +367,7 @@ namespace eternal_lands
 	}
 
 	ImageSharedPtr CodecManager::load_image(const String &name,
-		const FileSystemSharedPtr &file_system,
+		const FileSystemConstSharedPtr &file_system,
 		const ImageCompressionTypeSet &compressions,
 		const bool rg_formats, const bool sRGB,
 		const bool merge_layers)
@@ -464,7 +464,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::get_image_information(const String &name,
-		const FileSystemSharedPtr &file_system,
+		const FileSystemConstSharedPtr &file_system,
 		const bool rg_formats, const bool sRGB,
 		TextureFormatType &texture_format, glm::uvec3 &size,
 		Uint16 &mipmaps, bool &cube_map, bool &array)
@@ -585,31 +585,31 @@ namespace eternal_lands
 		extensions.push_back(String(UTF8("*.jpeg")));
 	}
 
-	void CodecManager::save_image_as_png(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_png(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		PngImage::save_image(image, writer);
 	}
 
-	void CodecManager::save_image_as_jpeg(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_jpeg(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		JpegImage::save_image(image, writer);
 	}
 
-	void CodecManager::save_image_as_dds(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_dds(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		DdsImage::save_image(image, writer);
 	}
 
-	void CodecManager::save_image_as_dds_dxt10(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_dds_dxt10(const ImageConstSharedPtr &image,
 		const WriterSharedPtr &writer)
 	{
 		DdsImage::save_image_dxt10(image, writer);
 	}
 
-	void CodecManager::save_image_as_png(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_png(const ImageConstSharedPtr &image,
 		const String &name)
 	{
 		WriterSharedPtr writer;
@@ -619,7 +619,7 @@ namespace eternal_lands
 		save_image_as_png(image, writer);
 	}
 
-	void CodecManager::save_image_as_jpeg(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_jpeg(const ImageConstSharedPtr &image,
 		const String &name)
 	{
 		WriterSharedPtr writer;
@@ -629,7 +629,7 @@ namespace eternal_lands
 		save_image_as_jpeg(image, writer);
 	}
 
-	void CodecManager::save_image_as_dds(const ImageSharedPtr &image,
+	void CodecManager::save_image_as_dds(const ImageConstSharedPtr &image,
 		const String &name)
 	{
 		WriterSharedPtr writer;
@@ -639,8 +639,8 @@ namespace eternal_lands
 		save_image_as_dds(image, writer);
 	}
 
-	void CodecManager::save_image_as_dds_dxt10(const ImageSharedPtr &image,
-		const String &name)
+	void CodecManager::save_image_as_dds_dxt10(
+		const ImageConstSharedPtr &image, const String &name)
 	{
 		WriterSharedPtr writer;
 

@@ -141,6 +141,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_lights(const bool value);
 		void terrain_mode(const bool checked);
 		void tile_mode(const bool checked);
+		void walk_height_mode(const bool checked);
 		void delete_mode(const bool checked);
 		void remove();
 		void set_fog();
@@ -192,6 +193,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_terrain_translation();
 		void remove_terrain();
 		void tile_edit();
+		void walk_height_edit();
 		void update_translation_mask();
 		void swap_terrain_blend_layers();
 		void move_terrain_blend_layer();

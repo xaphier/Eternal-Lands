@@ -18,14 +18,14 @@ namespace eternal_lands
 {
 
 	EditorMapLoader::EditorMapLoader(
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars,
+		const GlobalVarsConstSharedPtr &global_vars,
+		const FileSystemConstSharedPtr &file_system,
 		const EffectCacheWeakPtr &effect_cache,
-		const MeshBuilderWeakPtr &mesh_builder,
+		const MeshBuilderConstWeakPtr &mesh_builder,
 		const MeshCacheWeakPtr &mesh_cache,
 		const MeshDataCacheWeakPtr &mesh_data_cache,
 		const MaterialCacheWeakPtr &material_cache,
-		const TerrainBuilderWeakPtr &terrain_builder,
+		const TerrainBuilderConstWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids,
 		EditorMapData &data): AbstractMapLoader(file_system, free_ids,
@@ -93,12 +93,6 @@ namespace eternal_lands
 //			rotation_angel, scale, texture, id));
 	}
 
-	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,
-		const Uint16 height)
-	{
-		m_data.set_height(x, y, height);
-	}
-
 	void EditorMapLoader::set_ground_hemisphere(
 		const glm::vec4 &ground_hemisphere)
 	{
@@ -109,15 +103,7 @@ namespace eternal_lands
 	{
 		m_data.set_map_size(size);
 		m_data.set_tile_map_size(size);
-	}
-
-	void EditorMapLoader::set_height_map_size(const glm::uvec2 &size)
-	{
-		m_data.set_height_map_size(size);
-	}
-
-	void EditorMapLoader::set_tile_map_size(const glm::uvec2 &size)
-	{
+		m_data.set_walk_height_map_size(size);
 	}
 
 	void EditorMapLoader::set_tile_layer_heights(const glm::vec4 &heights)
@@ -129,6 +115,12 @@ namespace eternal_lands
 		const float z_position, const Uint16 layer)
 	{
 		m_data.set_tile_layer(tile_map, layer);
+	}
+
+	void EditorMapLoader::set_walk_height_map(
+		const Uint8MultiArray2 &walk_height_map)
+	{
+		m_data.set_walk_height_map(walk_height_map);
 	}
 
 	void EditorMapLoader::set_dungeon(const bool dungeon)
@@ -162,10 +154,10 @@ namespace eternal_lands
 	}
 
 	void EditorMapLoader::set_terrain(
-		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_tangent_map,
-		const ImageSharedPtr &dudv_map,
-		const ImageSharedPtr &blend_map,
+		const ImageConstSharedPtr &displacement_map,
+		const ImageConstSharedPtr &normal_tangent_map,
+		const ImageConstSharedPtr &dudv_map,
+		const ImageConstSharedPtr &blend_map,
 		const StringVector &albedo_maps,
 		const StringVector &specular_maps,
 		const StringVector &gloss_maps,

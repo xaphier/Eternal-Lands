@@ -32,9 +32,9 @@ namespace eternal_lands
 				const bool rg_formats, const bool sRGB);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
-			static void save_image(const ImageSharedPtr &image,
+			static void save_image(const ImageConstSharedPtr &image,
 				const WriterSharedPtr &writer);
-			static bool can_save(const ImageSharedPtr &image);
+			static bool can_save(const ImageConstSharedPtr &image);
 
 	};
 
