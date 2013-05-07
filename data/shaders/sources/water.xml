@@ -19,7 +19,7 @@
     </parameter>
     <parameter>
      <sampler_parameter>effect_sampler_2</sampler_parameter>
-     <type>sampler2D</type>
+     <type>sampler2DRect</type>
     </parameter>
     <parameter>
      <sampler_parameter>effect_sampler_3</sampler_parameter>
@@ -64,6 +64,7 @@ vec2 normal_0, normal_1, normal_2, normal_3, normal_4, normal_5, normal_6;
 vec2 ff, ff_scale, offset, flow_dir, uv, flow_uv;
 
 flow_uv = world_position.xy - vec2(0.5);
+#if	0
 uv = world_uv;
 
 // ff is the factor that blends the tiles.
@@ -79,65 +80,118 @@ ff = 0.5 - 4.0 * ff * ff * ff;
 // compensates for it 
 ff_scale = sqrt(ff * ff + (1.0 - ff) * (1.0 - ff));
 
-sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(0, 0)) / textureSize(effect_sampler_2, 0).xy);
+sample = textureOffset(effect_sampler_2, world_position.xy, ivec2(0, 0));
 flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+rotation = mat2(1.0);
 
 // this is the normal for tile A
 normal_0 = texture(effect_sampler_1, rotation * uv - offset).rg;
 
-sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(1, 0)) / textureSize(effect_sampler_2, 0).xy);
+sample = textureOffset(effect_sampler_2, world_position.xy, ivec2(1, 0));
 flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+rotation = mat2(1.0);
 
 // this is the normal for tile B
 normal_1 = texture(effect_sampler_1, rotation * uv - offset * 1.06 + 0.62).rg;
 
-sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(0, 1)) / textureSize(effect_sampler_2, 0).xy);
+sample = textureOffset(effect_sampler_2, world_position.xy, ivec2(0, 1));
 flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+rotation = mat2(1.0);
 
 // this is the normal for tile C
 normal_2 = texture(effect_sampler_1, rotation * uv - offset * 1.33 + 0.27).rg;
 
-sample = texture(effect_sampler_2, (flow_uv + vec2(1.0) + ivec2(1, 1)) / textureSize(effect_sampler_2, 0).xy);
+sample = textureOffset(effect_sampler_2, world_position.xy, ivec2(1, 1));
 flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 offset = vec2(time * 0.05, 0.0);// * sample.a;
 
 // build the rotation matrix that rotates the complete tile
 rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+rotation = mat2(1.0);
 
 // this is the normal for tile C
 normal_3 = texture(effect_sampler_1, rotation * uv - offset * 1.24).rg;
 
 normal_4 = mix(normal_1, normal_0, ff.x);
-normal_5 = mix(normal_2, normal_3, ff.x);
+normal_5 = mix(normal_3, normal_2, ff.x);
 normal_6 = mix(normal_5, normal_4, ff.y);
 
 normal_6 = (normal_6 - 0.5) / (ff_scale.y * ff_scale.x);
 
 normal_6 *= 0.3;
-normal.xy = normal_6;
-normal.z = sqrt(1.0 - dot(normal_6, normal_6));
+normal = normalize(vec3(normal_6, 0.5));
+#endif
+	uv = world_position.xy * 0.005;
+	flow_uv = world_position.xy - 0.5;
 
-reflect_dir = reflect(world_view_direction.xyz, normal);
+	// ff is the factor that blends the tiles.
+	ff = abs(2.0 * fract(flow_uv) - 1.0) - 0.5;
+
+	// take a third power, to make the area with more or less equal contribution
+	// of more tile bigger
+	ff = 0.5 - 4.0 * ff * ff * ff;
+
+	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(0, 0));
+	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+	offset = vec2(time * 0.005, 0.0);// * sample.a;
+	// build the rotation matrix that rotates the complete tile
+	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+	float h0 = textureLod(effect_sampler_1, rotation * uv - offset, 0.0).r * 0.1 - 0.05;
+
+	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(1, 0));
+	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+	offset = vec2(time * 0.005, 0.0);// * sample.a;
+	// build the rotation matrix that rotates the complete tile
+	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+	float h1 = texture(effect_sampler_1, rotation * uv - offset * 1.06 + 0.62, 0.0).r * 0.1 - 0.05;
+
+	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(0, 1));
+	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+	offset = vec2(time * 0.005, 0.0);// * sample.a;
+	// build the rotation matrix that rotates the complete tile
+	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+	float h2 = texture(effect_sampler_1, rotation * uv - offset * 1.33 + 0.27, 0.0).r * 0.1 - 0.05;
+
+	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(1, 1));
+	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
+	offset = vec2(time * 0.005, 0.0);// * sample.a;
+	// build the rotation matrix that rotates the complete tile
+	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
+	float h3 = texture(effect_sampler_1, rotation * uv - offset * 1.24, 0.0).r * 0.1 - 0.05;
+
+	float h4 = mix(h0, h1, ff.x);
+	float h5 = mix(h2, h3, ff.x);
+	float h6 = mix(h4, h5, ff.y);
+
+vec3 _normal_0 = normalize(vec3(0.1, 0.0, dFdx(h6)));
+vec3 _normal_1 = normalize(vec3(0.0, 0.1, dFdy(h6)));
+normal = cross(_normal_0, _normal_1);
+
+_normal_0 = normalize(vec3(0.1, 0.0, dFdx(world_position.z)));
+_normal_1 = normalize(vec3(0.0, 0.1, dFdy(world_position.z)));
+//normal = cross(_normal_0, _normal_1);
+
+reflect_dir = normalize(reflect(world_view_direction.xyz, normal) + vec3(0.0, 0.0, 2.0));
 
 float a = 0.95 - 0.6 * pow(dot(normal, -world_view_direction.xyz), 2.0);
 
 albedo.rgb = texture(effect_sampler_3, reflect_dir).rgb;
 albedo.a = a;
 emission = vec3(0.0);
-specular = albedo.rgb * 0.5;
 albedo.rgb *= 0.5;
+specular = albedo.rgb;
 gloss = 1.0 - dot(fwidth(flow_uv), vec2(1.0));
 
 fragment_normal = normal;

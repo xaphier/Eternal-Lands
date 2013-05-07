@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <effect>
 	<name>water</name>
-	<world_transformation>static</world_transformation>
+	<world_transformation>water_animation</world_transformation>
 	<texture_coodrinates>static</texture_coodrinates>
 	<main>water</main>
 	<node_based>false</node_based>
