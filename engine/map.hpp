@@ -45,7 +45,6 @@ namespace eternal_lands
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_walk_height_map;
-			Uint16MultiArray2 m_tile_map;
 			ParticleDataVector m_particles;
 			glm::vec4 m_ground_hemisphere;
 			glm::uvec2 m_size;
@@ -235,6 +234,7 @@ namespace eternal_lands
 			inline void set_walk_height_map(
 				const Uint8MultiArray2 &walk_height_map)
 			{
+				m_walk_height_map.resize(boost::extents[walk_height_map.shape()[0]][walk_height_map.shape()[1]]);
 				m_walk_height_map = walk_height_map;
 			}
 
@@ -262,44 +262,6 @@ namespace eternal_lands
 					UTF8("index value too big"));
 
 				return m_walk_height_map[x][y];
-			}
-
-			inline glm::uvec2 get_tile_map_size() const noexcept
-			{
-				glm::uvec2 result;
-
-				result.x = m_tile_map.shape()[0];
-				result.y = m_tile_map.shape()[1];
-
-				return result;
-			}
-
-			void set_tile_map_size(const glm::uvec2 &size)
-			{
-				m_tile_map.resize(
-					boost::extents[size.x][size.y]);
-			}
-
-			inline void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile)
-			{
-				RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
-					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
-					UTF8("index value too big"));
-
-				m_tile_map[x][y] = tile;
-			}
-
-			inline Uint16 get_tile(const Uint16 x, const Uint16 y)
-				const
-			{
-				RANGE_CECK_MAX(x, m_tile_map.shape()[0] - 1,
-					UTF8("index value too big"));
-				RANGE_CECK_MAX(y, m_tile_map.shape()[1] - 1,
-					UTF8("index value too big"));
-
-				return m_tile_map[x][y];
 			}
 
 			inline void set_ground_hemisphere(

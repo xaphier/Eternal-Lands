@@ -604,23 +604,12 @@ extern "C" Uint32 engine_load_map(const char* name)
 		ambient_g = scene->get_ground_hemisphere().g;
 		ambient_b = scene->get_ground_hemisphere().b;
 
-		size = scene->get_tile_map_size();
-
-		tile_map_size_x = size.x;
-		tile_map_size_y = size.y;
-
-		tile_map = (Uint8*)calloc(size.x * size.y, 1);
-
-		for (y = 0; y < size.y; ++y)
-		{
-			for (x = 0; x < size.x; ++x)
-			{
-				tile_map[x + y * size.x] =
-					scene->get_tile(x, y);
-			}
-		}
-
 		size = scene->get_walk_height_map_size();
+		assert(size.x > 0);
+		assert(size.y > 0);
+
+		tile_map_size_x = size.x / 6;
+		tile_map_size_y = size.y /6;
 
 		height_map = (Uint8*)calloc(size.x * size.y, 1);
 

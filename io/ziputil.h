@@ -7,9 +7,9 @@
 #define UUID_f4a0d8d6_2b52_4b9a_ab7d_7eba5a3ae015
 
 #include <SDL.h>
+#include <zip.h>
+#include <unzip.h>
 #include "../md5.h"
-#include "../engine/zip/zip.h"
-#include "../engine/zip/unzip.h"
 
 #ifdef __cplusplus
 extern "C"

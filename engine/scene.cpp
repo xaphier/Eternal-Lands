@@ -3345,19 +3345,9 @@ namespace eternal_lands
 		return m_map->get_walk_height(x, y);
 	}
 
-	Uint16 Scene::get_tile(const Uint16 x, const Uint16 y) const
-	{
-		return m_map->get_tile(x, y);
-	}
-
 	glm::uvec2 Scene::get_walk_height_map_size() const
 	{
 		return m_map->get_walk_height_map_size();
-	}
-
-	glm::uvec2 Scene::get_tile_map_size() const
-	{
-		return m_map->get_tile_map_size();
 	}
 
 	void Scene::set_dungeon(const bool dungeon)

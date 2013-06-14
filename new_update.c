@@ -3,10 +3,10 @@
 #include <SDL_net.h>
 #include <SDL_thread.h>
 #include <string.h>
+#include <zip.h>
+#include <unzip.h>
 #include "md5.h"
 #include "elc_private.h"
-#include "engine/zip/zip.h"
-#include "engine/zip/unzip.h"
 #include "io/ziputil.h"
 #include "io/fileutil.h"
 #include "io/elfilewrapper.h"

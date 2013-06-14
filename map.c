@@ -57,13 +57,6 @@ void destroy_map()
 
 	have_a_map = 0;
 
-	//kill the tile and height map
-	if(tile_map)
-	{
-		free (tile_map);
-		tile_map = NULL;
-	}
-	memset(tile_list,0,sizeof(tile_list));
 	tile_map_size_x = tile_map_size_y = 0;
 
 	if(height_map)
@@ -300,7 +293,6 @@ int load_empty_map()
 		ambient_r = 0;
 		ambient_g = 0;
 		ambient_b = 0;
-		tile_map = calloc(tile_map_size_x*tile_map_size_y, sizeof(char));
 		height_map = calloc(tile_map_size_x*tile_map_size_y*6*6, sizeof(char));
 #ifndef MAP_EDITOR2
 		pf_tile_map = calloc(tile_map_size_x*tile_map_size_y*6*6, sizeof(char));

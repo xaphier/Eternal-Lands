@@ -800,7 +800,6 @@ void init_stuff()
 
     update_loading_win(init_lists_str, 6);
     init_actors_lists();
-    memset(tile_list, 0, sizeof(tile_list));
     memset(lights_list, 0, sizeof(lights_list));
     main_bbox_tree = build_bbox_tree();
 #ifdef NEW_SOUND
@@ -819,9 +818,6 @@ void init_stuff()
     missiles_init_defs();
 
     update_loading_win(load_map_tiles_str, 4);
-#if	0
-    load_map_tiles();
-#endif
 
     update_loading_win(init_lights_str, 4);
     //lights setup
