@@ -78,7 +78,7 @@
 
 	world_position.z += h6;
 </source>
-   <version>330</version>
+   <version>130</version>
    <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>

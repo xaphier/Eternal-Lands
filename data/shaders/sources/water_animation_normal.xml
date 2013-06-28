@@ -84,7 +84,7 @@
 
 	world_normal = vec3(0.0, 0.0, 1.0);
 </source>
-   <version>130</version>
+   <version>330</version>
    <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>

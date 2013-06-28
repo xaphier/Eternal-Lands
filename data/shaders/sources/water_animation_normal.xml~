@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>water_animation</name>
- <type>world_depth_transformation</type>
+ <type>world_normal_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -18,6 +18,10 @@
     </parameter>
     <parameter>
      <auto_parameter>time</auto_parameter>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>out</qualifier>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -49,36 +53,38 @@
 	offset = vec2(time * 0.005, 0.0);// * sample.a;
 	// build the rotation matrix that rotates the complete tile
 	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
-	h0 = textureLod(effect_sampler_1, rotation * uv - offset, 0.0).r * 0.1 - 0.05;
+	world_position.z += textureLod(effect_sampler_1, rotation * uv - offset, 0.0).r * 0.1 - 0.05;
 
 	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(1, 0));
 	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 	offset = vec2(time * 0.005, 0.0);// * sample.a;
 	// build the rotation matrix that rotates the complete tile
 	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
-	h1 = texture(effect_sampler_1, rotation * uv - offset * 1.06 + 0.62, 0.0).r * 0.1 - 0.05;
+	world_position.z += texture(effect_sampler_1, rotation * uv - offset * 1.06 + 0.62, 0.0).r * 0.1 - 0.05;
 
 	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(0, 1));
 	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 	offset = vec2(time * 0.005, 0.0);// * sample.a;
 	// build the rotation matrix that rotates the complete tile
 	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
-	h2 = texture(effect_sampler_1, rotation * uv - offset * 1.33 + 0.27, 0.0).r * 0.1 - 0.05;
+	world_position.z += texture(effect_sampler_1, rotation * uv - offset * 1.33 + 0.27, 0.0).r * 0.1 - 0.05;
 
 	sample = textureOffset(effect_sampler_2, flow_uv, ivec2(1, 1));
 	flow_dir = (sample.b + 1.0) * normalize(sample.xy - 0.5) * 0.5;
 	offset = vec2(time * 0.005, 0.0);// * sample.a;
 	// build the rotation matrix that rotates the complete tile
 	rotation = mat2(flow_dir.x, -flow_dir.y, flow_dir.y, flow_dir.x);
-	h3 = texture(effect_sampler_1, rotation * uv - offset * 1.24, 0.0).r * 0.1 - 0.05;
+	world_position.z += texture(effect_sampler_1, rotation * uv - offset * 1.24, 0.0).r * 0.1 - 0.05;
 
 	h4 = mix(h0, h1, ff.x);
 	h5 = mix(h2, h3, ff.x);
 	h6 = mix(h4, h5, ff.y);
 
 	world_position.z += h6;
+
+	world_normal = vec3(0.0, 0.0, 1.0);
 </source>
-   <version>330</version>
+   <version>130</version>
    <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
