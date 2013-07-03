@@ -73,6 +73,79 @@ specular = pow(n_dot_h, exponent) * rim.a * scale;
 diffuse_color = light_color.rgb * diffuse;
 specular_color = light_color.rgb * specular;
 </source>
+   <version>130</version>
+   <shader_types>fragment</shader_types>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>diffuse_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <sampler_parameter>effect_sampler_1</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>effect_sampler_2</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_color</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>gloss</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_view_direction</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>
+vec4 rim;
+vec3 diffuse, dir, reflect_dir, h;
+float dist, scale, specular, exponent, n_dot_h, n_dot_l, n_dot_v;
+
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir *= inversesqrt(dist);
+
+h = normalize(-world_view_direction.xyz + dir);
+
+n_dot_l = dot(fragment_normal, dir);
+n_dot_h = clamp(dot(fragment_normal, h), 0.0, 1.0);
+n_dot_v = clamp(dot(fragment_normal, -world_view_direction.xyz), 0.0, 1.0);
+
+rim = texture(effect_sampler_1, vec2(n_dot_v));
+
+scale = max(0.0, 1.0 - dist * light_position.w);
+
+diffuse = texture2D(effect_sampler_2, vec2(n_dot_l * 0.5 + 0.5)).rgb * rim.rgb * scale * 4.0;
+
+exponent = exp2(12.0 * gloss);
+specular = pow(n_dot_h, exponent) * rim.a * scale;
+
+diffuse_color = light_color.rgb * diffuse;
+specular_color = light_color.rgb * specular;
+</source>
    <version>120</version>
    <shader_types>fragment</shader_types>
   </shader_source_data>

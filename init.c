@@ -46,6 +46,7 @@
 #include "astrology.h"
 #include "mapwin.h"
 #include "missiles.h"
+#include "named_colours.h"
 #include "new_actors.h"
 #include "openingwin.h"
 #include "particles.h"
@@ -686,34 +687,37 @@ void init_stuff()
 #ifdef WRITE_XML
     load_translatables();//Write to the current working directory - hopefully we'll have write rights here...
 #endif
-    // XXX FIXME (Grum): actually this should only be done when windowed
-    // chat is not used (which we don't know yet at this point), but let's
-    // leave it here until we're certain that the chat channel buffers are
-    // never used otherwise, then move it down till after the configuration
-    // is read.
-    init_chat_channels ();
+	// XXX FIXME (Grum): actually this should only be done when windowed
+	// chat is not used (which we don't know yet at this point), but let's
+	// leave it here until we're certain that the chat channel buffers are
+	// never used otherwise, then move it down till after the configuration
+	// is read.
+	init_chat_channels ();
 
-    // initialize the fonts, but don't load the textures yet. Do that here
-    // because the messages need the font widths.
-    init_fonts();
+	// load the named colours for the elgl-Colour-() functions
+	init_named_colours();
 
-    //OK, we have the video mode settings...
-    setup_video_mode(full_screen,video_mode);
-    //now you may set the video mode using the %<foo> in-game
-    video_mode_set=1;
+	// initialize the fonts, but don't load the textures yet. Do that here
+	// because the messages need the font widths.
+	init_fonts();
 
-    //Good, we should be in the right working directory - load all translatables from their files
-    load_translatables();
+	//OK, we have the video mode settings...
+	setup_video_mode(full_screen,video_mode);
+	//now you may set the video mode using the %<foo> in-game
+	video_mode_set=1;
 
-    //if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE | SDL_INIT_EVENTTHREAD) == -1)	// experimental
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1)
-        {
-            LOG_ERROR_OLD("%s: %s\n", no_sdl_str, SDL_GetError());
-            fprintf(stderr, "%s: %s\n", no_sdl_str, SDL_GetError());
-            SDL_Quit();
-            exit(1);
-        }
-    init_video();
+	//Good, we should be in the right working directory - load all translatables from their files
+	load_translatables();
+
+	//if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE | SDL_INIT_EVENTTHREAD) == -1)	// experimental
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1)
+		{
+			LOG_ERROR_OLD("%s: %s\n", no_sdl_str, SDL_GetError());
+			fprintf(stderr, "%s: %s\n", no_sdl_str, SDL_GetError());
+			SDL_Quit();
+			exit(1);
+		}
+	init_video();
 
 #ifdef MAP_EDITOR2
     SDL_WM_SetCaption( "Map Editor", "mapeditor" );

@@ -267,7 +267,7 @@ namespace eternal_lands
 		if (m_random_scale)
 		{
 			scale = glm::mix(m_random_scale_min, m_random_scale_max,
-				m_random());
+				static_cast<float>(m_random()));
 		}
 		else
 		{

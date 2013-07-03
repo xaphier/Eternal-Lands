@@ -503,6 +503,8 @@ extern "C" void init_file_system()
 
 	file_system.reset(new el::FileSystem());
 
+	file_system->add_dir(el::String(UTF8(".")));
+	file_system->add_dir(el::String(UTF8(DATA_DIR)));
 	file_system->add_dir(el::String(el::string_to_utf8(datadir)));
 	file_system->add_dir(el::String(el::string_to_utf8(el2_data_dir)));
 
