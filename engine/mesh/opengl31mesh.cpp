@@ -26,14 +26,14 @@ namespace eternal_lands
 	{
 	}
 
-	void OpenGl31Mesh::bind(BitSet32 &used_attributes)
+	void OpenGl31Mesh::bind(BitSet32 &used_attributes) const
 	{
 		OpenGl3Mesh::bind(used_attributes);
 
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl31Mesh::unbind()
+	void OpenGl31Mesh::unbind() const
 	{
 		OpenGl3Mesh::unbind();
 
@@ -67,7 +67,7 @@ namespace eternal_lands
 	}
 
 	void OpenGl31Mesh::draw(const MeshDrawData &draw_data,
-		const Uint32 instances, const PrimitiveType primitive)
+		const Uint32 instances, const PrimitiveType primitive) const
 	{
 		assert(instances > 0);
 		assert(draw_data.get_base_vertex() == 0);

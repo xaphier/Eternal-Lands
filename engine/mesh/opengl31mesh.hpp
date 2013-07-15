@@ -48,8 +48,8 @@ namespace eternal_lands
 			 */
 			virtual ~OpenGl31Mesh() noexcept;
 
-			virtual void bind(BitSet32 &used_attributes);
-			virtual void unbind();
+			void bind(BitSet32 &used_attributes) const override;
+			void unbind() const override;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.
@@ -59,17 +59,17 @@ namespace eternal_lands
 			 * shared, else the data is cloned.
 			 * @return The new mesh.
 			 */
-			virtual AbstractMeshSharedPtr clone(
+			AbstractMeshSharedPtr clone(
 				const VertexStreamBitset shared_vertex_datas,
-				const bool shared_index_data) const;
-			virtual bool get_supports_restart_index() const;
+				const bool shared_index_data) const override;
+			bool get_supports_restart_index() const override;
 
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
-			virtual void draw(const MeshDrawData &draw_data,
+			void draw(const MeshDrawData &draw_data,
 				const Uint32 instances,
-				const PrimitiveType primitive);
+				const PrimitiveType primitive) const override;
 
 	};
 

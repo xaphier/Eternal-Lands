@@ -3189,6 +3189,8 @@ namespace eternal_lands
 			color_format = tft_rgb8;
 		}
 
+		count = 1;
+
 		switch (get_global_vars()->get_light_system())
 		{
 			case lst_default:

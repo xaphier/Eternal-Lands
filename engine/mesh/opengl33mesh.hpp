@@ -36,8 +36,8 @@ namespace eternal_lands
 				const VertexElements &vertex_elements);
 
 		protected:
-			virtual void init_vertex_buffers(
-				BitSet32 &used_attributes);
+			void init_vertex_buffers(
+				BitSet32 &used_attributes) override;
 
 		public:
 			/**
@@ -64,11 +64,10 @@ namespace eternal_lands
 			 * shared, else the data is cloned.
 			 * @return The new mesh.
 			 */
-			virtual AbstractMeshSharedPtr clone(
+			AbstractMeshSharedPtr clone(
 				const VertexStreamBitset shared_vertex_datas,
-				const bool shared_index_data) const;
-			virtual bool get_supports_vertex_attribute_divisor()
-				const;
+				const bool shared_index_data) const override;
+			bool get_supports_vertex_attribute_divisor() const override;
 
 	};
 

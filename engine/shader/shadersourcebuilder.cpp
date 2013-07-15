@@ -3647,7 +3647,7 @@ namespace eternal_lands
 			get_global_vars()->get_use_multisample_shadows() &&
 			(shader_build == sbt_shadow)));
 		build_data.set_option(ssbot_alpha_write,
-			(build_data.get_version() < svt_150) ||
+			(build_data.get_version() < svt_330) ||
 			(description.get_transparent() &&
 			get_global_vars()->get_exponential_shadow_maps() &&
 			get_global_vars()->get_use_multisample_shadows() &&

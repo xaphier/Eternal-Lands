@@ -1150,15 +1150,12 @@
 		<effect>default</effect>
 	</material>
 	<material>
-<!--		<name>tile0</name>
+		<name>tile0</name>
 		<effect_sampler_0 sRGB='true'>3dobjects/tile0.dds</effect_sampler_0>
 		<effect_sampler_1 sRGB='false'>textures/water_waves.dds</effect_sampler_1>
 		<effect_sampler_2 sRGB='false' rectangle='true'>textures/flow.dds</effect_sampler_2>
 		<effect_sampler_3 sRGB='true'>textures/sky.dds</effect_sampler_3>
-		<effect>water</effect>-->
-		<name>tile0</name>
-		<effect_sampler_0 sRGB='true'>3dobjects/tile0.dds</effect_sampler_0>
-		<effect>default</effect>
+		<effect>water</effect>
 	</material>
 	<material>
 		<name>furs</name>

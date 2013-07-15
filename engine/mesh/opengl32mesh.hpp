@@ -58,17 +58,17 @@ namespace eternal_lands
 			 * shared, else the data is cloned.
 			 * @return The new mesh.
 			 */
-			virtual AbstractMeshSharedPtr clone(
+			AbstractMeshSharedPtr clone(
 				const VertexStreamBitset shared_vertex_datas,
-				const bool shared_index_data) const;
-			virtual bool get_supports_base_vertex() const;
+				const bool shared_index_data) const override;
+			bool get_supports_base_vertex() const override;
 
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
-			virtual void draw(const MeshDrawData &draw_data,
+			void draw(const MeshDrawData &draw_data,
 				const Uint32 instances,
-				const PrimitiveType primitive) const;
+				const PrimitiveType primitive) const override;
 
 	};
 

@@ -40,8 +40,9 @@ namespace eternal_lands
 			BitSet32 m_used_attributes;
 
 		protected:
-			virtual void init_vertex_buffers(
-				const VertexStreamBitset vertex_buffers);
+			void init_vertex_buffers(
+				const VertexStreamBitset vertex_buffers)
+				override;
 			virtual void init_vertex_buffers(
 				BitSet32 &used_attributes);
 
@@ -62,8 +63,8 @@ namespace eternal_lands
 			 */
 			virtual ~OpenGl3Mesh() noexcept;
 
-			virtual void bind(BitSet32 &used_attributes) const;
-			virtual void unbind() const;
+			void bind(BitSet32 &used_attributes) const override;
+			void unbind() const override;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.
@@ -73,9 +74,9 @@ namespace eternal_lands
 			 * shared, else the data is cloned.
 			 * @return The new mesh.
 			 */
-			virtual AbstractMeshSharedPtr clone(
+			AbstractMeshSharedPtr clone(
 				const VertexStreamBitset shared_vertex_datas,
-				const bool shared_index_data) const;
+				const bool shared_index_data) const override;
 
 	};
 

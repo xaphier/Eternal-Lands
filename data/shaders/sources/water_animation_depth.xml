@@ -81,5 +81,23 @@
    <version>330</version>
    <shader_types>vertex</shader_types>
   </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <vertex_semantic>position</vertex_semantic>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <auto_parameter>world_transformation</auto_parameter>
+    </parameter>
+   </parameters>
+   <source>world_position = vec4(position.xyz, 1.0) * world_transformation;
+</source>
+   <version>120</version>
+   <shader_types>vertex</shader_types>
+  </shader_source_data>
  </shader_source_datas>
 </shader_source>
