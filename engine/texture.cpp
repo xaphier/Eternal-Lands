@@ -23,8 +23,10 @@ namespace eternal_lands
         m_anisotropic_filter(16.0f), m_texture_id(0),
         m_depth(depth), m_size(0), m_target(target),
         m_mag_filter(tft_linear), m_min_filter(tft_linear),
-        m_mipmap_filter(tmt_linear), m_wrap_s(twt_repeat),
-        m_wrap_t(twt_repeat), m_wrap_r(twt_repeat),
+		m_mipmap_filter(tmt_linear),
+		m_wrap_s(target == ttt_texture_rectangle ? twt_clamp : twt_repeat),
+		m_wrap_t(target == ttt_texture_rectangle ? twt_clamp : twt_repeat),
+		m_wrap_r(target == ttt_texture_rectangle ? twt_clamp : twt_repeat),
         m_mipmap_count(mipmap_count), m_used_mipmap_count(mipmap_count),
         m_rebuild(true)
     {

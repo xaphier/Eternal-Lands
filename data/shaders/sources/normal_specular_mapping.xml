@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <shader_source>
  <name>normal_specular_mapping</name>
  <type>main_effect</type>
@@ -112,7 +112,7 @@ normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 fragment_normal = tbn_matrix * normal.xyz;
 albedo = texture2D(effect_sampler_0, world_uv);
 emission = vec3(0.0);
-specular_gloss = texture(effect_sampler_2, world_uv).ra;
+specular_gloss = texture2D(effect_sampler_2, world_uv).ra;
 specular = specular_gloss.rrr;
 gloss = specular_gloss.g;
 </source>

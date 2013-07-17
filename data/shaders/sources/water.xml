@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <shader_source>
  <name>water</name>
  <type>main_effect</type>
@@ -196,7 +196,7 @@ gloss = 1.0 - dot(fwidth(flow_uv), vec2(1.0));
 
 fragment_normal = normal;
 </source>
-   <version>130</version>
+   <version>140</version>
    <shader_types>fragment</shader_types>
   </shader_source_data>
   <shader_source_data>

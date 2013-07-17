@@ -134,7 +134,7 @@ n_dot_l = dot(fragment_normal, dir);
 n_dot_h = clamp(dot(fragment_normal, h), 0.0, 1.0);
 n_dot_v = clamp(dot(fragment_normal, -world_view_direction.xyz), 0.0, 1.0);
 
-rim = texture(effect_sampler_1, vec2(n_dot_v));
+rim = texture2D(effect_sampler_1, vec2(n_dot_v));
 
 scale = max(0.0, 1.0 - dist * light_position.w);
 
